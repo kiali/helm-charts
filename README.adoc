@@ -1,0 +1,17 @@
+= Kiali Helm Charts
+
+image:https://travis-ci.org/kiali/helm-charts.svg["Build Status", link="https://travis-ci.org/kiali/helm-charts"]
+image:https://img.shields.io/badge/license-Apache2-blue.svg["Apache 2.0 license", link="LICENSE"]
+
+Kiali Helm Charts are published at link:https://kiali.org/helm-charts/index.yaml[https://kiali.org/helm-charts].
+
+For Kiali installation documentation, please see:
+
+* link:https://kiali.io/documentation/latest/quick-start/[Kiali Quick Start Guide]
+* link:https://kiali.io/documentation/latest/installation-guide/[Kiali Installation Guide]
+
+== Chart Source
+
+Kiali Operator helm chart source is found in the link:./kiali-operator[kiali-operator folder].
+Kiali Server helm chart source is found in the link:./kiali-server[kiali-server folder].
+

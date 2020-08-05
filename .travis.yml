@@ -1,0 +1,9 @@
+dist: xenial
+os: linux
+
+arch:
+- amd64
+
+script:
+# ensures the helm charts are valid
+- make build-helm-charts
