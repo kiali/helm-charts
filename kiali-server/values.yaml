@@ -1,5 +1,5 @@
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "kiali"
+fullnameOverride: "kiali"
 
 # This is required for "openshift" auth strategy.
 # You have to know ahead of time what your Route URL will be because
