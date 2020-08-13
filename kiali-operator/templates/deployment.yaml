@@ -42,7 +42,7 @@ spec:
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | default "Always" }}
         args:
-        - "--zap-level=info"
+        - "--zap-log-level=info"
         volumeMounts:
         - mountPath: /tmp/ansible-operator/runner
           name: runner
@@ -74,9 +74,7 @@ spec:
         {{- end }}
         ports:
         - name: http-metrics
-          containerPort: 8383
-        - name: cr-metrics
-          containerPort: 8686
+          containerPort: 8080
         {{- if .Values.resources }}
         resources:
         {{- toYaml .Values.resources | nindent 10 }}
