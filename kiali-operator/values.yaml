@@ -10,6 +10,7 @@ image:
 # Deployment options for the operator pod.
 nodeSelector: {}
 podAnnotations: {}
+env: []
 tolerations: []
 resources: {}
 affinity: {}

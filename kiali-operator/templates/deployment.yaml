@@ -63,6 +63,9 @@ spec:
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
           value: {{ .Values.debug.verbosity | quote }}
+        {{- if .Values.env }}
+        {{- toYaml .Values.env | nindent 8 }}
+        {{- end }}
         ports:
         - name: http-metrics
           containerPort: 8383
