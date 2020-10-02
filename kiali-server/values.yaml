@@ -54,6 +54,10 @@ deployment:
   version_label: ${HELM_IMAGE_TAG}
   view_only_mode: false
 
+external_services:
+  custom_dashboards:
+    enabled: true
+
 identity: {}
   #cert_file:
   #private_key_file:
