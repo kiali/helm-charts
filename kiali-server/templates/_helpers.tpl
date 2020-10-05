@@ -56,28 +56,32 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Used to determine if a custom dashboard (defined in .Template.Name) should be deployed.
 */}}
 {{- define "kiali-server.isDashboardEnabled" -}}
-{{- $includere := "" }}
-{{- range $_, $s := .Values.deployment.custom_dashboards.includes }}
-  {{- if $s }}
-    {{- if $includere }}
-      {{- $includere = printf "%s|^%s$" $includere ($s | replace "*" ".*" | replace "?" ".") }}
-    {{- else }}
-      {{- $includere = printf "^%s$" ($s | replace "*" ".*" | replace "?" ".") }}
+{{- if .Values.external_services.custom_dashboards.enabled }}
+  {{- $includere := "" }}
+  {{- range $_, $s := .Values.deployment.custom_dashboards.includes }}
+    {{- if $s }}
+      {{- if $includere }}
+        {{- $includere = printf "%s|^%s$" $includere ($s | replace "*" ".*" | replace "?" ".") }}
+      {{- else }}
+        {{- $includere = printf "^%s$" ($s | replace "*" ".*" | replace "?" ".") }}
+      {{- end }}
     {{- end }}
   {{- end }}
-{{- end }}
-{{- $excludere := "" }}
-{{- range $_, $s := .Values.deployment.custom_dashboards.excludes }}
-  {{- if $s }}
-    {{- if $excludere }}
-      {{- $excludere = printf "%s|^%s$" $excludere ($s | replace "*" ".*" | replace "?" ".") }}
-    {{- else }}
-      {{- $excludere = printf "^%s$" ($s | replace "*" ".*" | replace "?" ".") }}
+  {{- $excludere := "" }}
+  {{- range $_, $s := .Values.deployment.custom_dashboards.excludes }}
+    {{- if $s }}
+      {{- if $excludere }}
+        {{- $excludere = printf "%s|^%s$" $excludere ($s | replace "*" ".*" | replace "?" ".") }}
+      {{- else }}
+        {{- $excludere = printf "^%s$" ($s | replace "*" ".*" | replace "?" ".") }}
+      {{- end }}
     {{- end }}
   {{- end }}
-{{- end }}
-{{- if (and (mustRegexMatch (default "no-matches" $includere) (base .Template.Name)) (not (mustRegexMatch (default "no-matches" $excludere) (base .Template.Name)))) }}
-  {{- print "enabled" }}
+  {{- if (and (mustRegexMatch (default "no-matches" $includere) (base .Template.Name)) (not (mustRegexMatch (default "no-matches" $excludere) (base .Template.Name)))) }}
+    {{- print "enabled" }}
+  {{- else }}
+    {{- print "" }}
+  {{- end }}
 {{- else }}
   {{- print "" }}
 {{- end }}
