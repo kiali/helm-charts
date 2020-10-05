@@ -186,6 +186,7 @@ rules:
   - nodes
   - pods
   - pods/log
+  - pods/proxy
   - replicationcontrollers
   - services
   verbs:
