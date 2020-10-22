@@ -109,7 +109,7 @@ rules:
   - get
   - list
   - watch
-- apiGroups: ["extensions"]
+- apiGroups: ["networking.k8s.io"]
   resources:
   - ingresses
   verbs:

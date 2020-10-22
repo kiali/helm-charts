@@ -18,7 +18,7 @@ HELM_IMAGE_REPO_SERVER ?= quay.io/kiali/kiali
 DORP ?= docker
 
 # When building the helm chart, this is the helm version to use
-HELM_VERSION ?= v3.2.4
+HELM_VERSION ?= v3.3.4
 
 .PHONY: help
 help: Makefile
