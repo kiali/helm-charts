@@ -59,7 +59,7 @@ clean:
 
 .build-helm-chart-server: .download-helm-if-needed
 	@echo Building Helm Chart for Kiali server
-	@rm -rf "${OUTDIR}/charts/kiali-server*"
+	@rm -rf "${OUTDIR}/charts/kiali-server"*
 	@mkdir -p "${OUTDIR}/charts"
 	@cp -R "${ROOTDIR}/kiali-server" "${OUTDIR}/charts/"
 	@HELM_IMAGE_REPO="${HELM_IMAGE_REPO_SERVER}" HELM_IMAGE_TAG="${VERSION}" envsubst < "${ROOTDIR}/kiali-server/values.yaml" > "${OUTDIR}/charts/kiali-server/values.yaml"
@@ -68,7 +68,7 @@ clean:
 
 .build-helm-chart-operator: .download-helm-if-needed
 	@echo Building Helm Chart for Kiali operator
-	@rm -rf "${OUTDIR}/charts/kiali-operator*"
+	@rm -rf "${OUTDIR}/charts/kiali-operator"*
 	@mkdir -p "${OUTDIR}/charts"
 	@cp -R "${ROOTDIR}/kiali-operator" "${OUTDIR}/charts/"
 	@HELM_IMAGE_REPO="${HELM_IMAGE_REPO_OPERATOR}" HELM_IMAGE_TAG="${VERSION}" envsubst < "${ROOTDIR}/kiali-operator/values.yaml" > "${OUTDIR}/charts/kiali-operator/values.yaml"
