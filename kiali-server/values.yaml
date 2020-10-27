@@ -43,6 +43,7 @@ deployment:
   override_ingress_yaml:
     metadata: {}
   pod_annotations: {}
+  pod_labels: {}
   priority_class_name: ""
   replicas: 1
   resources: {}
