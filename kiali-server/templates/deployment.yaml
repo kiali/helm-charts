@@ -21,6 +21,9 @@ spec:
       name: {{ include "kiali-server.fullname" . }}
       labels:
         {{- include "kiali-server.labels" . | nindent 8 }}
+        {{- if .Values.deployment.pod_labels }}
+        {{- toYaml .Values.deployment.pod_labels | nindent 8 }}
+        {{- end }}
       annotations:
         {{- if .Values.server.metrics_enabled }}
         prometheus.io/scrape: "true"
