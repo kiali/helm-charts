@@ -39,6 +39,9 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG}
   ingress_enabled: true
+  logger:
+    log_level: info
+    log_format: text
   node_selector: {}
   override_ingress_yaml:
     metadata: {}
@@ -51,7 +54,6 @@ deployment:
   service_annotations: {}
   service_type: ""
   tolerations: []
-  verbose_mode: "3"
   version_label: ${HELM_IMAGE_TAG}
   view_only_mode: false
 
