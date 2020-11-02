@@ -90,9 +90,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: LOG_LEVEL
-          value: {{ include "kiali-server.logLevel" . }}
+          value: "{{ include "kiali-server.logLevel" . }}"
         - name: LOG_FORMAT
-          value: {{ .Values.deployment.logger.log_format }}
+          value: "{{ .Values.deployment.logger.log_format }}"
         volumeMounts:
         - name: {{ include "kiali-server.fullname" . }}-configuration
           mountPath: "/kiali-configuration"

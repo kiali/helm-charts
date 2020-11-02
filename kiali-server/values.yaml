@@ -40,8 +40,8 @@ deployment:
   image_version: ${HELM_IMAGE_TAG}
   ingress_enabled: true
   logger:
-    log_level: info
-    log_format: text
+    log_format: "text"
+    log_level: "info"
   node_selector: {}
   override_ingress_yaml:
     metadata: {}
