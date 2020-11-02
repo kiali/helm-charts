@@ -37,7 +37,7 @@ Identifies the log_level with the old verbose_mode and the new log_level conside
 */}}
 {{- define "kiali-server.logLevel" -}}
 {{- if .Values.deployment.verbose_mode -}}
-{{- tpl .Values.deployment.verbose_mode . -}}
+{{- .Values.deployment.verbose_mode -}}
 {{- else -}}
 {{- .Values.deployment.logger.log_level -}}
 {{- end -}}
