@@ -39,6 +39,11 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG}
   ingress_enabled: true
+  logger:
+    log_format: "text"
+    log_level: "info"
+    time_field_format: "2006-01-02T15:04:05Z07:00"
+    sampler_rate: "1"
   node_selector: {}
   override_ingress_yaml:
     metadata: {}
@@ -51,7 +56,6 @@ deployment:
   service_annotations: {}
   service_type: ""
   tolerations: []
-  verbose_mode: "3"
   version_label: ${HELM_IMAGE_TAG}
   view_only_mode: false
 
