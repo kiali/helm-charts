@@ -42,6 +42,8 @@ deployment:
   logger:
     log_format: "text"
     log_level: "info"
+    time_field_format: "2006-01-02T15:04:05Z07:00"
+    sampler_rate: "1"
   node_selector: {}
   override_ingress_yaml:
     metadata: {}

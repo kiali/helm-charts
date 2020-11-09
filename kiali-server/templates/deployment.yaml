@@ -93,6 +93,10 @@ spec:
           value: "{{ include "kiali-server.logLevel" . }}"
         - name: LOG_FORMAT
           value: "{{ .Values.deployment.logger.log_format }}"
+        - name: LOG_TIME_FIELD_FORMAT
+          value: "{{ .Values.deployment.logger.time_field_format }}" 
+        - name: LOG_SAMPLER_RATE
+          value: "{{ .Values.deployment.logger.sampler_rate }}"
         volumeMounts:
         - name: {{ include "kiali-server.fullname" . }}-configuration
           mountPath: "/kiali-configuration"
