@@ -196,6 +196,12 @@ rules:
   {{- if eq .Values.onlyViewOnlyMode false }}
   - patch
   {{- end }}
+- apiGroups: [""]
+  resources:
+  - pods/portforward
+  verbs:
+  - post
+  - create
 - apiGroups: ["extensions", "apps"]
   resources:
   - deployments
