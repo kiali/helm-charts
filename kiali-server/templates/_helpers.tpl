@@ -53,6 +53,7 @@ app: {{ include "kiali-server.name" . }}
 version: {{ .Values.deployment.version_label | default .Chart.AppVersion | quote }}
 app.kubernetes.io/version: {{ .Values.deployment.version_label | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: "kiali"
 {{- end }}
 
 {{/*
