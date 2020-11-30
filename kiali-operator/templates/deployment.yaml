@@ -63,6 +63,8 @@ spec:
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
           value: {{ .Values.debug.verbosity | quote }}
+        - name: ANSIBLE_CONFIG
+          value: "/etc/ansible/ansible.cfg"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
