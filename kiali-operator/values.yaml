@@ -23,9 +23,11 @@ metrics:
 
 # debug.enabled: when true the full ansible logs are dumped after each reconciliation run
 # debug.verbosity: defines the amount of details the operator will log (higher numbers are more noisy)
+# debug.enableProfiler: when true (regardless of debug.enabled), timings for the most expensive tasks will be logged after each reconciliation loop
 debug:
   enabled: true
   verbosity: "1"
+  enableProfiler: false
 
 # Defines where the operator will look for Kial CR resources. "" means "all namespaces".
 watchNamespace: ""
