@@ -64,7 +64,11 @@ spec:
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
           value: {{ .Values.debug.verbosity | quote }}
         - name: ANSIBLE_CONFIG
+        {{- if .Values.debug.enableProfiler }}
+          value: "/opt/ansible/ansible-profiler.cfg"
+        {{- else }}
           value: "/etc/ansible/ansible.cfg"
+        {{- end }}
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
