@@ -26,8 +26,8 @@ rules:
   resources:
   - pods/portforward
   verbs:
-  - post
   - create
+  - post
 - apiGroups: ["extensions", "apps"]
   resources:
   - deployments
