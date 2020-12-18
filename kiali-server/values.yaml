@@ -34,6 +34,9 @@ deployment:
   custom_dashboards:
     excludes: ['']
     includes: ['*']
+  hpa:
+    api_version: "autoscaling/v2beta2"
+    spec: {}
   image_name: quay.io/kiali/kiali
   image_pull_policy: "Always"
   image_pull_secrets: []
