@@ -87,7 +87,7 @@ node('kiali-build && fedora') {
       // Tag the release
       sh "git add Makefile docs && git commit -m \"Release ${releasingVersion}\""
       sshagent(['kiali-bot-gh-ssh']) {
-        sh "git push -n origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}"
+        sh "git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}"
       }
 
       // Create an entry in the GitHub Releases page
