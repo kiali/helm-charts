@@ -81,7 +81,7 @@ node('kiali-build && fedora') {
     stage('Build and release Helm charts') {
       // Build the release
       echo "Will build version: ${releasingVersion}"
-      sh "sed -i -r 's/^VERSION \\?= v.*/VERSION \\?= ${releasingVersion}/' Makefile"
+      sh "sed -i -r 's/^VERSION \\?= v.*/VERSION \\?= v${releasingVersion}/' Makefile"
       sh "make clean update-helm-repos"
 
       // Tag the release
