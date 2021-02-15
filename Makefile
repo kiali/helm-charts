@@ -78,13 +78,13 @@ clean:
 ## build-helm-charts: Build Kiali operator and server Helm Charts
 build-helm-charts: .build-helm-chart-operator .build-helm-chart-server
 
-.update-helm-repo-server: .build-helm-chart-server
+.update-helm-repo-server: .download-helm-if-needed
 	cp "${OUTDIR}/charts/kiali-server-${SEMVER}.tgz" "${ROOTDIR}/docs"
 	"${HELM}" repo index "${ROOTDIR}/docs" --url https://kiali.org/helm-charts
 
-.update-helm-repo-operator: .build-helm-chart-operator
+.update-helm-repo-operator: .download-helm-if-needed
 	cp "${OUTDIR}/charts/kiali-operator-${SEMVER}.tgz" "${ROOTDIR}/docs"
 	"${HELM}" repo index "${ROOTDIR}/docs" --url https://kiali.org/helm-charts
 
-## update-helm-repos: Build the latest Kiali operator and server Helm Charts and adds them to the local Helm repo directory.
+## update-helm-repos: Adds the VERSION helm charts to the local Helm repo directory.
 update-helm-repos: .update-helm-repo-operator .update-helm-repo-server
