@@ -37,7 +37,7 @@ def bumpVersion(String versionType, String currentVersion) {
 }
 
 def getMinorTag(String version) {
-  def split = currentVersion.split('\\.')
+  def split = version.split('\\.')
   return "${split[0]}.${split[1]}"
 }
 
