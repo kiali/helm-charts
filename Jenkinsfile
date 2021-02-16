@@ -165,10 +165,11 @@ node('kiali-build && fedora') {
             // We did a patch release. In this case we need to go back to the version branch and do changes 
             // to the Makefile in that branch. Then, commit and push.
             sh """
+              git checkout ${params.HELM_RELEASING_BRANCH}
               sed -i -r "s/^VERSION \\?= (.*)/VERSION \\?= v${releasingVersion}/" Makefile
               git add Makefile
               git commit -m "Record that ${releasingVersion} was released, in preparation for next patch version."
-              git push origin \$(git rev-parse HEAD):refs/heads/${mainBranch}
+              git push origin \$(git rev-parse HEAD):refs/heads/${params.HELM_RELEASING_BRANCH}
             """
           }
         }
