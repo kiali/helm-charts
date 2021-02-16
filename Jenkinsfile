@@ -134,7 +134,7 @@ node('kiali-build && fedora') {
       }
     }
 
-    stage('Prepare for next version') {
+    stage('Publish and prepare for next version') {
       // Bump version stored in the Makefile
       withCredentials([string(credentialsId: 'kiali-bot-gh-token', variable: 'GH_TOKEN')]) {
         sshagent(['kiali-bot-gh-ssh']) {
@@ -145,6 +145,7 @@ node('kiali-build && fedora') {
             sh "git push origin \$(git rev-parse HEAD):refs/heads/${minorTag}"
 
             // Also, in preparation for the next minor release, we update the version numbers in the Makefile
+            // This also publishes the new charts by pushing or creating a PR to `master`
             sh """
               sed -i -r "s/^VERSION \\?= (.*)/VERSION \\?= v${nextVersion}-SNAPSHOT/" Makefile
               git add Makefile
@@ -162,14 +163,30 @@ node('kiali-build && fedora') {
               rm -f pr_needed.txt
             """
           } else {
+            // For a patch release, everything is ready to publish the generated charts.
+            // Let's push to master
+            sh """
+              # First, try to push directly to master
+              git push origin \$(git rev-parse HEAD):refs/heads/${mainBranch} || touch pr_needed.txt
+              # If push to master fails, create a PR
+              [ ! -f pr_needed.txt ] || git push ${forkGitUri} \$(git rev-parse HEAD):refs/heads/${env.BUILD_TAG}-main
+              [ ! -f pr_needed.txt ] || echo "Creating PR to prepare for next version..."
+              [ ! -f pr_needed.txt ] || curl -H "Authorization: token \$GH_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d '{"title": "Prepare for next version", "body": "I could not update ${mainBranch} branch. Please, merge.", "head": "${kialiBotUser}:${env.BUILD_TAG}-main", "base": "${mainBranch}"}' \
+                -X POST ${helmPullUri}
+              # Clean-up
+              rm -f pr_needed.txt
+            """
+
             // We did a patch release. In this case we need to go back to the version branch and do changes 
-            // to the Makefile in that branch. Then, commit and push.
+            // to the Makefile in that branch to record what's the current path release. Then, commit and push.
             sh """
               git checkout ${params.HELM_RELEASING_BRANCH}
               sed -i -r "s/^VERSION \\?= (.*)/VERSION \\?= v${releasingVersion}/" Makefile
               git add Makefile
               git commit -m "Record that ${releasingVersion} was released, in preparation for next patch version."
-              git push origin \$(git rev-parse HEAD):refs/heads/${params.HELM_RELEASING_BRANCH}
+              git push origin \$(git rev-parse HEAD):${params.HELM_RELEASING_BRANCH}
             """
           }
         }
