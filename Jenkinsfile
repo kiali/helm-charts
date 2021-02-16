@@ -112,25 +112,12 @@ node('kiali-build && fedora') {
 
       sh "make -e VERSION=v${releasingVersion} update-helm-repos"
 
-      // Tag the release
+      // Tag the release from sources in the master branch
       //   Note that if we are doing a patch release, this tag won't contain valid `kiali-server` nor `kiali-operator` directories
-      //   because these directories come from `master` rather than the original ones. A patch tag is just for reference (probably useless)
+      //   because these directories come from `master` rather than the original ones.
       sh "git add Makefile docs && git commit -m \"Release ${releasingVersion}\""
       sshagent(['kiali-bot-gh-ssh']) {
-        sh "git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}"
-      }
-
-      // Create an entry in the GitHub Releases page
-      //   AGAIN, note that if we are doing a patch release, the archives will be useless, because the sources won't match the helm
-      //   charts that were built.
-      withCredentials([string(credentialsId: 'kiali-bot-gh-token', variable: 'GH_TOKEN')]) {
-        echo "Creating GitHub release..."
-        sh """ 
-          curl -H "Authorization: token \$GH_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"name": "Kiali Helm Charts ${releasingVersion}", "tag_name": "v${releasingVersion}"}' \
-            -X POST ${helmReleaseUri}
-        """
+        sh "git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}-master"
       }
     }
 
@@ -141,8 +128,10 @@ node('kiali-build && fedora') {
           if (params.RELEASE_TYPE == 'minor') {
             // If we did a minor release, we need to create the vX.Y branch, so that it can
             // be used as a base for a patch release.
+            // Also, we create a vX.Y.Z tag.
             def minorTag = getMinorTag(releasingVersion)
             sh "git push origin \$(git rev-parse HEAD):refs/heads/${minorTag}"
+            sh "git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}"
 
             // Also, in preparation for the next minor release, we update the version numbers in the Makefile
             // This also publishes the new charts by pushing or creating a PR to `master`
@@ -181,12 +170,14 @@ node('kiali-build && fedora') {
 
             // We did a patch release. In this case we need to go back to the version branch and do changes 
             // to the Makefile in that branch to record what's the current path release. Then, commit and push.
+            // Also, a vX.Y.Z branch is created
             sh """
               git checkout ${params.HELM_RELEASING_BRANCH}
               sed -i -r "s/^VERSION \\?= (.*)/VERSION \\?= v${releasingVersion}/" Makefile
               git add Makefile
               git commit -m "Record that ${releasingVersion} was released, in preparation for next patch version."
               git push origin \$(git rev-parse HEAD):${params.HELM_RELEASING_BRANCH}
+              git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}
             """
           }
         }
