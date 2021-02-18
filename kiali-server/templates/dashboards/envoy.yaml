@@ -8,7 +8,7 @@ metadata:
   {{- include "kiali-server.labels" . | nindent 4 }}
 spec:
   title: Envoy Metrics
-#  discoverOn: "envoy_server_uptime"
+  discoverOn: "envoy_server_uptime"
   items:
   - chart:
       name: "Pods uptime"
