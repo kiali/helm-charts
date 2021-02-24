@@ -30,7 +30,7 @@ spec:
         prometheus.io/port: {{ .Values.server.metrics_port | quote }}
         {{- else }}
         prometheus.io/scrape: "false"
-        prometheus.io/port: null
+        prometheus.io/port: ""
         {{- end }}
         kiali.io/runtimes: go,kiali
         {{- if .Values.deployment.pod_annotations }}
