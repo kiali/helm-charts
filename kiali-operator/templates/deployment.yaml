@@ -43,6 +43,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy | default "Always" }}
         args:
         - "--zap-log-level=info"
+        - "--leader-election-id={{ include "kiali-operator.fullname" . }}"
         volumeMounts:
         - mountPath: /tmp/ansible-operator/runner
           name: runner
@@ -57,8 +58,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: OPERATOR_NAME
-          value: {{ include "kiali-operator.fullname" . }}
         - name: ANSIBLE_DEBUG_LOGS
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
