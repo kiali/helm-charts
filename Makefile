@@ -75,8 +75,17 @@ clean:
 	@"${HELM}" lint "${OUTDIR}/charts/kiali-operator"
 	@"${HELM}" package "${OUTDIR}/charts/kiali-operator" -d "${OUTDIR}/charts" --version ${SEMVER} --app-version ${VERSION}
 
+.build-helm-chart-olm: .download-helm-if-needed
+	@echo Building Helm Chart for Kiali OLM subscription
+	@rm -rf "${OUTDIR}/charts/kiali-olm"*
+	@mkdir -p "${OUTDIR}/charts"
+	@cp -R "${ROOTDIR}/kiali-olm" "${OUTDIR}/charts/"
+	@envsubst < "${ROOTDIR}/kiali-olm/values.yaml" > "${OUTDIR}/charts/kiali-olm/values.yaml"
+	@"${HELM}" lint "${OUTDIR}/charts/kiali-olm"
+	@"${HELM}" package "${OUTDIR}/charts/kiali-olm" -d "${OUTDIR}/charts" --version ${SEMVER} --app-version ${VERSION}
+
 ## build-helm-charts: Build Kiali operator and server Helm Charts
-build-helm-charts: .build-helm-chart-operator .build-helm-chart-server
+build-helm-charts: .build-helm-chart-operator .build-helm-chart-server .build-helm-chart-olm
 
 .update-helm-repo-server: .download-helm-if-needed
 	cp "${OUTDIR}/charts/kiali-server-${SEMVER}.tgz" "${ROOTDIR}/docs"
@@ -86,5 +95,9 @@ build-helm-charts: .build-helm-chart-operator .build-helm-chart-server
 	cp "${OUTDIR}/charts/kiali-operator-${SEMVER}.tgz" "${ROOTDIR}/docs"
 	"${HELM}" repo index "${ROOTDIR}/docs" --url https://kiali.org/helm-charts
 
+.update-helm-repo-olm: .download-helm-if-needed
+	cp "${OUTDIR}/charts/kiali-olm-${SEMVER}.tgz" "${ROOTDIR}/docs"
+	"${HELM}" repo index "${ROOTDIR}/docs" --url https://kiali.org/helm-charts
+
 ## update-helm-repos: Adds the VERSION helm charts to the local Helm repo directory.
-update-helm-repos: .update-helm-repo-operator .update-helm-repo-server
+update-helm-repos: .update-helm-repo-operator .update-helm-repo-server .update-helm-repo-olm

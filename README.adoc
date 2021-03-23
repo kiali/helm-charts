@@ -14,4 +14,5 @@ For Kiali installation documentation, please see:
 
 Kiali Operator helm chart source is found in the link:./kiali-operator[kiali-operator folder].
 Kiali Server helm chart source is found in the link:./kiali-server[kiali-server folder].
+Kiali OLM Subscription helm chart source is found in the link:./kiali-olm[kiali-olm folder].
 

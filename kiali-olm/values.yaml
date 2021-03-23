@@ -1,0 +1,19 @@
+# Deployment options for the OLM subscription.
+# You can deploy either the Community Operator (if on Kubernetes)
+# or the Red Hat Operator (if on OpenShift).
+# To deploy the Community Operator, set operatorType to "community".
+# To deploy the Red Hat Operator, set operatorType to "redhat".
+
+operatorType: community
+
+# Subscription overrides.
+# Most of these should not be defined - they will be set for you depending on the operatorType.
+# Only set these if you know what you are doing.
+#
+# name: kiali
+# namespace: openshift-operators
+# channel: stable
+# source: community-operators
+# sourceNamespace: openshift-marketplace
+# installPlanApproval: Automatic
+# startingCSV: kiali-operator.vX.Y.Z
