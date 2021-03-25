@@ -38,7 +38,7 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ include "kiali-server.fullname" . }}
-      initContainer:
+      initContainers:
       - name: copy-console
         securityContext:
           runAsUser: 1000
