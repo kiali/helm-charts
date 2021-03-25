@@ -4,6 +4,7 @@ apiVersion: "monitoring.kiali.io/v1alpha1"
 kind: MonitoringDashboard
 metadata:
   name: micrometer-1.1-jvm
+  namespace: {{ .Release.Namespace }}
   labels:
   {{- include "kiali-server.labels" . | nindent 4 }}
 spec:
