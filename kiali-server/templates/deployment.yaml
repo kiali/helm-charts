@@ -38,6 +38,26 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ include "kiali-server.fullname" . }}
+      initContainer:
+      - name: copy-console
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+        image: "{{ .Values.deployment.image_name }}:{{ .Values.deployment.image_version }}"
+        command:
+        - sh
+        - -c
+        - cp -r /opt/kiali/console/* /tmp/console
+        volumeMounts:
+        - name: {{ include "kiali-server.fullname" . }}-console
+          mountPath: /tmp/console
       {{- if .Values.deployment.priority_class_name }}
       priorityClassName: {{ .Values.deployment.priority_class_name | quote }}
       {{- end }}
@@ -51,6 +71,16 @@ spec:
       - image: "{{ .Values.deployment.image_name }}:{{ .Values.deployment.image_version }}"
         imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" }}
         name: {{ include "kiali-server.fullname" . }}
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
         command:
         - "/opt/kiali/kiali"
         - "-config"
@@ -94,7 +124,7 @@ spec:
         - name: LOG_FORMAT
           value: "{{ .Values.deployment.logger.log_format }}"
         - name: LOG_TIME_FIELD_FORMAT
-          value: "{{ .Values.deployment.logger.time_field_format }}" 
+          value: "{{ .Values.deployment.logger.time_field_format }}"
         - name: LOG_SAMPLER_RATE
           value: "{{ .Values.deployment.logger.sampler_rate }}"
         volumeMounts:
@@ -104,6 +134,8 @@ spec:
           mountPath: "/kiali-cert"
         - name: {{ include "kiali-server.fullname" . }}-secret
           mountPath: "/kiali-secret"
+        - name: {{ include "kiali-server.fullname" . }}-console
+          mountPath: "/opt/kiali/console"
         {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
         - name: {{ include "kiali-server.fullname" . }}-cabundle
           mountPath: "/kiali-cabundle"
@@ -130,6 +162,10 @@ spec:
         secret:
           secretName: {{ .Values.deployment.secret_name }}
           optional: true
+      - name: {{ include "kiali-server.fullname" . }}-console
+        emptyDir:
+          medium: Memory
+          sizeLimit: 50Mi
       {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
       - name: {{ include "kiali-server.fullname" . }}-cabundle
         configMap:
