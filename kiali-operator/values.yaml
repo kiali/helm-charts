@@ -41,6 +41,13 @@ clusterRoleCreator: true
 # The purpose for this setting is to allow you to restrict the permissions given to the operator itself.
 onlyViewOnlyMode: false
 
+# This setting will tell the operator to allow a user to be able to install a Kiali CR in one namespace but
+# be able to install Kiali in another namespace. In other words, it will allow the Kiali CR spec.deployment.namespace
+# to be something other than the namespace where the CR is installed. You may want to disable this if you are
+# running in a multi-tenant scenario in which you only want a user to be able to install Kiali in the same namespace
+# where the user has permissions to install a Kiali CR.
+allowAdHocKialiNamespace: true
+
 # For what a Kiali CR spec can look like, see:
 # https://github.com/kiali/kiali-operator/blob/master/deploy/kiali/kiali_cr.yaml
 cr:
