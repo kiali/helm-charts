@@ -120,7 +120,7 @@ rules:
   - get
   - list
   - watch
-- apiGroups: ["networking.k8s.io"]
+- apiGroups: ["extensions", "networking.k8s.io"]
   resources:
   - ingresses
   verbs:
@@ -245,7 +245,10 @@ rules:
   - patch
   {{- end }}
 - apiGroups:
+  - config.istio.io
   - networking.istio.io
+  - authentication.istio.io
+  - rbac.istio.io
   - security.istio.io
   resources: ["*"]
   verbs:
