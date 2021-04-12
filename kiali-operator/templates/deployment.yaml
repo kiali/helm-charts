@@ -60,6 +60,8 @@ spec:
               fieldPath: metadata.namespace
         - name: ALLOW_AD_HOC_KIALI_NAMESPACE
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
+        - name: ALLOW_AD_HOC_KIALI_IMAGE
+          value: {{ .Values.allowAdHocKialiImage | quote }}
         - name: ANSIBLE_DEBUG_LOGS
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
