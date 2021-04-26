@@ -62,6 +62,8 @@ spec:
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
         - name: ALLOW_AD_HOC_KIALI_IMAGE
           value: {{ .Values.allowAdHocKialiImage | quote }}
+        - name: PROFILE_TASKS_TASK_OUTPUT_LIMIT
+          value: "100"
         - name: ANSIBLE_DEBUG_LOGS
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
