@@ -65,6 +65,12 @@ deployment:
 external_services:
   custom_dashboards:
     enabled: true
+  istio:
+    # These three values control which istio controlplane the kiali server talks to.
+    # Useful for canary Istio upgrades.
+    config_map_name: "istio"
+    istio_sidecar_injector_config_map_name: "istio-sidecar-injector"
+    istiod_deployment_name: "istiod"
 
 identity: {}
   #cert_file:
