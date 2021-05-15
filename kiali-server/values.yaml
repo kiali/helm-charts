@@ -1,4 +1,8 @@
-nameOverride: "kiali"
+# 'fullnameOverride' is deprecated. Use 'deployment.instance_name' instead.
+# This is only supported for backward compatibility and will be removed in a future version.
+# If 'fullnameOverride' is not "kiali" and 'deployment.instance_name' is "kiali",
+# then 'deployment.instance_name' will take the value of 'fullnameOverride' value.
+# Otherwise, 'fullnameOverride' is ignored and 'deployment.instance_name' is used.
 fullnameOverride: "kiali"
 
 # This is required for "openshift" auth strategy.
@@ -42,6 +46,7 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG}
   ingress_enabled: true
+  instance_name: "kiali"
   logger:
     log_format: "text"
     log_level: "info"
