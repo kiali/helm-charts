@@ -55,6 +55,11 @@ spec:
         - "/opt/kiali/kiali"
         - "-config"
         - "/kiali-configuration/config.yaml"
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
         ports:
         - name: api-port
           containerPort: {{ .Values.server.port | default 20001 }}
