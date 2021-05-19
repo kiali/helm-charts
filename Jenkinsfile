@@ -130,7 +130,7 @@ node('kiali-build && fedora') {
             // be used as a base for a patch release.
             // Also, we create a vX.Y.Z tag.
             def minorTag = getMinorTag(releasingVersion)
-            sh "git push origin \$(git rev-parse HEAD):refs/heads/${minorTag}"
+            sh "git push origin \$(git rev-parse HEAD):refs/heads/v${minorTag}"
             sh "git push origin \$(git rev-parse HEAD):refs/tags/v${releasingVersion}"
 
             // Also, in preparation for the next minor release, we update the version numbers in the Makefile
