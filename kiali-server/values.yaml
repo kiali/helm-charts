@@ -35,9 +35,6 @@ deployment:
     node: {}
     pod: {}
     pod_anti: {}
-  custom_dashboards:
-    excludes: ['']
-    includes: ['*']
   hpa:
     api_version: "autoscaling/v2beta2"
     spec: {}
