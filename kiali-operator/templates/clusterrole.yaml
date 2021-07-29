@@ -183,6 +183,7 @@ rules:
 # The permissions below are for Kiali itself; operator needs these so it can escalate when creating Kiali's roles
 - apiGroups: [""]
   resources:
+  - secrets
   - configmaps
   - endpoints
   - pods/log
