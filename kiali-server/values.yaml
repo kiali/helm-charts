@@ -72,6 +72,9 @@ identity: {}
   #cert_file:
   #private_key_file:
 
+kiali_feature_flags:
+  clustering: true
+
 login_token:
   signing_key: ""
 
