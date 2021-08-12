@@ -7,9 +7,11 @@ metadata:
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 rules:
+{{- if .Values.kiali_feature_flags.clustering.enabled }}
 - apiGroups: [""]
   resources:
   - secrets
   verbs:
   - list
+{{- end }}
 ...
