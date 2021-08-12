@@ -73,8 +73,8 @@ identity: {}
   #private_key_file:
 
 kiali_feature_flags:
-  clustering: true
-
+  clustering:
+    enabled: true
 login_token:
   signing_key: ""
 
