@@ -33,10 +33,20 @@ rules:
   resources:
   - secrets
   verbs:
-  - get
   - create
   - list
   - watch
+{{- if gt (len .Values.secretReader) 0 }}
+- apiGroups: [""]
+  resourceNames:
+  {{- range .Values.secretReader }}
+  - {{ . }}
+  {{- end }}
+  resources:
+  - secrets
+  verbs:
+  - get
+{{- end }}
 - apiGroups: [""]
   resourceNames:
   - kiali-signing-key
@@ -183,7 +193,7 @@ rules:
   - watch
 # The permissions below are for Kiali itself; operator needs these so it can escalate when creating Kiali's roles
 - apiGroups: [""]
-  resources:  
+  resources:
   - configmaps
   - endpoints
   - pods/log

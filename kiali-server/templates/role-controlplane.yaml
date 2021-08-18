@@ -14,10 +14,12 @@ rules:
   verbs:
   - list
 {{- end }}
+{{- if .Values.kiali_feature_flags.certificates_information_indicators.enabled }}
 - apiGroups: [""]
   resourceNames:
-  - cacerts
-  - istio-ca-secret
+  {{- range .Values.kiali_feature_flags.certificates_information_indicators.secrets }}
+  - {{ . }}
+  {{- end }}
   resources:
   - secrets
   verbs:
@@ -25,3 +27,4 @@ rules:
   - list
   - watch
 ...
+{{- end }}

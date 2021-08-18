@@ -37,6 +37,11 @@ watchNamespace: ""
 # Note that this will be overriden to "true" if cr.create is true and cr.spec.deployment.accessible_namespaces is ['**'].
 clusterRoleCreator: true
 
+# Set to a list of secrets if you want the operator to be able to read those secrets across the cluster. This is necessary
+# if you want to support Kiali CRs with spec.kiali_feature_flags.certificates_information_indicators.enabled = true.
+# If you set this to an empty list, the operator will not be given permission to read secrets outside of the control plane namespace.
+secretReader: ['cacerts', 'istio-ca-secret']
+
 # Set to true if you want to allow the operator to only be able to install Kiali in view-only-mode.
 # The purpose for this setting is to allow you to restrict the permissions given to the operator itself.
 onlyViewOnlyMode: false
