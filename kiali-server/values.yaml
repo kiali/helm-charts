@@ -76,8 +76,8 @@ kiali_feature_flags:
   certificates_information_indicators:
    enabled: true
    secrets:
-   - istio-ca-secret
    - cacerts
+   - istio-ca-secret
   clustering:
     enabled: true
 login_token:
