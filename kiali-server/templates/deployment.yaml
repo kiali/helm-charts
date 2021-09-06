@@ -99,7 +99,7 @@ spec:
         - name: LOG_FORMAT
           value: "{{ .Values.deployment.logger.log_format }}"
         - name: LOG_TIME_FIELD_FORMAT
-          value: "{{ .Values.deployment.logger.time_field_format }}" 
+          value: "{{ .Values.deployment.logger.time_field_format }}"
         - name: LOG_SAMPLER_RATE
           value: "{{ .Values.deployment.logger.sampler_rate }}"
         volumeMounts:
@@ -118,7 +118,11 @@ spec:
       volumes:
       - name: {{ include "kiali-server.fullname" . }}-configuration
         configMap:
+          {{- if .Values.deployment.configuration_configmap }}
+          name: {{ .Values.deployment.configuration_configmap }}
+          {{- else }}
           name: {{ include "kiali-server.fullname" . }}
+          {{- end}}
       - name: {{ include "kiali-server.fullname" . }}-cert
         secret:
           {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}

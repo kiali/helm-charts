@@ -1,3 +1,4 @@
+{{- if not .Values.deployment.configuration_configmap }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -23,3 +24,4 @@ data:
     {{- $_ := set $cm.server "web_root" (include "kiali-server.server.web_root" .) }}
     {{- toYaml $cm | nindent 4 }}
 ...
+{{- end}}
