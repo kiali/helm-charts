@@ -41,7 +41,7 @@ deployment:
   image_name: quay.io/kiali/kiali
   image_pull_policy: "Always"
   image_pull_secrets: []
-  image_version: ${HELM_IMAGE_TAG}
+  image_version: ${HELM_IMAGE_TAG} # v1.39 # v1.39.0 # see: https://quay.io/repository/kiali/kiali?tab=tags
   ingress_enabled: true
   instance_name: "kiali"
   logger:
@@ -61,7 +61,7 @@ deployment:
   service_annotations: {}
   service_type: ""
   tolerations: []
-  version_label: ${HELM_IMAGE_TAG}
+  version_label: ${HELM_IMAGE_TAG} # v1.39 # v1.39.0 # see: https://quay.io/repository/kiali/kiali?tab=tags
   view_only_mode: false
 
 external_services:

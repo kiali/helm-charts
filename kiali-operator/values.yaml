@@ -1,9 +1,9 @@
 nameOverride: ""
 fullnameOverride: ""
 
-image:
-  repo: ${HELM_IMAGE_REPO}
-  tag: ${HELM_IMAGE_TAG}
+image: # see: https://quay.io/repository/kiali/kiali-operator?tab=tags
+  repo: ${HELM_IMAGE_REPO} # quay.io/kiali/kiali-operator
+  tag: ${HELM_IMAGE_TAG} # v1.39 # v1.39.0
   pullPolicy: Always
   pullSecrets: []
 
