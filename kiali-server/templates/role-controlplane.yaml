@@ -14,4 +14,17 @@ rules:
   verbs:
   - list
 {{- end }}
+{{- if .Values.kiali_feature_flags.certificates_information_indicators.enabled }}
+- apiGroups: [""]
+  resourceNames:
+  {{- range .Values.kiali_feature_flags.certificates_information_indicators.secrets }}
+  - {{ . }}
+  {{- end }}
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+{{- end }}
 ...
