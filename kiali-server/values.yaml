@@ -38,10 +38,11 @@ deployment:
   hpa:
     api_version: "autoscaling/v2beta2"
     spec: {}
+  image_digest: "" # use "sha256" if image_version is a sha256 hash (do NOT prefix this value with a "@")
   image_name: quay.io/kiali/kiali
   image_pull_policy: "Always"
   image_pull_secrets: []
-  image_version: ${HELM_IMAGE_TAG} # v1.39 # v1.39.0 # see: https://quay.io/repository/kiali/kiali?tab=tags
+  image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
   ingress_enabled: true
   instance_name: "kiali"
   logger:

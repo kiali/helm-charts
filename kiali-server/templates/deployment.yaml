@@ -48,7 +48,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-      - image: "{{ .Values.deployment.image_name }}:{{ .Values.deployment.image_version }}"
+      - image: "{{ .Values.deployment.image_name }}{{ if .Values.deployment.image_digest }}@{{ .Values.deployment.image_digest }}{{ end }}:{{ .Values.deployment.image_version }}"
         imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" }}
         name: {{ include "kiali-server.fullname" . }}
         command:
