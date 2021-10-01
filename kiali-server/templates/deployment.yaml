@@ -47,6 +47,10 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if .Values.deployment.host_aliases }}
+      hostAliases:
+      {{ toYaml .Values.deployment.host_aliases | nindent 8 }}
+      {{- end }}
       containers:
       - image: "{{ .Values.deployment.image_name }}{{ if .Values.deployment.image_digest }}@{{ .Values.deployment.image_digest }}{{ end }}:{{ .Values.deployment.image_version }}"
         imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" }}
