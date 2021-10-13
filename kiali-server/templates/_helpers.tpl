@@ -70,7 +70,11 @@ Determine the default web root.
 */}}
 {{- define "kiali-server.server.web_root" -}}
 {{- if .Values.server.web_root  }}
-  {{- .Values.server.web_root | trimSuffix "/" }}
+  {{- if (eq .Values.server.web_root "/") }}
+    {{- .Values.server.web_root }}
+  {{- else }}
+    {{- .Values.server.web_root | trimSuffix "/" }}
+  {{- end }}
 {{- else }}
   {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
     {{- "/" }}
