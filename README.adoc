@@ -7,11 +7,85 @@ Kiali Helm Charts are published at link:https://kiali.org/helm-charts/index.yaml
 
 For Kiali installation documentation, please see:
 
-* link:https://kiali.io/documentation/latest/quick-start/[Kiali Quick Start Guide]
-* link:https://kiali.io/documentation/latest/installation-guide/[Kiali Installation Guide]
+* link:https://kiali.io/docs/installation/quick-start/#install-via-helm[Kiali Quick Start Guide]
+* link:https://kiali.io/docs/installation/installation-guide/install-with-helm/[Kiali Installation Guide]
 
 == Chart Source
 
 Kiali Operator helm chart source is found in the link:./kiali-operator[kiali-operator folder].
 Kiali Server helm chart source is found in the link:./kiali-server[kiali-server folder].
 
+== Developer Notes
+
+=== Building
+
+To build the helm charts, simply run `make clean build-helm-charts` which will generate the operator and server helm charts and stores their tarballs in the `_output/charts` directory.
+
+=== Using the local Helm chart builds
+
+==== Server
+
+To generate the server templates, run:
+
+```
+helm template -n istio-system --set auth.strategy=anonymous --set deployment.image_version=latest kiali-server _output/charts/kiali-server-*-SNAPSHOT.tgz
+```
+
+To install the server, run:
+
+```
+helm install -n istio-system --set auth.strategy=anonymous --set deployment.image_version=latest kiali-server _output/charts/kiali-server-*-SNAPSHOT.tgz
+```
+
+To uninstall the server, run:
+
+```
+helm uninstall -n istio-system kiali-server
+```
+
+==== Operator
+
+To generate the operator templates, run:
+
+```
+helm template -n kiali-operator --set allowAdHocKialiImage=true --set image.tag=latest --create-namespace kiali-operator _output/charts/kiali-operator-*-SNAPSHOT.tgz
+```
+
+To install the operator, run:
+
+```
+helm install -n kiali-operator --set allowAdHocKialiImage=true --set image.tag=latest --create-namespace kiali-operator _output/charts/kiali-operator-*-SNAPSHOT.tgz
+```
+
+To uninstall the operator, run:
+
+```
+helm uninstall -n kiali-operator kiali-operator
+```
+
+==== Overriding values
+
+You can pass `--set` options to the above commands if you wish to override the default values. You can set nested dictionary values using dot notation: `--set deployment.logger.log_level=debug`. For a list of items, comma-separate the values and wrap the list in curly braces: `--set "deployment.accessible_namespaces={bookinfo,demo2}"`. You can set individual list items using square brackets: `--set deployment.accessible_namespaces[0]=bookinfo`.
+
+If you locally built and pushed your Kiali server and Kiali operator images to your cluster, you can have the helm chart installations pull those images by the following settings:
+
+|===
+|Helm Chart|Cluster Type|Settings
+
+|Server|Minikube|
+`--set deployment.image_name=localhost:5000/kiali/kiali` +
+`--set deployment.image_version=dev`
+|Server|OpenShift|
+`--set deployment.image_name=image-registry.openshift-image-registry.svc:5000/kiali/kiali` +
+`--set deployment.image_version=dev`
+|Operator|Minikube|
+`--set image.repo=localhost:5000/kiali/kiali-operator` +
+`--set image.tag=dev` +
+`--set cr.spec.deployment.image_name=localhost:5000/kiali/kiali` +
+`--set cr.spec.deployment.image_version=dev`
+|Operator|OpenShift|
+`--set image.repo=image-registry.openshift-image-registry.svc:5000/kiali/kiali-operator` +
+`--set image.tag=dev` +
+`--set cr.spec.deployment.image_name=image-registry.openshift-image-registry.svc:5000/kiali/kiali` +
+`--set cr.spec.deployment.image_version=dev`
+|===

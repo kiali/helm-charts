@@ -115,6 +115,21 @@ Determine the default identity private key file. There is no default if on k8s; 
 {{- end }}
 
 {{/*
+Determine the default deployment.ingress.enabled. Disable it on k8s; enable it on OpenShift.
+*/}}
+{{- define "kiali-server.deployment.ingress.enabled" -}}
+{{- if hasKey .Values.deployment.ingress "enabled" }}
+  {{- .Values.deployment.ingress.enabled }}
+{{- else }}
+  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+    {{- true }}
+  {{- else }}
+    {{- false }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Determine the istio namespace - default is where Kiali is installed.
 */}}
 {{- define "kiali-server.istio_namespace" -}}

@@ -44,7 +44,11 @@ deployment:
   image_pull_policy: "Always"
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
-  ingress_enabled: true
+  ingress:
+    class_name: "nginx"
+    #enabled:
+    override_yaml:
+      metadata: {}
   instance_name: "kiali"
   logger:
     log_format: "text"
@@ -52,8 +56,6 @@ deployment:
     time_field_format: "2006-01-02T15:04:05Z07:00"
     sampler_rate: "1"
   node_selector: {}
-  override_ingress_yaml:
-    metadata: {}
   pod_annotations: {}
   pod_labels: {}
   priority_class_name: ""
