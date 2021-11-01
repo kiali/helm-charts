@@ -145,3 +145,14 @@ Determine the auth strategy to use - default is "token" on Kubernetes and "opens
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Determine the root namespace - default is where Kiali is installed.
+*/}}
+{{- define "kiali-server.external_services.istio.root_namespace" -}}
+{{- if .Values.external_services.istio.root_namespace }}
+  {{- .Values.external_services.istio.root_namespace }}
+{{- else }}
+  {{- .Release.Namespace }}
+{{- end }}
+{{- end }}
