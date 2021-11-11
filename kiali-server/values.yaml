@@ -35,6 +35,7 @@ deployment:
     node: {}
     pod: {}
     pod_anti: {}
+  custom_secrets: []
   host_aliases: []
   hpa:
     api_version: "autoscaling/v2beta2"
