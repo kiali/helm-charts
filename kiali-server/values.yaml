@@ -46,6 +46,7 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
   ingress:
+    additional_labels: {}
     class_name: "nginx"
     #enabled:
     override_yaml:

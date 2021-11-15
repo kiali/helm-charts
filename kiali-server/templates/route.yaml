@@ -8,11 +8,14 @@ metadata:
   name: {{ include "kiali-server.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "kiali-server.labels" . | nindent 4 }}
-    {{- if hasKey .Values.deployment.ingress.override_yaml.metadata "annotations" }}}
-    annotations:
-    {{- toYaml .Values.deployment.ingress.override_yaml.metadata.annotations | nindent 4 }}
+    {{- if .Values.deployment.ingress.additional_labels }}
+    {{- toYaml .Values.deployment.ingress.additional_labels | nindent 4 }}
     {{- end }}
+    {{- include "kiali-server.labels" . | nindent 4 }}
+  {{- if .Values.deployment.ingress.override_yaml.metadata.annotations }}
+  annotations:
+  {{- toYaml .Values.deployment.ingress.override_yaml.metadata.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if hasKey .Values.deployment.ingress.override_yaml "spec" }}
   {{- toYaml .Values.deployment.ingress.override_yaml.spec | nindent 2 }}
