@@ -62,7 +62,10 @@ deployment:
   pod_labels: {}
   priority_class_name: ""
   replicas: 1
-  resources: {}
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "64Mi"
   secret_name: "kiali"
   service_annotations: {}
   service_type: ""
