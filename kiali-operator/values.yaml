@@ -13,7 +13,10 @@ nodeSelector: {}
 podAnnotations: {}
 env: []
 tolerations: []
-resources: {}
+resources:
+  requests:
+    cpu: "10m"
+    memory: "64Mi"
 affinity: {}
 replicaCount: 1
 priorityClassName: ""

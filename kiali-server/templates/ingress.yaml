@@ -11,9 +11,12 @@ metadata:
   name: {{ include "kiali-server.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
+    {{- if .Values.deployment.ingress.additional_labels }}
+    {{- toYaml .Values.deployment.ingress.additional_labels | nindent 4 }}
+    {{- end }}
     {{- include "kiali-server.labels" . | nindent 4 }}
   annotations:
-    {{- if hasKey .Values.deployment.ingress.override_yaml.metadata "annotations" }}
+    {{- if .Values.deployment.ingress.override_yaml.metadata.annotations }}
     {{- toYaml .Values.deployment.ingress.override_yaml.metadata.annotations | nindent 4 }}
     {{- else }}
     # For ingress-nginx versions older than 0.20.0 use secure-backends.
