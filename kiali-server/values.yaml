@@ -93,6 +93,9 @@ kiali_feature_flags:
    - istio-ca-secret
   clustering:
     enabled: true
+  validations:
+    ignore: ["KIA1201"]
+
 login_token:
   signing_key: ""
 
