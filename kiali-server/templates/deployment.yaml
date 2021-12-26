@@ -74,7 +74,7 @@ spec:
         {{- end }}
         readinessProbe:
           httpGet:
-            path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz
+            path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/api/healthz
             port: api-port
             {{- if (include "kiali-server.identity.cert_file" .) }}
             scheme: HTTPS
@@ -85,7 +85,7 @@ spec:
           periodSeconds: 30
         livenessProbe:
           httpGet:
-            path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz
+            path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/api/healthz
             port: api-port
             {{- if (include "kiali-server.identity.cert_file" .) }}
             scheme: HTTPS
