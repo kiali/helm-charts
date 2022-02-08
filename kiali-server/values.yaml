@@ -87,12 +87,15 @@ identity: {}
 
 kiali_feature_flags:
   certificates_information_indicators:
-   enabled: true
-   secrets:
-   - cacerts
-   - istio-ca-secret
+    enabled: true
+    secrets:
+    - cacerts
+    - istio-ca-secret
   clustering:
     enabled: true
+  validations:
+    ignore: ["KIA1201"]
+
 login_token:
   signing_key: ""
 
