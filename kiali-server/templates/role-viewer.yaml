@@ -10,7 +10,7 @@ rules:
   resources:
   - configmaps
   - endpoints
-{{- if not (has "log-view" .Values.kiali_feature_flags.disabled_features) }}
+{{- if not (has "logs-tab" .Values.kiali_feature_flags.disabled_features) }}
   - pods/log
 {{- end }}
   verbs:
