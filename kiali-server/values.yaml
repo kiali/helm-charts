@@ -94,6 +94,7 @@ kiali_feature_flags:
     - istio-ca-secret
   clustering:
     enabled: true
+  disabled_features: []
   validations:
     ignore: ["KIA1201"]
 
