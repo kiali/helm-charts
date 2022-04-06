@@ -103,6 +103,7 @@ login_token:
 
 server:
   port: 20001
+  redirect_path: ""
   metrics_enabled: true
   metrics_port: 9090
   web_root: ""
