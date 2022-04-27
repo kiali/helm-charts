@@ -118,7 +118,7 @@ jobs:
     # would break the next minor build (remember we have already switched to master).
     - name: Prepare Makefile
       if: ${{ github.event.inputs.release_type != 'patch'}}
-      run: sed -i -r 's/^VERSION \?= v.*/VERSION \?= v$RELEASE_VERSION/' Makefile
+      run: sed -i -r "s/^VERSION \?= .*/VERSION \?= $RELEASE_VERSION/" Makefile
 
     - name: Update Helm repositories
       run: make -e VERSION=$RELEASE_VERSION update-helm-repos
