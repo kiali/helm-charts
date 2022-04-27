@@ -36,7 +36,7 @@ jobs:
         RELEASE_TYPE: ${{ github.event.inputs.release_type }}
       id: release_version
       run: |
-        RAW_VERSION=$(sed -rn 's/^VERSION \?= v(.*)/\1/p' Makefile)
+        RAW_VERSION=$(sed -rn 's/^VERSION \?= (.*)/\1/p' Makefile)
         
         # Remove any pre release identifier (ie: "-SNAPSHOT")
         RELEASE_VERSION=${RAW_VERSION%-*}
