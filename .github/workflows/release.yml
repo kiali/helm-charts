@@ -10,12 +10,7 @@ on:
         type: choice
         options:
         - minor
-        - patch 
-      repository:
-        description: Repository (in owner/repo format)
-        required: true
-        default: kiali/helm-charts
-        type: string
+        - patch
       release_branch:
         description: Branch to release
         required: true
@@ -34,7 +29,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        repository: ${{ github.repository }}
         ref: ${{ github.event.inputs.releasing_branch }}       
     
     - name: Determine release version
@@ -101,7 +95,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        repository: ${{ github.repository }}
         ref: ${{ github.event.inputs.releasing_branch }} 
       
     - name: Configure git
