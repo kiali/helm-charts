@@ -14,7 +14,6 @@ keywords:
 - operator
 sources:
 - https://github.com/kiali/kiali
-- https://github.com/kiali/kiali-ui
 - https://github.com/kiali/kiali-operator
 - https://github.com/kiali/helm-charts
 icon: https://raw.githubusercontent.com/kiali/kiali.io/master/themes/kiali/static/img/kiali_logo_masthead.png
