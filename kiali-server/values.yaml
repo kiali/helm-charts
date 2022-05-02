@@ -35,6 +35,7 @@ deployment:
   # For more control over what the Kial Service Account can see, use the Kiali Operator
   accessible_namespaces:
   - "**"
+  additional_pod_containers_yaml: {}
   additional_service_yaml: {}
   affinity:
     node: {}
