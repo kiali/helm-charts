@@ -130,7 +130,7 @@ spec:
           name: {{ include "kiali-server.fullname" . }}
       - name: {{ include "kiali-server.fullname" . }}-cert
         secret:
-          {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+          {{- if (include "kiali-server.identity.provider" .) }}
           secretName: {{ include "kiali-server.fullname" . }}-cert-secret
           {{- else }}
           secretName: istio.{{ include "kiali-server.fullname" . }}-service-account

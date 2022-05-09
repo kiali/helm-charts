@@ -1,0 +1,18 @@
+{{- if .Values.identity.cert_manager.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ include "kiali-server.fullname" . }}-cert-secret
+  secretTemplate:
+    labels:
+      {{- include "kiali-server.labels" . | nindent 8 }}
+  dnsNames:
+    - {{ required ".Values.server.web_fqdn is required when .Values.identity.cert_manager is enabled" .Values.server.web_fqdn }}
+  issuerRef:
+    name: {{ required ".Values.identity.cert_manager.issuer.name is required when .Values.identity.cert_manager is enabled" .Values.identity.cert_manager.issuer.name }}
+    kind: {{ default "Issuer" .Values.identity.cert_manager.issuer.kind }}
+{{- end }}

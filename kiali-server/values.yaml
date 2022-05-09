@@ -82,7 +82,9 @@ external_services:
   istio:
     root_namespace: ""
 
-identity: {}
+identity:
+  cert_manager:
+    issuer: {}
   #cert_file:
   #private_key_file:
 
