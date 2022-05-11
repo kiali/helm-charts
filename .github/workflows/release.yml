@@ -1,12 +1,14 @@
 name: Release
 
 on:
+  # schedule:
+  #   # Every Friday at 19:00 (UTC)
+  #   - cron: '00 19 * * FRI'
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'Release type'     
+        description: Release type
         required: true
-        default: 'auto' 
         type: choice
         options:
         - minor
@@ -21,7 +23,8 @@ jobs:
   initialize:
     name: Initialize
     runs-on: ubuntu-20.04
-    outputs:            
+    outputs:        
+      release_type: ${{ steps.release_type.outputs.release_type }}   
       release_version: ${{ steps.release_version.outputs.release_version }}      
       next_version: ${{ steps.next_version.outputs.next_version }}
       branch_version: ${{ steps.branch_version.outputs.branch_version }}
@@ -29,29 +32,85 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.releasing_branch }}       
-    
+        ref: ${{ github.event.inputs.release_branch }}       
+
+    - name: Prepare scripts
+      run: |
+        cat <<-EOF > bump.py
+        import sys
+        release_type = sys.argv[1]
+        version = sys.argv[2]
+        parts = version.split('.')
+        major = int(parts[0][1:])
+        minor = int(parts[1])
+        patch = int(parts[2])
+        if release_type == 'major':
+            major = major + 1
+            minor = 0
+            patch = 0
+        elif release_type == 'minor':
+            minor = minor + 1 
+            patch = 0
+        elif release_type == 'patch':
+            patch = patch + 1
+        print('.'.join(['v' + str(major), str(minor), str(patch)]))
+        EOF
+        
+        cat <<-EOF > minor.py
+        import datetime
+
+        # The base date can be any end of sprint from the past
+        base = int(datetime.datetime.strptime("24/04/2022", "%d/%m/%Y").timestamp())
+        now = int(datetime.datetime.now().timestamp())
+
+        diff = now - base
+
+        days_elapsed = int(diff / (24*60*60))
+        weeks_elapsed = int(days_elapsed / 7)
+        weeks_mod3 = int(weeks_elapsed % 3)
+
+        print(weeks_mod3)
+        EOF
+
+    - name: Determine release type
+      id: release_type
+      run: |
+        if [ -z ${{ github.event.inputs.release_type }} ];
+        then
+          DO_RELEASE=$(python minor.py)
+          if [[ $DO_RELEASE == "0" ]]
+          then
+            echo "::set-output name=release_type::minor"
+          else
+            echo "::set-output name=release_type::skip"
+          fi
+        else
+          echo "::set-output name=release_type::${{ github.event.inputs.release_type }}"
+        fi
+
     - name: Determine release version
+      if: ${{ steps.release_type.outputs.release_type != 'skip' }}
       env:
-        RELEASE_TYPE: ${{ github.event.inputs.release_type }}
+        RELEASE_TYPE: ${{ steps.release_type.outputs.release_type }}
       id: release_version
       run: |
         RAW_VERSION=$(sed -rn 's/^VERSION \?= (.*)/\1/p' Makefile)
-        
+
         # Remove any pre release identifier (ie: "-SNAPSHOT")
         RELEASE_VERSION=${RAW_VERSION%-*}
-        
-        # If we are doing a patch release, the Makefile contains a version that is already released.
-        # The version present in the Makefile needs to be bumped and that's our releasing version.
-        # The next version is two patches from whatever is present in the Makefile.          
+
         if [[ $RELEASE_TYPE == "patch" ]]
         then
-            RELEASE_VERSION=$(./.github/workflows/util/bump.py $RELEASE_TYPE $RELEASE_VERSION)
+          RELEASE_VERSION=$(python bump.py $RELEASE_TYPE $RELEASE_VERSION)
+        elif [[ $RELEASE_TYPE == "minor" ]]
+        then
+          RELEASE_VERSION=$RELEASE_VERSION
         fi
 
-        echo "::set-output name=release_version::$RELEASE_VERSION"      
+        echo "::set-output name=release_version::$RELEASE_VERSION"        
     
     - name: Determine next version
+      if: ${{ steps.release_type.outputs.release_type != 'skip' }}
       env:
         RELEASE_TYPE: ${{ github.event.inputs.release_type }}
         RELEASE_VERSION: ${{ steps.release_version.outputs.release_version }}
@@ -59,15 +118,16 @@ jobs:
       run: |
         if [[ $RELEASE_TYPE == "patch" ]]
         then
-            NEXT_VERSION=$(./.github/workflows/util/bump $RELEASE_TYPE $RELEASE_VERSION)
+            NEXT_VERSION=$(python bump.py $RELEASE_TYPE $RELEASE_VERSION)
         elif [[ $RELEASE_TYPE == "minor" ]]
         then 
-            NEXT_VERSION=$(./.github/workflows/util/bump.py $RELEASE_TYPE $RELEASE_VERSION)          
+            NEXT_VERSION=$(python bump.py $RELEASE_TYPE $RELEASE_VERSION)          
         fi
 
         echo "::set-output name=next_version::$NEXT_VERSION"
 
     - name: Determine branch version
+      if: ${{ steps.release_type.outputs.release_type != 'skip' }}
       env:
         RELEASE_VERSION: ${{ steps.release_version.outputs.release_version }}      
       id: branch_version
@@ -83,6 +143,7 @@ jobs:
 
   release:
     name: Release
+    if: ${{ needs.initialize.outputs.release_type != 'skip' && ((github.event_name == 'schedule' && github.repository == 'kiali/helm-charts') || github.event_name != 'schedule') }}
     runs-on: ubuntu-20.04
     needs: [initialize]
     env:
@@ -95,7 +156,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.releasing_branch }} 
+        ref: ${{ github.event.inputs.release_branch }} 
       
     - name: Configure git
       run: |
