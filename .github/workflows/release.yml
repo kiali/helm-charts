@@ -107,7 +107,7 @@ jobs:
           RELEASE_VERSION=$RELEASE_VERSION
         fi
 
-        echo "::set-output name=release_version::$RELEASE_VERSION"        
+        echo "::set-output name=release_version::$RELEASE_VERSION"
     
     - name: Determine next version
       if: ${{ steps.release_type.outputs.release_type != 'skip' }}
