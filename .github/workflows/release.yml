@@ -228,7 +228,7 @@ jobs:
         then 
           git push origin $(git rev-parse HEAD):refs/heads/$BUILD_TAG
 
-          gh pr create -t "Prepare for next version" -b "Please, merge to update version numbers and prepare for release $NEXT_VERSION." -H $BUILD_TAG -B $RELEASE_BRANCH
+          gh pr create -t "Prepare for next version" -b "Please, merge to update version numbers and prepare for release $NEXT_VERSION." -H $BUILD_TAG -B master
          
           # We did a patch release. In this case we need to go back to the version branch and do changes 
           # to the Makefile in that branch to record what's the current path release. Then, commit and push.
