@@ -32,7 +32,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.release_branch }}       
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
         fetch-depth: 0
         
     - name: Prepare scripts
@@ -151,13 +151,13 @@ jobs:
       RELEASE_TYPE: ${{ github.event.inputs.release_type }}      
       RELEASE_VERSION: ${{ needs.initialize.outputs.release_version }}
       NEXT_VERSION: ${{ needs.initialize.outputs.next_version }}
-      BRANCH_VERSION: ${{ needs.initialize.outputs.branch_version }}
+      BRANCH_VERSION: ${{ github.event.inputs.release_branch || github.ref_name }} 
       RELEASE_BRANCH: ${{ github.event.inputs.release_branch }}      
     steps:    
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.release_branch }} 
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
         fetch-depth: 0
         
     - name: Configure git
