@@ -32,7 +32,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.release_branch }}       
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
         fetch-depth: 0
         
     - name: Prepare scripts
@@ -148,16 +148,16 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [initialize]
     env:
-      RELEASE_TYPE: ${{ github.event.inputs.release_type }}      
+      RELEASE_TYPE: ${{ needs.initialize.outputs.release_type }}
       RELEASE_VERSION: ${{ needs.initialize.outputs.release_version }}
       NEXT_VERSION: ${{ needs.initialize.outputs.next_version }}
       BRANCH_VERSION: ${{ needs.initialize.outputs.branch_version }}
-      RELEASE_BRANCH: ${{ github.event.inputs.release_branch }}      
+      RELEASE_BRANCH: ${{ github.event.inputs.release_branch || github.ref_name }} 
     steps:    
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.event.inputs.release_branch }} 
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
         fetch-depth: 0
         
     - name: Configure git
