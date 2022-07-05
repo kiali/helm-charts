@@ -151,8 +151,8 @@ jobs:
       RELEASE_TYPE: ${{ github.event.inputs.release_type }}      
       RELEASE_VERSION: ${{ needs.initialize.outputs.release_version }}
       NEXT_VERSION: ${{ needs.initialize.outputs.next_version }}
-      BRANCH_VERSION: ${{ github.event.inputs.release_branch || github.ref_name }} 
-      RELEASE_BRANCH: ${{ github.event.inputs.release_branch }}      
+      BRANCH_VERSION: ${{ needs.initialize.outputs.branch_version }}
+      RELEASE_BRANCH: ${{ github.event.inputs.release_branch || github.ref_name }} 
     steps:    
     - name: Checkout code
       uses: actions/checkout@v3
