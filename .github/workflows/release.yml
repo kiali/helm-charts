@@ -148,7 +148,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [initialize]
     env:
-      RELEASE_TYPE: ${{ github.event.inputs.release_type }}      
+      RELEASE_TYPE: ${{ steps.release_type.outputs.release_type }}
       RELEASE_VERSION: ${{ needs.initialize.outputs.release_version }}
       NEXT_VERSION: ${{ needs.initialize.outputs.next_version }}
       BRANCH_VERSION: ${{ needs.initialize.outputs.branch_version }}
