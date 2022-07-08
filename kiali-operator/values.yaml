@@ -81,3 +81,5 @@ cr:
     deployment:
       accessible_namespaces:
       - '**'
+
+  annotations: {}
