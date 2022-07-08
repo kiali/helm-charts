@@ -77,9 +77,10 @@ cr:
   # then this is the namespace where the CR will be created (the default will be the operator namespace).
   namespace: ""
 
+  # Annotations to place in the Kiali CR metadata.
+  annotations: {}
+
   spec:
     deployment:
       accessible_namespaces:
       - '**'
-
-  annotations: {}
