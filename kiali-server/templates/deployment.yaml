@@ -65,6 +65,9 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
         ports:
         - name: api-port
           containerPort: {{ .Values.server.port | default 20001 }}
