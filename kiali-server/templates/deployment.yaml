@@ -2,6 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- if .Values.deployment.annotations }}
+  annotations:
+    {{ toYaml .Values.deployment.annotations | nindent 4 }}
+  {{- end }}
   name: {{ include "kiali-server.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
