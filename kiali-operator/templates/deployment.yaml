@@ -73,6 +73,8 @@ spec:
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
         - name: ALLOW_AD_HOC_KIALI_IMAGE
           value: {{ .Values.allowAdHocKialiImage | quote }}
+        - name: ALLOW_SECURITY_CONTEXT_OVERRIDE
+          value: {{ .Values.allowSecurityContextOverride | quote }}
         - name: PROFILE_TASKS_TASK_OUTPUT_LIMIT
           value: "100"
         - name: ANSIBLE_DEBUG_LOGS

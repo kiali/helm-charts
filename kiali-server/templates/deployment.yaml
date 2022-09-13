@@ -61,8 +61,8 @@ spec:
         - "-config"
         - "/kiali-configuration/config.yaml"
         securityContext:
-        {{- if .Values.deployment.security_context_override }}
-        {{- toYaml .Values.deployment.security_context_override | nindent 10 }}
+        {{- if .Values.deployment.security_context}}
+        {{- toYaml .Values.deployment.security_context | nindent 10 }}
         {{- else }}
           allowPrivilegeEscalation: false
           privileged: false

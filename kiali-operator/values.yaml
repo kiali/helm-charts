@@ -68,6 +68,11 @@ allowAdHocKialiNamespace: true
 # You may want to disable this if you do not want users to install their own Kiali images.
 allowAdHocKialiImage: false
 
+# allowSecurityContextOverride tells the operator to allow a user to be able to fully override the Kiali
+# container securityContext. If this is false, certain securityContext settings must exist on the Kiali
+# container and any attempt to override them will be ignored.
+allowSecurityContextOverride: false
+
 # For what a Kiali CR spec can look like, see:
 # https://github.com/kiali/kiali-operator/blob/master/deploy/kiali/kiali_cr.yaml
 cr:
