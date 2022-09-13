@@ -10,7 +10,9 @@ rules:
   resources:
   - configmaps
   - endpoints
+{{- if not (has "logs-tab" .Values.kiali_feature_flags.disabled_features) }}
   - pods/log
+{{- end }}
   verbs:
   - get
   - list
@@ -55,6 +57,8 @@ rules:
 - apiGroups:
   - networking.istio.io
   - security.istio.io
+  - extensions.istio.io
+  - telemetry.istio.io
   resources: ["*"]
   verbs:
   - get

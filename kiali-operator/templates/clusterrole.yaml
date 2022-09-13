@@ -250,31 +250,9 @@ rules:
   - authentication.istio.io
   - rbac.istio.io
   - security.istio.io
+  - extensions.istio.io
+  - telemetry.istio.io
   resources: ["*"]
-  verbs:
-  - get
-  - list
-  - watch
-  {{- if eq .Values.onlyViewOnlyMode false }}
-  - create
-  - delete
-  - patch
-  {{- end }}
-- apiGroups: ["authentication.maistra.io"]
-  resources:
-  - servicemeshpolicies
-  verbs:
-  - get
-  - list
-  - watch
-  {{- if eq .Values.onlyViewOnlyMode false }}
-  - create
-  - delete
-  - patch
-  {{- end }}
-- apiGroups: ["rbac.maistra.io"]
-  resources:
-  - servicemeshrbacconfigs
   verbs:
   - get
   - list

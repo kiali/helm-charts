@@ -36,10 +36,11 @@ deployment:
     pod: {}
     pod_anti: {}
   annotations: {}
+  configmap_annotations: {}
   custom_secrets: []
   host_aliases: []
   hpa:
-    api_version: "autoscaling/v2beta2"
+    api_version: "autoscaling/v2"
     spec: {}
   image_digest: "" # use "sha256" if image_version is a sha256 hash (do NOT prefix this value with a "@")
   image_name: quay.io/kiali/kiali
@@ -88,12 +89,16 @@ identity: {}
 
 kiali_feature_flags:
   certificates_information_indicators:
-   enabled: true
-   secrets:
-   - cacerts
-   - istio-ca-secret
+    enabled: true
+    secrets:
+    - cacerts
+    - istio-ca-secret
   clustering:
     enabled: true
+  disabled_features: []
+  validations:
+    ignore: ["KIA1201"]
+
 login_token:
   signing_key: ""
 
