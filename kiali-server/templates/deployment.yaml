@@ -61,6 +61,9 @@ spec:
         - "-config"
         - "/kiali-configuration/config.yaml"
         securityContext:
+        {{- if .Values.deployment.security_context_override }}
+        {{- toYaml .Values.deployment.security_context_override | nindent 10 }}
+        {{- else }}
           allowPrivilegeEscalation: false
           privileged: false
           readOnlyRootFilesystem: true
@@ -68,6 +71,7 @@ spec:
           capabilities:
             drop:
             - ALL
+        {{- end }}
         ports:
         - name: api-port
           containerPort: {{ .Values.server.port | default 20001 }}

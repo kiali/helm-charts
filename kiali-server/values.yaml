@@ -70,6 +70,7 @@ deployment:
     limits:
       memory: "1Gi"
   secret_name: "kiali"
+  security_context_override: {}
   service_annotations: {}
   service_type: ""
   tolerations: []
