@@ -18,7 +18,7 @@ HELM_IMAGE_REPO_SERVER ?= quay.io/kiali/kiali
 DORP ?= docker
 
 # When building the helm chart, this is the helm version to use
-HELM_VERSION ?= v3.5.2
+HELM_VERSION ?= v3.10.1
 
 .PHONY: help
 help: Makefile
@@ -45,7 +45,7 @@ clean:
 	        i386)   arch="386" ;; \
 	        i686)   arch="386" ;; \
 	        x86_64) arch="amd64" ;; \
-	        arm)    dpkg --print-architecture | grep -q "arm64" && arch="arm64" || arch="arm" ;; \
+	        arm|arm64)    dpkg --print-architecture | grep -q "arm64" && arch="arm64" || arch="arm" ;; \
 	    esac ;\
 	    cd "${OUTDIR}/helm-install" ;\
 	    curl -L "https://get.helm.sh/helm-${HELM_VERSION}-$${os}-$${arch}.tar.gz" > "${OUTDIR}/helm-install/helm.tar.gz" ;\
