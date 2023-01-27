@@ -94,7 +94,10 @@ kiali_feature_flags:
     - cacerts
     - istio-ca-secret
   clustering:
-    enabled: true
+    autodetect_secrets:
+      enabled: true
+      label: "istio/multiCluster=true"
+    clusters: []
   disabled_features: []
   validations:
     ignore: ["KIA1201"]
