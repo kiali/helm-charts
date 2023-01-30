@@ -127,13 +127,13 @@ spec:
         - name: {{ .name }}
           mountPath: "{{ .mount }}"
         {{- end }}
-        {{- range $key, $_ := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
+        {{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
         - name: {{ $key }}
-          mountPath: "/kiali-remote-cluster-secrets/{{ $key }}"
+          mountPath: "/kiali-remote-cluster-secrets/{{ $val }}"
         {{- end }}
         {{- range .Values.kiali_feature_flags.clustering.clusters }}
         - name: {{ .name }}
-          mountPath: "/kiali-remote-cluster-secrets/{{ .name }}"
+          mountPath: "/kiali-remote-cluster-secrets/{{ .secret_name }}"
         {{- end }}
         {{- if .Values.deployment.resources }}
         resources:
