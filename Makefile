@@ -31,14 +31,14 @@ help: Makefile
 clean:
 	@rm -rf ${OUTDIR}
 
-.download-helm-if-needed:
-	@$(eval HELM ?= $(shell if (which helm 2>/dev/null 1>&2 && helm version --short 2>/dev/null | grep -q "v3.[^01]"); then echo "helm"; else echo "${OUTDIR}/helm-install/helm"; fi))
+.download-helm:
+	@$(eval HELM="${OUTDIR}/helm-install/helm")
 	@if ! which ${HELM} 2>/dev/null 1>&2; then \
 	  mkdir -p "${OUTDIR}/helm-install" ;\
 	  if [ -x "${OUTDIR}/helm-install/helm" ]; then \
-	    echo "You do not have helm (v3.2+) installed in your PATH. Will use the one found here: ${OUTDIR}/helm-install/helm" ;\
+	    echo "Will use the one found here: ${OUTDIR}/helm-install/helm" ;\
 	  else \
-	    echo "You do not have helm (v3.2+) installed in your PATH. The binary will be downloaded to ${OUTDIR}/helm-install/helm" ;\
+	    echo "The binary will be downloaded to ${OUTDIR}/helm-install/helm" ;\
 	    os=$$(uname -s | tr '[:upper:]' '[:lower:]') ;\
 	    arch="" ;\
 	    case $$(uname -m) in \
@@ -57,7 +57,7 @@ clean:
 	fi
 	@echo Will use this helm executable: ${HELM}
 
-.build-helm-chart-server: .download-helm-if-needed
+.build-helm-chart-server: .download-helm
 	@echo Building Helm Chart for Kiali server
 	@rm -rf "${OUTDIR}/charts/kiali-server"*
 	@mkdir -p "${OUTDIR}/charts"
@@ -66,7 +66,7 @@ clean:
 	@"${HELM}" lint "${OUTDIR}/charts/kiali-server"
 	@"${HELM}" package "${OUTDIR}/charts/kiali-server" -d "${OUTDIR}/charts" --version ${SEMVER} --app-version ${VERSION}
 
-.build-helm-chart-operator: .download-helm-if-needed
+.build-helm-chart-operator: .download-helm
 	@echo Building Helm Chart for Kiali operator
 	@rm -rf "${OUTDIR}/charts/kiali-operator"*
 	@mkdir -p "${OUTDIR}/charts"
