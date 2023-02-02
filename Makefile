@@ -31,7 +31,7 @@ help: Makefile
 clean:
 	@rm -rf ${OUTDIR}
 
-.download-helm:
+.download-helm-if-needed:
 	@$(eval HELM="${OUTDIR}/helm-install/helm")
 	@if ! which ${HELM} 2>/dev/null 1>&2; then \
 	  mkdir -p "${OUTDIR}/helm-install" ;\
@@ -57,7 +57,7 @@ clean:
 	fi
 	@echo Will use this helm executable: ${HELM}
 
-.build-helm-chart-server: .download-helm
+.build-helm-chart-server: .download-helm-if-needed
 	@echo Building Helm Chart for Kiali server
 	@rm -rf "${OUTDIR}/charts/kiali-server"*
 	@mkdir -p "${OUTDIR}/charts"
@@ -66,7 +66,7 @@ clean:
 	@"${HELM}" lint "${OUTDIR}/charts/kiali-server"
 	@"${HELM}" package "${OUTDIR}/charts/kiali-server" -d "${OUTDIR}/charts" --version ${SEMVER} --app-version ${VERSION}
 
-.build-helm-chart-operator: .download-helm
+.build-helm-chart-operator: .download-helm-if-needed
 	@echo Building Helm Chart for Kiali operator
 	@rm -rf "${OUTDIR}/charts/kiali-operator"*
 	@mkdir -p "${OUTDIR}/charts"
