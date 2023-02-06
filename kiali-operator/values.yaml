@@ -22,6 +22,21 @@ replicaCount: 1
 priorityClassName: ""
 securityContext: {}
 
+# runner volume config
+runnerVolume:
+  emptyDir: {}
+
+# Extra Volume Mounts
+extraVolumeMounts: []
+  # - name: tmp
+  #   mountPath: /tmp
+
+# Extra Volumes
+extraVolumes: []
+  # - name: tmp
+  #   emptyDir:
+  #     sizeLimit: 100Mi
+
 # metrics.enabled: set to true if you want Prometheus to collect metrics from the operator
 metrics:
   enabled: true

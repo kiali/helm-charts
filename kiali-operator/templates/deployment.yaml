@@ -56,8 +56,11 @@ spec:
             - ALL
         {{- end }}
         volumeMounts:
-        - mountPath: /tmp/ansible-operator/runner
+        - mountPath: /ansible-operator/runner
           name: runner
+        {{- with .Values.extraVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         env:
         - name: WATCH_NAMESPACE
           value: {{ .Values.watchNamespace | default "\"\""  }}
@@ -103,7 +106,10 @@ spec:
         {{- end }}
       volumes:
       - name: runner
-        emptyDir: {}
+        {{- toYaml .Values.runnerVolume | nindent 8 }}
+      {{- with .Values.extraVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       affinity:
       {{- toYaml .Values.affinity | nindent 8 }}
 ...
