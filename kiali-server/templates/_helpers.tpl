@@ -183,12 +183,14 @@ Returns a JSON dict whose keys are the cluster names and values are the cluster 
   {{- $secretLabelNameToLookFor := first $secretLabelToLookFor }}
   {{- $secretLabelValueToLookFor := last $secretLabelToLookFor }}
   {{- range $i, $secret := (lookup "v1" "Secret" .Release.Namespace "").items }}
-    {{- if (and (and (hasKey $secret.metadata "labels") (hasKey $secret.metadata.labels $secretLabelNameToLookFor)) (eq (get $secret.metadata.labels $secretLabelNameToLookFor) ($secretLabelValueToLookFor))) }}
+    {{- range $j, $label := ($secret.metadata).items }}
+    {{- if (and (and (hasKey $label "labels") (hasKey $secret.metadata.labels $secretLabelNameToLookFor)) (eq (get $secret.metadata.labels $secretLabelNameToLookFor) ($secretLabelValueToLookFor))) }}
       {{- $clusterName := $secret.metadata.name }}
       {{- if (and (hasKey $secret.metadata "annotations") (hasKey $secret.metadata.annotations "kiali.io/cluster")) }}
         {{- $clusterName = get $secret.metadata.annotations "kiali.io/cluster" }}
       {{- end }}
       {{- $theDict = set $theDict $clusterName $secret.metadata.name }}
+    {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
