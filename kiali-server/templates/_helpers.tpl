@@ -185,8 +185,8 @@ Returns a JSON dict whose keys are the cluster names and values are the cluster 
   {{- range $i, $secret := (lookup "v1" "Secret" .Release.Namespace "").items }}
     {{- if (and (and (hasKey $secret.metadata "labels") (hasKey $secret.metadata.labels $secretLabelNameToLookFor)) (eq (get $secret.metadata.labels $secretLabelNameToLookFor) ($secretLabelValueToLookFor))) }}
       {{- $clusterName := $secret.metadata.name }}
-      {{- if (and (hasKey $secret.metadata "annotations") (hasKey $secret.metadata.annotations "networking.istio.io/cluster")) }}
-        {{- $clusterName = get $secret.metadata.annotations "networking.istio.io/cluster" }}
+      {{- if (and (hasKey $secret.metadata "annotations") (hasKey $secret.metadata.annotations "kiali.io/cluster")) }}
+        {{- $clusterName = get $secret.metadata.annotations "kiali.io/cluster" }}
       {{- end }}
       {{- $theDict = set $theDict $clusterName $secret.metadata.name }}
     {{- end }}
