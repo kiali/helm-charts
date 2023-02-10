@@ -11,6 +11,7 @@ image: # see: https://quay.io/repository/kiali/kiali-operator?tab=tags
 # Deployment options for the operator pod.
 nodeSelector: {}
 podAnnotations: {}
+podLabels: {}
 env: []
 tolerations: []
 resources:
