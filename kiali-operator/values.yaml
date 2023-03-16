@@ -107,5 +107,6 @@ cr:
 
   spec:
     deployment:
+      namespace: istio-operator
       accessible_namespaces:
       - '**'
