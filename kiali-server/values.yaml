@@ -82,6 +82,17 @@ external_services:
     enabled: true
   istio:
     root_namespace: ""
+#    component_status:
+#      enabled: true
+#      components:
+#      - app_label: istiod
+#        is_core: true
+#      - app_label: istio-ingressgateway
+#        is_core: true
+#        namespace: istio-ingress
+#      - app_label: istio-egressgateway
+#        is_core: false
+#        namespace: istio-egress
 
 identity: {}
   #cert_file:
