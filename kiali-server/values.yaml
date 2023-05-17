@@ -100,7 +100,7 @@ kiali_feature_flags:
     clusters: []
   disabled_features: []
   validations:
-    ignore: ["KIA1201"]
+    ignore: ["KIA1301"]
 
 login_token:
   signing_key: ""
