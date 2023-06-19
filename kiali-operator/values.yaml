@@ -92,6 +92,9 @@ allowAllAccessibleNamespaces: true
 # of the Istio control plane namespace (which is typically, but not necessarily, "istio-system").
 accessibleNamespacesLabel: ""
 
+# When using a remote Prometheus server, setting up a service account annotation may be required. Setting up required annotations can be done using this property.
+kiali-operator:
+  annotations: ""
 # For what a Kiali CR spec can look like, see:
 # https://github.com/kiali/kiali-operator/blob/master/deploy/kiali/kiali_cr.yaml
 cr:
