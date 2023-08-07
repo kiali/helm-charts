@@ -98,6 +98,7 @@ kiali_feature_flags:
       enabled: true
       label: "kiali.io/multiCluster=true"
     clusters: []
+    kiali_urls: []
   disabled_features: []
   validations:
     ignore: ["KIA1301"]
