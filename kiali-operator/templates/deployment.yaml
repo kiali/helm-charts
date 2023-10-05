@@ -78,6 +78,8 @@ spec:
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
         - name: ALLOW_AD_HOC_KIALI_IMAGE
           value: {{ .Values.allowAdHocKialiImage | quote }}
+        - name: ALLOW_AD_HOC_OSSMCONSOLE_IMAGE
+          value: {{ .Values.allowAdHocOSSMConsoleImage | quote }}
         - name: ALLOW_SECURITY_CONTEXT_OVERRIDE
           value: {{ .Values.allowSecurityContextOverride | quote }}
         - name: ALLOW_ALL_ACCESSIBLE_NAMESPACES
@@ -89,6 +91,8 @@ spec:
         - name: ANSIBLE_DEBUG_LOGS
           value: {{ .Values.debug.enabled | quote }}
         - name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
+          value: {{ .Values.debug.verbosity | quote }}
+        - name: ANSIBLE_VERBOSITY_OSSMCONSOLE_KIALI_IO
           value: {{ .Values.debug.verbosity | quote }}
         - name: ANSIBLE_CONFIG
         {{- if .Values.debug.enableProfiler }}
