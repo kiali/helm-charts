@@ -68,6 +68,8 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp
+        - mountPath: /opt/ansible/.ansible/tmp
+          name: ansible-tmp
         env:
         - name: WATCH_NAMESPACE
           value: {{ .Values.watchNamespace | default "\"\""  }}
@@ -121,6 +123,8 @@ spec:
         {{- end }}
       volumes:
       - name: tmp
+        emptyDir: {}
+      - name: ansible-tmp
         emptyDir: {}
       affinity:
       {{- toYaml .Values.affinity | nindent 8 }}
