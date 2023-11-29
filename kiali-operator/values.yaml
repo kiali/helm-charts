@@ -92,7 +92,7 @@ allowAllAccessibleNamespaces: true
 # localAnsibleTmpPath is the path of the local Ansible temp directory. This sets the ANSIBLE_LOCAL_TEMP variable which
 # in turn sets the DEFAULT_LOCAL_TMP configuration. An emptyDir is mounted to /tmp for the kiali-operator container.
 # Ansible needs write access on this directory so modifying it might have implications if read-only root filesystem is enabled.
-localAnsibleTmpPath: /tmp
+localAnsibleTmpPath: /tmp/ansible/tmp
 
 # accessibleNamespacesLabel restricts the namespaces that a user can add to the Kiali CR spec.deployment.accessible_namespaces.
 # This value is either an empty string (which disables this feature) or a label name with an optional label value
