@@ -68,8 +68,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp
-        - mountPath: /opt/ansible/.ansible/tmp
-          name: ansible-tmp
         env:
         - name: WATCH_NAMESPACE
           value: {{ .Values.watchNamespace | default "\"\""  }}
@@ -85,6 +83,8 @@ spec:
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
         - name: ALLOW_AD_HOC_KIALI_IMAGE
           value: {{ .Values.allowAdHocKialiImage | quote }}
+        - name: ANSIBLE_LOCAL_TEMP
+          value: {{ .Values.localAnsibleTmpPath | quote }}
 {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
         - name: ALLOW_AD_HOC_OSSMCONSOLE_IMAGE
           value: {{ .Values.allowAdHocOSSMConsoleImage | quote }}
@@ -123,8 +123,6 @@ spec:
         {{- end }}
       volumes:
       - name: tmp
-        emptyDir: {}
-      - name: ansible-tmp
         emptyDir: {}
       affinity:
       {{- toYaml .Values.affinity | nindent 8 }}
