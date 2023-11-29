@@ -84,8 +84,6 @@ spec:
           value: {{ .Values.allowAdHocKialiNamespace | quote }}
         - name: ALLOW_AD_HOC_KIALI_IMAGE
           value: {{ .Values.allowAdHocKialiImage | quote }}
-        - name: ANSIBLE_LOCAL_TEMP
-          value: "/tmp/ansible/tmp"
 {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
         - name: ALLOW_AD_HOC_OSSMCONSOLE_IMAGE
           value: {{ .Values.allowAdHocOSSMConsoleImage | quote }}
@@ -112,6 +110,8 @@ spec:
         {{- else }}
           value: "/etc/ansible/ansible.cfg"
         {{- end }}
+        - name: ANSIBLE_LOCAL_TEMP
+          value: "/tmp/ansible/tmp"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
