@@ -61,13 +61,14 @@ spec:
           allowPrivilegeEscalation: false
           privileged: false
           runAsNonRoot: true
+          readOnlyRootFilesystem: true
           capabilities:
             drop:
             - ALL
         {{- end }}
         volumeMounts:
-        - mountPath: /tmp/ansible-operator/runner
-          name: runner
+        - mountPath: /tmp
+          name: tmp
         env:
         - name: WATCH_NAMESPACE
           value: {{ .Values.watchNamespace | default "\"\""  }}
@@ -109,6 +110,10 @@ spec:
         {{- else }}
           value: "/etc/ansible/ansible.cfg"
         {{- end }}
+        - name: ANSIBLE_LOCAL_TEMP
+          value: "/tmp/ansible/tmp"
+        - name: ANSIBLE_REMOTE_TEMP
+          value: "/tmp/ansible/tmp"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
@@ -120,7 +125,7 @@ spec:
         {{- toYaml .Values.resources | nindent 10 }}
         {{- end }}
       volumes:
-      - name: runner
+      - name: tmp
         emptyDir: {}
       affinity:
       {{- toYaml .Values.affinity | nindent 8 }}
