@@ -112,6 +112,8 @@ spec:
         {{- end }}
         - name: ANSIBLE_LOCAL_TEMP
           value: "/tmp/ansible/tmp"
+        - name: ANSIBLE_REMOTE_TEMP
+          value: "/tmp/ansible/tmp"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
