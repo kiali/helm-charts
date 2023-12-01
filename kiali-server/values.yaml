@@ -18,6 +18,11 @@ kiali_route_url: ""
 # Note that only those values used by the Helm Chart will be here.
 #
 
+additional_display_details:
+- annotation: kiali.io/api-spec
+  icon_annotation: kiali.io/api-type
+  title: API Documentation
+
 istio_namespace: "" # default is where Kiali is installed
 
 auth:
