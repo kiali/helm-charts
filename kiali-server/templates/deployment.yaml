@@ -187,7 +187,7 @@ spec:
           secretName: {{ .secret_name }}
       {{- end }}
       {{- if .Values.deployment.csiEnabled }}
-      {{- range .Values.deployment.extraVolumes }}
+      {{- range .Values.deployment.csiVolumes }}
       - name: {{ .name }}
         csi:
           driver: secrets-store.csi.k8s.io
