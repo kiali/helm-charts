@@ -48,7 +48,8 @@ deployment:
   csiVolumes:
     - name: ""         #volume name
       secretProviderName: ""     #secretproviderclass name
-      driver: "" #       specify the csi driver to be used ex - disk.csi.azure.com
+      driver: ""                 #  specify the csi driver to be used ex - disk.csi.azure.com
+      volumeAttributes: {}       #add volume attributes specific to each driver
   custom_secrets: []
   host_aliases: []
   hpa:
