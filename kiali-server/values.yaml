@@ -45,10 +45,10 @@ deployment:
   csiVolumeMounts:
     - name: ""      #name of volume mount
       mountPath: ""     #/path/for/csi/volume
-      driver: "" #       specify the csi driver to be used ex - disk.csi.azure.com
   csiVolumes:
     - name: ""         #volume name
       secretProviderName: ""     #secretproviderclass name
+      driver: "" #       specify the csi driver to be used ex - disk.csi.azure.com
   custom_secrets: []
   host_aliases: []
   hpa:
