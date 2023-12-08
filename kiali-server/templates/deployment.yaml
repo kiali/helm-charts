@@ -190,7 +190,7 @@ spec:
       {{- range .Values.deployment.csiVolumes }}
       - name: {{ .name }}
         csi:
-          driver: secrets-store.csi.k8s.io
+          driver: {{ .driver }}
           readOnly: true
           volumeAttributes:
             secretProviderClass: {{ .secretProviderName }}
