@@ -193,7 +193,9 @@ spec:
           driver: {{ .driver }}
           readOnly: true
           volumeAttributes:
-            secretProviderClass: {{ .secretProviderName }}
+            {{- range $key, $val := .volumeAttributes }}
+            {{ $key }}: {{ $val }}
+            {{- end }}
       {{- end }}
       {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
