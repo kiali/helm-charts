@@ -41,6 +41,8 @@ deployment:
     pod: {}
     pod_anti: {}
   configmap_annotations: {}
+  csiVolumeMounts: []
+  csiVolumes: []
   custom_secrets: []
   host_aliases: []
   hpa:
