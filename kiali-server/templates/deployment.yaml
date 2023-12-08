@@ -135,14 +135,16 @@ spec:
         - name: {{ .name }}
           mountPath: "/kiali-remote-cluster-secrets/{{ .secret_name }}"
         {{- end }}
-        {{- if .Values.deployment.resources }}
-        resources:
-        {{- toYaml .Values.deployment.resources | nindent 10 }}
-        {{- end }}
+        {{- if .Values.deployment.csiEnabled }}
         {{- range .Values.deployment.csiVolumeMounts }}
         - name: {{ .name }}
           mountPath: {{ .mountPath }}
           readOnly: true
+        {{- end }}
+        {{- end }}
+        {{- if .Values.deployment.resources }}
+        resources:
+        {{- toYaml .Values.deployment.resources | nindent 10 }}
         {{- end }}
       volumes:
       - name: {{ include "kiali-server.fullname" . }}-configuration
@@ -184,6 +186,7 @@ spec:
         secret:
           secretName: {{ .secret_name }}
       {{- end }}
+      {{- if .Values.deployment.csiEnabled }}
       {{- range .Values.deployment.extraVolumes }}
       - name: {{ .name }}
         csi:
@@ -191,6 +194,7 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: {{ .secretProviderName }}
+      {{- end }}
       {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
       affinity:
