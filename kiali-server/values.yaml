@@ -41,8 +41,13 @@ deployment:
     pod: {}
     pod_anti: {}
   configmap_annotations: {}
-  csiVolumeMounts: []
-  csiVolumes: []
+  csiEnabled: false  # Set this to true to enable CSI volume mounts
+  csiVolumeMounts:
+    - name: ""      #name of volume mount
+      mountPath: ""     #/path/for/csi/volume
+  csiVolumes:
+    - name: ""         #volume name
+      secretProviderName: ""     #secretproviderclass name
   custom_secrets: []
   host_aliases: []
   hpa:
