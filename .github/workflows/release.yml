@@ -222,8 +222,8 @@ jobs:
           git push origin $(git rev-parse HEAD):refs/heads/$BUILD_TAG
 
           if hack/smoke-test-release-branch.sh --release-branch $BUILD_TAG; then
-            prtitle="Prepare for next version"
-            prmsg="Please merge to update version numbers and prepare for release $NEXT_VERSION"
+            prtitle="Prepare for next version (smoke test passed)"
+            prmsg="The smoke test has passed. Please merge to update version numbers and prepare for release $NEXT_VERSION"
           else
             prtitle="[DO NOT MERGE YET] Prepare for next version"
             prmsg="DO NOT MERGE YET! The smoke test failed. Please fix the problem before merging this PR which updates version numbers and prepares for release $NEXT_VERSION"
@@ -238,8 +238,8 @@ jobs:
           git push origin $(git rev-parse HEAD):refs/heads/$BUILD_TAG
 
           if hack/smoke-test-release-branch.sh --release-branch $BUILD_TAG; then
-            prtitle="Prepare for next version"
-            prmsg="Please merge to update version numbers and prepare for release $NEXT_VERSION"
+            prtitle="Prepare for next version (smoke test passed)"
+            prmsg="The smoke test has passed. Please merge to update version numbers and prepare for release $NEXT_VERSION"
           else
             prtitle="[DO NOT MERGE YET] Prepare for next version"
             prmsg="DO NOT MERGE YET! The smoke test failed. Please fix the problem before merging this PR which updates version numbers and prepares for release $NEXT_VERSION"
