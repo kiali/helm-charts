@@ -112,6 +112,8 @@ login_token:
 
 server:
   port: 20001
-  metrics_enabled: true
-  metrics_port: 9090
+  observability:
+    metrics:
+      enabled: true
+      port: 9090
   web_root: ""
