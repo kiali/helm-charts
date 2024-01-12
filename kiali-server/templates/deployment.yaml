@@ -131,7 +131,7 @@ spec:
         - name: {{ $key }}
           mountPath: "/kiali-remote-cluster-secrets/{{ $val }}"
         {{- end }}
-        {{- range .Values.kiali_feature_flags.clustering.clusters }}
+        {{- range .Values.clustering.clusters }}
         - name: {{ .name }}
           mountPath: "/kiali-remote-cluster-secrets/{{ .secret_name }}"
         {{- end }}
@@ -174,7 +174,7 @@ spec:
         secret:
           secretName: {{ $val }}
       {{- end }}
-      {{- range .Values.kiali_feature_flags.clustering.clusters }}
+      {{- range .Values.clustering.clusters }}
       - name: {{ .name }}
         secret:
           secretName: {{ .secret_name }}

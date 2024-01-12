@@ -30,6 +30,12 @@ auth:
   openshift: {}
   strategy: ""
 
+clustering:
+  autodetect_secrets:
+    enabled: true
+    label: "kiali.io/multiCluster=true"
+  clusters: []
+
 deployment:
   # This only limits what Kiali will attempt to see, but Kiali Service Account has permissions to see everything.
   # For more control over what the Kial Service Account can see, use the Kiali Operator
@@ -98,11 +104,6 @@ kiali_feature_flags:
     secrets:
     - cacerts
     - istio-ca-secret
-  clustering:
-    autodetect_secrets:
-      enabled: true
-      label: "kiali.io/multiCluster=true"
-    clusters: []
   disabled_features: []
   validations:
     ignore: ["KIA1301"]
