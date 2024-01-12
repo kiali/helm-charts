@@ -104,11 +104,6 @@ kiali_feature_flags:
     secrets:
     - cacerts
     - istio-ca-secret
-  clustering:
-    autodetect_secrets:
-      enabled: true
-      label: "kiali.io/multiCluster=true"
-    clusters: []
   disabled_features: []
   validations:
     ignore: ["KIA1301"]

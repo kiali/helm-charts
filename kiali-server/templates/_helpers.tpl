@@ -178,8 +178,8 @@ Returns a JSON dict whose keys are the cluster names and values are the cluster 
 */}}
 {{- define "kiali-server.remote-cluster-secrets" -}}
 {{- $theDict := dict }}
-{{- if .Values.kiali_feature_flags.clustering.autodetect_secrets.enabled }}
-  {{- $secretLabelToLookFor := (regexSplit "=" .Values.kiali_feature_flags.clustering.autodetect_secrets.label 2) }}
+{{- if .Values.clustering.autodetect_secrets.enabled }}
+  {{- $secretLabelToLookFor := (regexSplit "=" .Values.clustering.autodetect_secrets.label 2) }}
   {{- $secretLabelNameToLookFor := first $secretLabelToLookFor }}
   {{- $secretLabelValueToLookFor := last $secretLabelToLookFor }}
   {{- range $i, $secret := (lookup "v1" "Secret" .Release.Namespace "").items }}
