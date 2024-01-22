@@ -161,12 +161,6 @@ jobs:
         ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
         fetch-depth: 0
         
-    - name: Configure git
-      run: |
-        git config user.email 'kiali-dev@googlegroups.com'
-        
-        git config user.name 'kiali-bot'
-
     - name: Build Helm charts
       run: make -e VERSION=$RELEASE_VERSION clean build-helm-charts
 
