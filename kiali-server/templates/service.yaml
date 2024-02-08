@@ -34,11 +34,11 @@ spec:
   {{- end }}
     protocol: TCP
     port: {{ .Values.server.port }}
-  {{- if .Values.server.metrics_enabled }}
+  {{- if .Values.server.observability.metrics.enabled }}
   - name: http-metrics
     appProtocol: http
     protocol: TCP
-    port: {{ .Values.server.metrics_port }}
+    port: {{ .Values.server.observability.metrics.port }}
   {{- end }}
   selector:
     {{- include "kiali-server.selectorLabels" . | nindent 4 }}
