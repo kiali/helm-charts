@@ -26,9 +26,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        {{- if .Values.server.metrics_enabled }}
+        {{- if .Values.server.observability.metrics.enabled }}
         prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.server.metrics_port | quote }}
+        prometheus.io/port: {{ .Values.server.observability.metrics.port | quote }}
         {{- else }}
         prometheus.io/scrape: "false"
         prometheus.io/port: ""
@@ -75,9 +75,9 @@ spec:
         ports:
         - name: api-port
           containerPort: {{ .Values.server.port | default 20001 }}
-        {{- if .Values.server.metrics_enabled }}
+        {{- if .Values.server.observability.metrics.enabled }}
         - name: http-metrics
-          containerPort: {{ .Values.server.metrics_port | default 9090 }}
+          containerPort: {{ .Values.server.observability.metrics.port | default 9090 }}
         {{- end }}
         readinessProbe:
           httpGet:
