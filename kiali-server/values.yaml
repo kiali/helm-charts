@@ -118,5 +118,4 @@ server:
     metrics:
       enabled: true
       port: 9090
-      nodePort: 32476
   web_root: ""
