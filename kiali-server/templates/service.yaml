@@ -42,9 +42,6 @@ spec:
     appProtocol: http
     protocol: TCP
     port: {{ .Values.server.observability.metrics.port }}
-    {{- if eq .Values.deployment.service_type "NodePort" }}
-    nodePort: {{ .Values.server.observability.metrics.nodePort }}
-    {{- end }}
   {{- end }}
   selector:
     {{- include "kiali-server.selectorLabels" . | nindent 4 }}
