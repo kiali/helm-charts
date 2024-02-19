@@ -113,6 +113,7 @@ login_token:
 
 server:
   port: 20001
+  #node_port:
   observability:
     metrics:
       enabled: true
