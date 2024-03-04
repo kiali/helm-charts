@@ -34,6 +34,9 @@ spec:
   {{- end }}
     protocol: TCP
     port: {{ .Values.server.port }}
+    {{- if and (not (empty .Values.server.node_port)) (eq .Values.deployment.service_type "NodePort") }}
+    nodePort: {{ .Values.server.node_port }}
+    {{- end }}
   {{- if .Values.server.observability.metrics.enabled }}
   - name: http-metrics
     appProtocol: http
