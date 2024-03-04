@@ -179,6 +179,10 @@ spec:
         secret:
           secretName: {{ .secret_name }}
       {{- end }}
+      {{- range .Values.deployment.csiVolumes }}
+      - name: {{ .name }}
+        csi: {{ toYaml .csi | nindent 10 }}
+      {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
       affinity:
         {{- if .Values.deployment.affinity.node }}
