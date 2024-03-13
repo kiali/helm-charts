@@ -165,9 +165,13 @@ spec:
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}
       - name: {{ .name }}
+      {{- if .csi}}
+        csi: {{ toYaml .csi | nindent 10 }}
+      {{- else }}
         secret:
           secretName: {{ .name }}
           optional: {{ .optional | default false }}
+      {{- end }}
       {{- end }}
       {{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
       - name: {{ $key }}
