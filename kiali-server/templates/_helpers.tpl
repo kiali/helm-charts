@@ -23,14 +23,10 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Identifies the log_level with the old verbose_mode and the new log_level considered.
+Identifies the log_level.
 */}}
 {{- define "kiali-server.logLevel" -}}
-{{- if .Values.deployment.verbose_mode -}}
-{{- .Values.deployment.verbose_mode -}}
-{{- else -}}
 {{- .Values.deployment.logger.log_level -}}
-{{- end -}}
 {{- end }}
 
 {{/*
