@@ -47,6 +47,14 @@ deployment:
     pod: {}
     pod_anti: {}
   configmap_annotations: {}
+  csiEnabled: false  # Set this to true to enable CSI volume mounts
+  csiVolumeMount:
+    - name: ""      #name of volume mount
+      mountPath: ""     #/path/for/csi/volume
+  csiVolume:
+    - name: ""         #volume name
+      driver: ""                 #  specify the csi driver to be used ex - disk.csi.azure.com
+      volumeAttributes: {}       #add volume attributes specific to each driver
   custom_secrets: []
   host_aliases: []
   hpa:
