@@ -99,6 +99,14 @@ allowAllAccessibleNamespaces: true
 # of the Istio control plane namespace (which is typically, but not necessarily, "istio-system").
 accessibleNamespacesLabel: ""
 
+# watchesFile: If specified, this determines what watches file will be used to configure the operator. There are four different
+# files that can be selected: (a) `watches-os.yaml`, (b) `watches-os-ns.yaml`, (c) `watches-k8s.yaml` or (d) `watches-k8s-ns.yaml`.
+# The first two are for OpenShift only, the last two are for non-OpenShift Kubernetes clusters. The two with "-ns" in their name
+# enable the operator to automatically update the Kiali Server with access to new namespaces as those namespaces are created in
+# the cluster. This namespace watching feature provides some advanced capabilities but is never required. It is also not
+# the default behavior and is not necessary if your Kiali CRs will have `spec.deployment.cluster_wide_access` set to `true`.
+watchesFile: ""
+
 # For what a Kiali CR spec can look like, see:
 # https://github.com/kiali/kiali-operator/blob/master/deploy/kiali/kiali_cr.yaml
 cr:
