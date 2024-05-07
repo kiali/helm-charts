@@ -48,6 +48,9 @@ deployment:
     pod_anti: {}
   configmap_annotations: {}
   custom_secrets: []
+  dns:
+    config: {}
+    policy: ""
   host_aliases: []
   hpa:
     api_version: "autoscaling/v2"
