@@ -176,7 +176,6 @@ fi
 # Determine the version we are going to smoke test
 OPERATOR_VERSION="$(ls -1 docs/kiali-operator-*.tgz | sort | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 SERVER_VERSION="$(ls -1 docs/kiali-server-*.tgz | sort | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
-OSSMC_VERSION="${SERVER_VERSION}"
 
 if [ "${OPERATOR_VERSION}" != "${SERVER_VERSION}" ]; then
   abort_now "The latest helm chart versions for operator [${OPERATOR_VERSION}] and server [${SERVER_VERSION}] do not match. Aborting the test."
@@ -242,11 +241,15 @@ fi
 
 # SMOKE TESTING THAT THE OSSMC IMAGE IS ON QUAY.IO
 
-EXPECTED_OSSMC_IMAGE="quay.io/kiali/ossmconsole:v${OSSMC_VERSION}"
-infomsg "Checking that the OSSMC image is published on quay.io at: ${EXPECTED_OSSMC_IMAGE}"
-if ! docker pull ${EXPECTED_OSSMC_IMAGE} &>/dev/null ; then
-  abort_now "The OSSMC image is not published on quay.io. This is missing: [${EXPECTED_OSSMC_IMAGE}]. The smoke test has FAILED!"
-fi
+# Do not check if OSSMC image is on quay. The OSSMC image will not be on quay when this smoke test script is run.
+# See https://github.com/kiali/kiali/issues/6865#issuecomment-2096469036
+
+#OSSMC_VERSION="${SERVER_VERSION}"
+#EXPECTED_OSSMC_IMAGE="quay.io/kiali/ossmconsole:v${OSSMC_VERSION}"
+#infomsg "Checking that the OSSMC image is published on quay.io at: ${EXPECTED_OSSMC_IMAGE}"
+#if ! docker pull ${EXPECTED_OSSMC_IMAGE} &>/dev/null ; then
+#  abort_now "The OSSMC image is not published on quay.io. This is missing: [${EXPECTED_OSSMC_IMAGE}]. The smoke test has FAILED!"
+#fi
 
 # SMOKE TESTING IS COMPLETE
 
