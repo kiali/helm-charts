@@ -1,3 +1,4 @@
+{{- if not (or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous")) -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -59,7 +60,7 @@ rules:
   - security.istio.io
   - extensions.istio.io
   - telemetry.istio.io
-  - gateway.networking.k8s.io 
+  - gateway.networking.k8s.io
   resources: ["*"]
   verbs:
   - get
@@ -99,3 +100,4 @@ rules:
   verbs:
   - get
 ...
+{{- end -}}
