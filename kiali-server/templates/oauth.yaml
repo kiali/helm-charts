@@ -9,7 +9,7 @@ metadata:
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 redirectURIs:
-- {{ .Values.kiali_route_url }}
+- {{ .Values.kiali_route_url }}/api/auth/callback
 {{- if .Values.server.web_port }}
 - {{ .Values.kiali_route_url }}:{{ .Values.server.web_port }}
 {{- end }}
