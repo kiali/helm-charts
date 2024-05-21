@@ -72,6 +72,7 @@ deployment:
     log_level: "info"
     time_field_format: "2006-01-02T15:04:05Z07:00"
     sampler_rate: "1"
+  extraEnvs: []
   node_selector: {}
   pod_annotations: {}
   pod_labels: {}
