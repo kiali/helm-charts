@@ -141,8 +141,10 @@ spec:
           mountPath: "/kiali-remote-cluster-secrets/{{ $val }}"
         {{- end }}
         {{- range .Values.clustering.clusters }}
+        {{- if .secret_name }}
         - name: {{ .name }}
           mountPath: "/kiali-remote-cluster-secrets/{{ .secret_name }}"
+        {{- end }}
         {{- end }}
         {{- if .Values.deployment.resources }}
         resources:
@@ -188,9 +190,11 @@ spec:
           secretName: {{ $val }}
       {{- end }}
       {{- range .Values.clustering.clusters }}
+      {{- if .secret_name }}
       - name: {{ .name }}
         secret:
           secretName: {{ .secret_name }}
+      {{- end }}
       {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
       affinity:
