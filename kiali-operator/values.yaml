@@ -124,3 +124,11 @@ cr:
     deployment:
       accessible_namespaces:
       - '**'
+
+# rbac.create: set to true if you want to create the RBAC resources ClusterRole,ClusterRoleBinding.
+rbac:
+  create: true
+
+# serviceAccount.create: set to true if you want to create the serviceAccount resource.
+serviceAccount:
+  create: true
