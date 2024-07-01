@@ -22,6 +22,7 @@ affinity: {}
 replicaCount: 1
 priorityClassName: ""
 securityContext: {}
+podSecurityContext: {}
 
 # metrics.enabled: set to true if you want Prometheus to collect metrics from the operator
 metrics:
