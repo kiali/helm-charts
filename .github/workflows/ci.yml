@@ -1,20 +1,24 @@
 name: Helm charts
+
 on:
   push:
     branches:
-      - master
+    - master
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
+    - opened
+    - reopened
+    - synchronize
     branches:
-      - master
+    - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build
-        run: make build-helm-charts
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build
+      run: make build-helm-charts
 
