@@ -61,6 +61,10 @@ Determine the default login token signing key.
 {{- end }}
 {{- end }}
 
+{{- define "kiali-server.login_token.signing_key_ref" -}}
+secret:{{  include "kiali-server.fullname" . }}-signing-key:key
+{{- end }}
+
 {{/*
 Determine the default web root.
 */}}
