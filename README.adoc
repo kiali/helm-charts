@@ -65,7 +65,7 @@ helm uninstall -n kiali-operator kiali-operator
 
 ==== Overriding values
 
-You can pass `--set` options to the above commands if you wish to override the default values. You can set nested dictionary values using dot notation: `--set deployment.logger.log_level=debug`. For a list of items, comma-separate the values and wrap the list in curly braces: `--set "deployment.accessible_namespaces={bookinfo,demo2}"`. You can set individual list items using square brackets: `--set deployment.accessible_namespaces[0]=bookinfo`.
+You can pass `--set` options to the above commands if you wish to override the default values. You can set nested dictionary values using dot notation: `--set deployment.logger.log_level=debug`. For a list of items, comma-separate the values and wrap the list in curly braces: `--set "kubernetes_config.excluded_workloads={CronJob,Job}"`. You can set individual list items using square brackets: `--set kubernetes_config.excluded_workloads[0]=CronJob`.
 
 If you locally built and pushed your Kiali server and Kiali operator images to your cluster, you can have the helm chart installations pull those images by the following settings:
 
