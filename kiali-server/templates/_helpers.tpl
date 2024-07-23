@@ -3,16 +3,10 @@
 {{/*
 Create a default fully qualified instance name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-To simulate the way the operator works, use deployment.instance_name rather than the old fullnameOverride.
-For backwards compatibility, if fullnameOverride is not kiali but deployment.instance_name is kiali,
-use fullnameOverride, otherwise use deployment.instance_name.
+To simulate the way the operator works, use deployment.instance_name.
 */}}
 {{- define "kiali-server.fullname" -}}
-{{- if (and (eq .Values.deployment.instance_name "kiali") (ne .Values.fullnameOverride "kiali")) }}
-  {{- .Values.fullnameOverride | trunc 63 }}
-{{- else }}
-  {{- .Values.deployment.instance_name | trunc 63 }}
-{{- end }}
+{{- .Values.deployment.instance_name | trunc 63 }}
 {{- end }}
 
 {{/*
