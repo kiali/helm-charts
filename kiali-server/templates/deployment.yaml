@@ -7,7 +7,9 @@ metadata:
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 spec:
+{{- if not .Values.deployment.hpa.spec }}
   replicas: {{ .Values.deployment.replicas }}
+{{- end }}
   selector:
     matchLabels:
       {{- include "kiali-server.selectorLabels" . | nindent 6 }}
