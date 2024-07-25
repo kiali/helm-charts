@@ -150,6 +150,9 @@ spec:
         resources:
         {{- toYaml .Values.deployment.resources | nindent 10 }}
         {{- end }}
+      {{- if .Values.deployment.additional_pod_containers_yaml }}
+      {{- toYaml .Values.deployment.additional_pod_containers_yaml | nindent 6 }}
+      {{- end }}
       volumes:
       - name: {{ include "kiali-server.fullname" . }}-configuration
         configMap:
