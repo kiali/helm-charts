@@ -1,10 +1,3 @@
-# 'fullnameOverride' is deprecated. Use 'deployment.instance_name' instead.
-# This is only supported for backward compatibility and will be removed in a future version.
-# If 'fullnameOverride' is not "kiali" and 'deployment.instance_name' is "kiali",
-# then 'deployment.instance_name' will take the value of 'fullnameOverride' value.
-# Otherwise, 'fullnameOverride' is ignored and 'deployment.instance_name' is used.
-fullnameOverride: "kiali"
-
 # This is required for "openshift" auth strategy.
 # You have to know ahead of time what your Route URL will be because
 # right now the helm chart can't figure this out at runtime (it would
@@ -37,15 +30,14 @@ clustering:
   clusters: []
 
 deployment:
-  # This only limits what Kiali will attempt to see, but Kiali Service Account has permissions to see everything.
-  # For more control over what the Kial Service Account can see, use the Kiali Operator
-  accessible_namespaces:
-  - "**"
   additional_service_yaml: {}
   affinity:
     node: {}
     pod: {}
     pod_anti: {}
+  # The Kiali server helm chart only supports cluster-wide access; setting cluster_wide_access to false is not supported.
+  # For more control over what the Kial Service Account can see, use the Kiali Operator.
+  cluster_wide_access: true
   configmap_annotations: {}
   custom_secrets: []
   dns:
