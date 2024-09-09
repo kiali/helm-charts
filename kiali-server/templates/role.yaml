@@ -99,5 +99,12 @@ rules:
   - {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}
   verbs:
   - get
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
 ...
 {{- end -}}
