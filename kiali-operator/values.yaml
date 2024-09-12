@@ -110,5 +110,6 @@ cr:
   annotations: {}
 
   spec:
+    version: default
     deployment:
       cluster_wide_access: true
