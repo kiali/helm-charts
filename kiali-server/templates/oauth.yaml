@@ -5,7 +5,7 @@ apiVersion: oauth.openshift.io/v1
 kind: OAuthClient
 metadata:
   name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}
-  namespace: {{ .Release.Namespace }}
+  namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 redirectURIs:

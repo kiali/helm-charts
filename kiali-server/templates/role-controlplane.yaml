@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ include "kiali-server.fullname" . }}-controlplane
-  namespace: {{ include "kiali-server.istio_namespace" . }}
+  namespace: "{{ include "kiali-server.istio_namespace" . }}"
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 rules:
