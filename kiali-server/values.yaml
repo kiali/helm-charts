@@ -95,11 +95,6 @@ identity: {}
   #private_key_file:
 
 kiali_feature_flags:
-  certificates_information_indicators:
-    enabled: true
-    secrets:
-    - cacerts
-    - istio-ca-secret
   disabled_features: []
   validations:
     ignore: ["KIA1301"]
