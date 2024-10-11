@@ -39,6 +39,8 @@ deployment:
   # For more control over what the Kial Service Account can see, use the Kiali Operator.
   cluster_wide_access: true
   configmap_annotations: {}
+  # custom environment variables
+  custom_envs: []
   custom_secrets: []
   dns:
     config: {}
