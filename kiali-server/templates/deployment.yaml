@@ -125,6 +125,10 @@ spec:
           value: "{{ .Values.deployment.logger.time_field_format }}"
         - name: LOG_SAMPLER_RATE
           value: "{{ .Values.deployment.logger.sampler_rate }}"
+        {{- range .Values.deployment.custom_envs }}
+        - name: {{ .name | quote }}
+          value: {{ .value | quote }}
+        {{- end }}
         volumeMounts:
         - name: {{ include "kiali-server.fullname" . }}-configuration
           mountPath: "/kiali-configuration"
