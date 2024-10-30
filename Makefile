@@ -45,7 +45,8 @@ clean:
 	        i386)   arch="386" ;; \
 	        i686)   arch="386" ;; \
 	        x86_64) arch="amd64" ;; \
-	        arm|arm64)    dpkg --print-architecture | grep -q "arm64" && arch="arm64" || arch="arm" ;; \
+	        arm) arch="arm" ;; \
+	        arm64|aarch64) arch="arm64" ;; \
 	    esac ;\
 	    cd "${OUTDIR}/helm-install" ;\
 	    curl -L "https://get.helm.sh/helm-${HELM_VERSION}-$${os}-$${arch}.tar.gz" > "${OUTDIR}/helm-install/helm.tar.gz" ;\
