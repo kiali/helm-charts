@@ -69,6 +69,7 @@ deployment:
   pod_annotations: {}
   pod_labels: {}
   priority_class_name: ""
+  remote_cluster_resources_only: false
   # if deployment.hpa is defined, this replicas setting will be ignored
   replicas: 1
   resources:

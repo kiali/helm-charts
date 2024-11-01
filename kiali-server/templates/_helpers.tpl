@@ -17,6 +17,17 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Determine if on OpenShift (when debugging the chart for OpenShift use-cases, set "simulateOpenShift")
+*/}}
+{{- define "kiali-server.isOpenShift" -}}
+{{- if .Values.simulateOpenShift -}}
+true
+{{- else }}
+{{- .Capabilities.APIVersions.Has "operator.openshift.io/v1" -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 Identifies the log_level.
 */}}
 {{- define "kiali-server.logLevel" -}}
@@ -65,7 +76,7 @@ Determine the default web root.
     {{- .Values.server.web_root | trimSuffix "/" }}
   {{- end }}
 {{- else }}
-  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     {{- "/" }}
   {{- else }}
     {{- "/kiali" }}
@@ -80,7 +91,7 @@ Determine the default identity cert file. There is no default if on k8s; only on
 {{- if hasKey .Values.identity "cert_file" }}
   {{- .Values.identity.cert_file }}
 {{- else }}
-  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     {{- "/kiali-cert/tls.crt" }}
   {{- else }}
     {{- "" }}
@@ -95,7 +106,7 @@ Determine the default identity private key file. There is no default if on k8s; 
 {{- if hasKey .Values.identity "private_key_file" }}
   {{- .Values.identity.private_key_file }}
 {{- else }}
-  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     {{- "/kiali-cert/tls.key" }}
   {{- else }}
     {{- "" }}
@@ -110,7 +121,7 @@ Determine the default deployment.ingress.enabled. Disable it on k8s; enable it o
 {{- if hasKey .Values.deployment.ingress "enabled" }}
   {{- .Values.deployment.ingress.enabled }}
 {{- else }}
-  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     {{- true }}
   {{- else }}
     {{- false }}
@@ -134,14 +145,14 @@ Determine the auth strategy to use - default is "token" on Kubernetes and "opens
 */}}
 {{- define "kiali-server.auth.strategy" -}}
 {{- if .Values.auth.strategy }}
-  {{- if (and (eq .Values.auth.strategy "openshift") (not .Values.kiali_route_url)) }}
-    {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either set that or use a different auth strategy via the --set auth.strategy=... option." }}
+  {{- if (and ((and (eq .Values.auth.strategy "openshift") (not .Values.kiali_route_url))) (not .Values.auth.openshift.redirect_uris)) }}
+    {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either (a) set that, (b) explicitly define redirect URIs via --set auth.openshift.redirect_uris, or (c) use a different auth strategy via the --set auth.strategy=... option." }}
   {{- end }}
   {{- .Values.auth.strategy }}
 {{- else }}
-  {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
-    {{- if not .Values.kiali_route_url }}
-      {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either set that or explicitly indicate another auth strategy you want via the --set auth.strategy=... option." }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
+    {{- if (and (not .Values.kiali_route_url) (not .Values.auth.openshift.redirect_uris)) }}
+      {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either (a) set that, (b) explicitly define redirect URIs via --set auth.openshift.redirect_uris, or (c) use a different auth strategy via the --set auth.strategy=... option." }}
     {{- end }}
     {{- "openshift" }}
   {{- else }}

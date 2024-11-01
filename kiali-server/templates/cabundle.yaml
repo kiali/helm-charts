@@ -1,4 +1,5 @@
-{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+{{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- if eq "true" (include "kiali-server.isOpenShift" .) }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -10,4 +11,5 @@ metadata:
   annotations:
     service.beta.openshift.io/inject-cabundle: "true"
 ...
+{{- end }}
 {{- end }}

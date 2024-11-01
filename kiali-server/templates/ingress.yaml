@@ -1,4 +1,5 @@
-{{- if not (.Capabilities.APIVersions.Has "route.openshift.io/v1") }}
+{{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- if not (eq "true" (include "kiali-server.isOpenShift" .)) }}
 {{- if eq "true" (include "kiali-server.deployment.ingress.enabled" .) }}
 ---
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
@@ -58,5 +59,6 @@ spec:
     {{- end }}
   {{- end }}
 ...
+{{- end }}
 {{- end }}
 {{- end }}
