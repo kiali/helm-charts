@@ -54,6 +54,10 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
   ingress:
+    tls: [] # Custom tls config
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
     additional_labels: {}
     class_name: "nginx"
     #enabled:
