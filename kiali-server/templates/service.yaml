@@ -1,3 +1,4 @@
+{{- if not .Values.deployment.remote_cluster_resources_only }}
 ---
 apiVersion: v1
 kind: Service
@@ -7,7 +8,7 @@ metadata:
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
   annotations:
-    {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+    {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     service.beta.openshift.io/serving-cert-secret-name: {{ include "kiali-server.fullname" . }}-cert-secret
     {{- end }}
     {{- if and (not (empty .Values.server.web_fqdn)) (not (empty .Values.server.web_schema)) }}
@@ -49,3 +50,4 @@ spec:
   {{- toYaml .Values.deployment.additional_service_yaml | nindent 2  }}
   {{- end }}
 ...
+{{- end }}

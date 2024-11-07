@@ -1,3 +1,4 @@
+{{- if not .Values.deployment.remote_cluster_resources_only }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -162,7 +163,7 @@ spec:
           name: {{ include "kiali-server.fullname" . }}
       - name: {{ include "kiali-server.fullname" . }}-cert
         secret:
-          {{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+          {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
           secretName: {{ include "kiali-server.fullname" . }}-cert-secret
           {{- else }}
           secretName: istio.{{ include "kiali-server.fullname" . }}-service-account
@@ -177,7 +178,7 @@ spec:
       - name: {{ include "kiali-server.fullname" . }}-cabundle
         configMap:
           name: {{ include "kiali-server.fullname" . }}-cabundle
-      {{- if not (.Capabilities.APIVersions.Has "route.openshift.io/v1") }}
+      {{- if not (eq "true" (include "kiali-server.isOpenShift" .)) }}
           optional: true
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}
@@ -226,3 +227,4 @@ spec:
       {{- toYaml .Values.deployment.node_selector | nindent 8 }}
       {{- end }}
 ...
+{{- end }}

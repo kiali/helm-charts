@@ -1,4 +1,5 @@
-{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
+{{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- if eq "true" (include "kiali-server.isOpenShift" .) }}
 {{- if eq "true" (include "kiali-server.deployment.ingress.enabled" .) }}
 # As of OpenShift 4.5, need to use --disable-openapi-validation when installing via Helm
 ---
@@ -30,5 +31,6 @@ spec:
     targetPort: {{ .Values.server.port }}
   {{- end }}
 ...
+{{- end }}
 {{- end }}
 {{- end }}
