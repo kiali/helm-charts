@@ -20,11 +20,7 @@ Create chart name and version as used by the chart label.
 Determine if on OpenShift (when debugging the chart for OpenShift use-cases, set "simulateOpenShift")
 */}}
 {{- define "kiali-server.isOpenShift" -}}
-{{- if .Values.simulateOpenShift -}}
-true
-{{- else }}
-{{- .Capabilities.APIVersions.Has "operator.openshift.io/v1" -}}
-{{- end -}}
+{{- .Values.isOpenShift | default (.Capabilities.APIVersions.Has "operator.openshift.io/v1") -}}
 {{- end }}
 
 {{/*
