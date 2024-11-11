@@ -114,6 +114,18 @@ spec:
             {{- end }}
           initialDelaySeconds: 5
           periodSeconds: 30
+        startupProbe:
+          httpGet:
+            path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz
+            port: api-port
+            {{- if (include "kiali-server.identity.cert_file" .) }}
+            scheme: HTTPS
+            {{- else }}
+            scheme: HTTP
+            {{- end }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 6
         env:
         - name: ACTIVE_NAMESPACE
           valueFrom:
