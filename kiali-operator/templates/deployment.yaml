@@ -50,6 +50,7 @@ spec:
         - "--zap-log-level=info"
         - "--leader-election-id={{ include "kiali-operator.fullname" . }}"
         - "--watches-file=./$(WATCHES_FILE)"
+        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
         {{- if .Values.securityContext }}
         {{- toYaml .Values.securityContext | nindent 10 }}

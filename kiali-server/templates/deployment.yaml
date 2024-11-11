@@ -72,6 +72,7 @@ spec:
         - "/opt/kiali/kiali"
         - "-config"
         - "/kiali-configuration/config.yaml"
+        terminationMessagePolicy: FallbackToLogsOnError
         securityContext:
         {{- if .Values.deployment.security_context}}
         {{- toYaml .Values.deployment.security_context | nindent 10 }}
