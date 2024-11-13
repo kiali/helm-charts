@@ -101,8 +101,8 @@ spec:
             {{- else }}
             scheme: HTTP
             {{- end }}
-          initialDelaySeconds: 5
-          periodSeconds: 30
+          initialDelaySeconds: {{ .Values.deployment.readiness_probe.initial_delay_seconds | int | default 5 }}
+          periodSeconds: {{ .Values.deployment.readiness_probe.period_seconds | int | default 30 }}
         livenessProbe:
           httpGet:
             path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz

@@ -69,6 +69,9 @@ deployment:
   pod_annotations: {}
   pod_labels: {}
   priority_class_name: ""
+  readiness_probe:
+    initial_delay_seconds: 5
+    period_seconds: 30
   remote_cluster_resources_only: false
   # if deployment.hpa is defined, this replicas setting will be ignored
   replicas: 1
