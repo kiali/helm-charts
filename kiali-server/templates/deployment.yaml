@@ -101,8 +101,8 @@ spec:
             {{- else }}
             scheme: HTTP
             {{- end }}
-          initialDelaySeconds: 5
-          periodSeconds: 30
+          initialDelaySeconds: {{ .Values.deployment.probes.readiness.initial_delay_seconds | int | default 5 }}
+          periodSeconds: {{ .Values.deployment.probes.readiness.period_seconds | int | default 30 }}
         livenessProbe:
           httpGet:
             path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz
@@ -112,8 +112,8 @@ spec:
             {{- else }}
             scheme: HTTP
             {{- end }}
-          initialDelaySeconds: 5
-          periodSeconds: 30
+          initialDelaySeconds: {{ .Values.deployment.probes.liveness.initial_delay_seconds | int | default 5 }}
+          periodSeconds: {{ .Values.deployment.probes.liveness.period_seconds | int | default 30 }}
         startupProbe:
           httpGet:
             path: {{ include "kiali-server.server.web_root" . | trimSuffix "/"  }}/healthz
@@ -123,9 +123,9 @@ spec:
             {{- else }}
             scheme: HTTP
             {{- end }}
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 6
+          failureThreshold: {{ .Values.deployment.probes.startup.failure_threshold | int | default 6 }}
+          initialDelaySeconds: {{ .Values.deployment.probes.startup.initial_delay_seconds | int | default 30 }}
+          periodSeconds: {{ .Values.deployment.probes.startup.period_seconds | int | default 10 }}
         env:
         - name: ACTIVE_NAMESPACE
           valueFrom:
