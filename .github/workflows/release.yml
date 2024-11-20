@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  #schedule:
+  schedule:
   # Every Monday at 08:00 (UTC) - try to make sure it happens after all Kiali-related images are released
-  #- cron: '00 8 * * MON'
+  - cron: '00 8 * * MON'
   workflow_dispatch:
     inputs:
       release_type:
