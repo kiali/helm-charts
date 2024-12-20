@@ -51,6 +51,7 @@ spec:
         - "--leader-election-id={{ include "kiali-operator.fullname" . }}"
         - "--watches-file=./$(WATCHES_FILE)"
         - "--health-probe-bind-address=:6789"
+        - "--metrics-bind-address=:8080"
         terminationMessagePolicy: FallbackToLogsOnError
         readinessProbe:
           httpGet:
