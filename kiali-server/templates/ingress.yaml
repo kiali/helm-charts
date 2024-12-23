@@ -2,7 +2,7 @@
 {{- if not (eq "true" (include "kiali-server.isOpenShift" .)) }}
 {{- if eq "true" (include "kiali-server.deployment.ingress.enabled" .) }}
 ---
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
 apiVersion: networking.k8s.io/v1
 {{- else }}
 apiVersion: networking.k8s.io/v1beta1
