@@ -6,7 +6,7 @@ ROOTDIR=$(CURDIR)
 OUTDIR=${ROOTDIR}/_output
 
 # Identifies the current build.
-VERSION ?= v2.3.0-SNAPSHOT
+VERSION ?= v2.4.0-SNAPSHOT
 SEMVER ?= $(shell echo ${VERSION} | sed 's/^v//g')
 COMMIT_HASH ?= $(shell git rev-parse HEAD)
 
