@@ -19,23 +19,23 @@ on:
         required: true
         default: master
         type: string
-  
+
 jobs:
   initialize:
     name: Initialize
-    runs-on: ubuntu-20.04
-    outputs:        
-      release_type: ${{ steps.release_type.outputs.release_type }}   
-      release_version: ${{ steps.release_version.outputs.release_version }}      
+    runs-on: ubuntu-latest
+    outputs:
+      release_type: ${{ steps.release_type.outputs.release_type }}
+      release_version: ${{ steps.release_version.outputs.release_version }}
       next_version: ${{ steps.next_version.outputs.next_version }}
       branch_version: ${{ steps.branch_version.outputs.branch_version }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }}
         fetch-depth: 0
-        
+
     - name: Prepare scripts
       run: |
         cat <<-EOF > bump.py
@@ -51,13 +51,13 @@ jobs:
             minor = 0
             patch = 0
         elif release_type == 'minor':
-            minor = minor + 1 
+            minor = minor + 1
             patch = 0
         elif release_type == 'patch':
             patch = patch + 1
         print('.'.join(['v' + str(major), str(minor), str(patch)]))
         EOF
-        
+
         cat <<-EOF > minor.py
         import datetime
 
@@ -113,7 +113,7 @@ jobs:
         fi
 
         echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
-    
+
     - name: Determine next version
       if: ${{ steps.release_type.outputs.release_type != 'skip' }}
       env:
@@ -125,9 +125,9 @@ jobs:
         then
             NEXT_VERSION=$(python bump.py $RELEASE_TYPE $RELEASE_VERSION)
         elif [[ $RELEASE_TYPE == "minor" ]]
-        then 
+        then
             NEXT_VERSION=$(python bump.py $RELEASE_TYPE $RELEASE_VERSION)
-        elif [[ $RELEASE_TYPE == "major" ]]      
+        elif [[ $RELEASE_TYPE == "major" ]]
         then
             NEXT_VERSION=$(python bump.py "minor" $RELEASE_VERSION)
         fi
@@ -137,15 +137,15 @@ jobs:
     - name: Determine branch version
       if: ${{ steps.release_type.outputs.release_type != 'skip' }}
       env:
-        RELEASE_VERSION: ${{ steps.release_version.outputs.release_version }}      
+        RELEASE_VERSION: ${{ steps.release_version.outputs.release_version }}
       id: branch_version
       run: |
         echo "branch_version=$(echo $RELEASE_VERSION | sed 's/\.[0-9]*\+$//')" >> $GITHUB_OUTPUT
 
     - name: Log information
-      run: |         
+      run: |
         echo "Release version: ${{ steps.release_version.outputs.release_version }}"
-                  
+
         echo "Next version: ${{ steps.next_version.outputs.next_version }}"
 
         echo "Branch version: ${{ steps.branch_version.outputs.branch_version }}"
@@ -153,27 +153,27 @@ jobs:
   release:
     name: Release
     if: ${{ needs.initialize.outputs.release_type != 'skip' && ((github.event_name == 'schedule' && github.repository == 'kiali/helm-charts') || github.event_name != 'schedule') }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [initialize]
     env:
       RELEASE_TYPE: ${{ needs.initialize.outputs.release_type }}
       RELEASE_VERSION: ${{ needs.initialize.outputs.release_version }}
       NEXT_VERSION: ${{ needs.initialize.outputs.next_version }}
       BRANCH_VERSION: ${{ needs.initialize.outputs.branch_version }}
-      RELEASE_BRANCH: ${{ github.event.inputs.release_branch || github.ref_name }} 
-    steps:    
+      RELEASE_BRANCH: ${{ github.event.inputs.release_branch || github.ref_name }}
+    steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.inputs.release_branch || github.ref_name }} 
+        ref: ${{ github.event.inputs.release_branch || github.ref_name }}
         fetch-depth: 0
 
     - name: Configure git
       run: |
         git config user.email 'kiali-dev@googlegroups.com'
-        
-        git config user.name 'kiali-bot' 
-        
+
+        git config user.name 'kiali-bot'
+
     - name: Build Helm charts
       run: make -e VERSION=$RELEASE_VERSION clean build-helm-charts
 
@@ -181,7 +181,7 @@ jobs:
     - name: Checkout master
       if: ${{ github.event.inputs.release_type == 'patch'}}
       run: git checkout master
-    
+
     # Anticipated preparation of Makefile so that it contains the released
     # version when creating the git tag.
     #
@@ -202,9 +202,9 @@ jobs:
         git add Makefile docs
 
         git commit -m "Release $RELEASE_VERSION"
-        
+
         git push origin $(git rev-parse HEAD):refs/tags/$RELEASE_VERSION-master
-  
+
     - name: Publish Helm charts
       env:
         BUILD_TAG: helm-charts-release-${{ github.run_number }}-main
@@ -217,18 +217,18 @@ jobs:
         if [[ $RELEASE_TYPE == "minor" || $RELEASE_TYPE == "major" ]]
         then
           git push origin $(git rev-parse HEAD):refs/heads/$BRANCH_VERSION
-          
+
           git push origin $(git rev-parse HEAD):refs/tags/$RELEASE_VERSION
-        
+
           # Bump version stored in the Makefile
           sed -i -r "s/^VERSION \?= (.*)/VERSION \?= $NEXT_VERSION-SNAPSHOT/" Makefile
 
           git add Makefile
-          
+
           git commit -m "Prepare for next version"
 
           git push origin $(git rev-parse HEAD):refs/heads/$BUILD_TAG
-          
+
           if [[ $GITHUB_REPOSITORY == 'kiali/helm-charts' ]]
           then
             if hack/smoke-test-release-branch.sh --release-branch $BUILD_TAG; then
@@ -244,11 +244,11 @@ jobs:
           fi
 
           gh pr create -t "$prtitle" -b "$prmsg" -H $BUILD_TAG -B $RELEASE_BRANCH
-          
+
         # For a patch release, everything is ready to publish the generated charts.
         # Let's push to master
         elif [[ $RELEASE_TYPE == "patch" ]]
-        then 
+        then
           git push origin $(git rev-parse HEAD):refs/heads/$BUILD_TAG
 
           if [[ $GITHUB_REPOSITORY == 'kiali/helm-charts' ]]
@@ -267,19 +267,19 @@ jobs:
 
           gh pr create -t "$prtitle" -b "$prmsg" -H $BUILD_TAG -B master
 
-          # We did a patch release. In this case we need to go back to the version branch and do changes 
+          # We did a patch release. In this case we need to go back to the version branch and do changes
           # to the Makefile in that branch to record what's the current path release. Then, commit and push.
           # Also, a vX.Y.Z branch is created
           git checkout $RELEASE_BRANCH
-          
+
           sed -i -r "s/^VERSION \?= (.*)/VERSION \?= $RELEASE_VERSION/" Makefile
-          
+
           git add Makefile
-          
+
           git commit -m "Record that $RELEASE_VERSION was released, in preparation for next patch version."
-          
+
           git push origin $(git rev-parse HEAD):$RELEASE_BRANCH
-          
+
           git push origin $(git rev-parse HEAD):refs/tags/$RELEASE_VERSION
 
         fi
