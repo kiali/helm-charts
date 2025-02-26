@@ -20,5 +20,5 @@ icon: https://raw.githubusercontent.com/kiali/kiali.io/current/assets/icons/logo
 
 dependencies:
   - name: istio-virtualservice
-    version: 0.1.5
+    version: 0.1.6
     repository: s3://giffgaff-charts
