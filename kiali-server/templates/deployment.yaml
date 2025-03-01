@@ -172,8 +172,8 @@ spec:
         {{- end }}
       volumes:
       - name: {{ include "kiali-server.fullname" . }}-configuration
-        configMap:
-          name: {{ include "kiali-server.fullname" . }}
+        secret:
+          secretName: {{ include "kiali-server.fullname" . }}
       - name: {{ include "kiali-server.fullname" . }}-cert
         secret:
           {{- if eq "true" (include "kiali-server.isOpenShift" .) }}

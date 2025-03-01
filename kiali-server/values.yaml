@@ -38,7 +38,7 @@ deployment:
   # The Kiali server helm chart only supports cluster-wide access; setting cluster_wide_access to false is not supported.
   # For more control over what the Kial Service Account can see, use the Kiali Operator.
   cluster_wide_access: true
-  configmap_annotations: {}
+  secret_annotations: {}
   custom_envs: []
   custom_secrets: []
   dns:
