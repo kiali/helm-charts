@@ -156,14 +156,19 @@ spec:
         - name: {{ .name }}
           mountPath: "{{ .mount }}"
         {{- end }}
+        - name: "kiali-multi-cluster-secret"
+          mountPath: "/kiali-remote-cluster-secrets/kiali-multi-cluster-secret"
+          readOnly: true
         {{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
         - name: {{ $key }}
           mountPath: "/kiali-remote-cluster-secrets/{{ $val }}"
+          readOnly: true
         {{- end }}
         {{- range .Values.clustering.clusters }}
-        {{- if .secret_name }}
+        {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
         - name: {{ .name }}
           mountPath: "/kiali-remote-cluster-secrets/{{ .secret_name }}"
+          readOnly: true
         {{- end }}
         {{- end }}
         {{- if .Values.deployment.resources }}
@@ -204,13 +209,17 @@ spec:
           optional: {{ .optional | default false }}
       {{- end }}
       {{- end }}
+      - name: "kiali-multi-cluster-secret"
+        secret:
+          secretName: "kiali-multi-cluster-secret"
+          optional: true
       {{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
       - name: {{ $key }}
         secret:
           secretName: {{ $val }}
       {{- end }}
       {{- range .Values.clustering.clusters }}
-      {{- if .secret_name }}
+      {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
       - name: {{ .name }}
         secret:
           secretName: {{ .secret_name }}
