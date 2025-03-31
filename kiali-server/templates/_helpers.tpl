@@ -40,6 +40,9 @@ app: kiali
 version: {{ .Values.deployment.version_label | default .Chart.AppVersion | quote }}
 app.kubernetes.io/version: {{ .Values.deployment.version_label | default .Chart.AppVersion | quote }}
 app.kubernetes.io/part-of: "kiali"
+{{- if .Values.deployment.extra_labels }}
+{{ toYaml .Values.deployment.extra_labels }}
+{{- end }}
 {{- end }}
 
 {{/*
