@@ -9,6 +9,7 @@ image: # see: https://quay.io/repository/kiali/kiali-operator?tab=tags
   pullSecrets: []
 
 # Deployment options for the operator pod.
+extraLabels: {}
 nodeSelector: {}
 podAnnotations: {}
 podLabels: {}

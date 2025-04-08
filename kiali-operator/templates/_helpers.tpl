@@ -43,6 +43,9 @@ version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/part-of: "kiali-operator"
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels }}
+{{- end }}
 {{- end }}
 
 {{/*
