@@ -34,6 +34,9 @@ Identifies the log_level.
 Common labels
 */}}
 {{- define "kiali-server.labels" -}}
+{{- if .Values.deployment.extra_labels }}
+{{ toYaml .Values.deployment.extra_labels }}
+{{- end }}
 helm.sh/chart: {{ include "kiali-server.chart" . }}
 app: kiali
 {{ include "kiali-server.selectorLabels" . }}
