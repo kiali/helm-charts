@@ -35,6 +35,9 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "kiali-operator.labels" -}}
+{{- if .Values.extraLabels }}
+{{ toYaml .Values.extraLabels }}
+{{- end }}
 helm.sh/chart: {{ include "kiali-operator.chart" . }}
 app: {{ include "kiali-operator.name" . }}
 {{ include "kiali-operator.selectorLabels" . }}
@@ -43,9 +46,6 @@ version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/part-of: "kiali-operator"
-{{- if .Values.extraLabels }}
-{{ toYaml .Values.extraLabels }}
-{{- end }}
 {{- end }}
 
 {{/*
