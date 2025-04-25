@@ -67,7 +67,8 @@ deployment:
     time_field_format: "2006-01-02T15:04:05Z07:00"
     sampler_rate: "1"
   node_selector: {}
-  pod_annotations: {}
+  pod_annotations:
+    proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
   pod_labels: {}
   priority_class_name: ""
   probes:
