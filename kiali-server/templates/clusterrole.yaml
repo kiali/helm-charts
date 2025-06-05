@@ -1,9 +1,10 @@
-{{- if or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous") -}}
+{{- if .Values.deployment.cluster_wide_access -}}
+{{- if not (or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous")) -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "kiali-server.fullname" . }}-viewer
+  name: {{ include "kiali-server.fullname" . }}
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
 rules:
@@ -28,6 +29,7 @@ rules:
   - get
   - list
   - watch
+  - patch
 - apiGroups: [""]
   resources:
   - pods/portforward
@@ -44,6 +46,7 @@ rules:
   - get
   - list
   - watch
+  - patch
 - apiGroups: ["batch"]
   resources:
   - cronjobs
@@ -52,6 +55,7 @@ rules:
   - get
   - list
   - watch
+  - patch
 - apiGroups:
   - networking.istio.io
   - security.istio.io
@@ -63,6 +67,9 @@ rules:
   - get
   - list
   - watch
+  - create
+  - delete
+  - patch
 - apiGroups: ["apps.openshift.io"]
   resources:
   - deploymentconfigs
@@ -70,6 +77,7 @@ rules:
   - get
   - list
   - watch
+  - patch
 - apiGroups: ["project.openshift.io"]
   resources:
   - projects
@@ -100,4 +108,5 @@ rules:
   - list
   - watch
 ...
+{{- end -}}
 {{- end -}}
