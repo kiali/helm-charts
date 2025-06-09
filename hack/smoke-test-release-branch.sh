@@ -174,8 +174,8 @@ if ! git checkout -b ${SMOKETEST_BRANCH} ${RELEASE_BRANCH}; then
 fi
 
 # Determine the version we are going to smoke test
-OPERATOR_VERSION="$(ls -1 docs/kiali-operator-*.tgz | sort | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
-SERVER_VERSION="$(ls -1 docs/kiali-server-*.tgz | sort | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
+OPERATOR_VERSION="$(ls -1 docs/kiali-operator-*.tgz | sort -V | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
+SERVER_VERSION="$(ls -1 docs/kiali-server-*.tgz | sort -V | tail -n1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
 
 if [ "${OPERATOR_VERSION}" != "${SERVER_VERSION}" ]; then
   abort_now "The latest helm chart versions for operator [${OPERATOR_VERSION}] and server [${SERVER_VERSION}] do not match. Aborting the test."
@@ -194,6 +194,8 @@ if ! ${CLIENT_EXE} get ns &> /dev/null; then
 fi
 
 # SMOKE TESTING THE OPERATOR
+
+infomsg "Smoke testing operator version [${OPERATOR_VERSION}]"
 
 if ! ${HELM_EXE} install --create-namespace --namespace ${OPERATOR_NAMESPACE} kiali-operator docs/kiali-operator-${OPERATOR_VERSION}.tgz; then
   abort_now "The Operator Helm Chart did not install successfully. The smoke test has FAILED!"
@@ -217,6 +219,8 @@ if ! ${HELM_EXE} uninstall --namespace ${OPERATOR_NAMESPACE} kiali-operator; the
 fi
 
 # SMOKE TESTING THE SERVER
+
+infomsg "Smoke testing server version [${SERVER_VERSION}]"
 
 if ! ${HELM_EXE} install --create-namespace --namespace ${SERVER_NAMESPACE} kiali-server docs/kiali-server-${SERVER_VERSION}.tgz; then
   abort_now "The Server Helm Chart did not install successfully. The smoke test has FAILED!"
