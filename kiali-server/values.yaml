@@ -1,14 +1,14 @@
-# This helm chart will create Kubernetes resources such as roles, role bindings, and service accounts.
+# This helm chart will create Kubernetes resources such as cluster roles, cluster role bindings, and service accounts.
 # For very rare use-cases, users may want to manage some of these resources manually, outside
 # of this helm chart. In cases like this, you can inform this helm chart to skip the creation of
 # those resources that you want to manage yourself.
-# For example, if you want to manage roles and role bindings yourself, but you still want this helm
+# For example, if you want to manage cluster roles and cluster role bindings yourself, but you still want this helm
 # chart to create service accounts, set the value of "skipResources" to an array
-# value of ["role", "rolebinding"].
+# value of ["clusterrole", "clusterrolebinding"].
 # If you use this feature, you must be aware that you then bear the responsibility of
 # creating these resources yourself manually; if you do not then the installation
 # will be broken. Therefore, only use this feature if you know what you are doing.
-# Valid list item values are: "role", "rolebinding", "sa"
+# Valid list item values are: "clusterrole", "clusterrolebinding", "sa"
 skipResources: []
 
 # This is required for "openshift" auth strategy.

@@ -1,4 +1,4 @@
-{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "role")) -}}
+{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrole")) -}}
 {{- if .Values.deployment.cluster_wide_access -}}
 {{- if or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous") -}}
 ---

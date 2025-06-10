@@ -202,7 +202,7 @@ Returns true if the given resource kind is in .Values.skipResources
 This aborts if .Values.skipResources has invalid values.
 */}}
 {{- define "kiali-server.isSkippedResource" -}}
-  {{- $validSkipResources := dict "role" true "rolebinding" true "sa" true }}
+  {{- $validSkipResources := dict "clusterrole" true "clusterrolebinding" true "sa" true }}
   {{- $ctx := .ctx }}
   {{- $name := .name }}
   {{- range $i, $item := $ctx.Values.skipResources }}

@@ -1,4 +1,4 @@
-{{- if eq "false" (include "kiali-operator.isSkippedResource" (dict "ctx" . "name" "role")) -}}
+{{- if eq "false" (include "kiali-operator.isSkippedResource" (dict "ctx" . "name" "clusterrole")) -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

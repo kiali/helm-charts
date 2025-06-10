@@ -1,4 +1,4 @@
-{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "rolebinding")) -}}
+{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrolebinding")) -}}
 {{- if .Values.deployment.cluster_wide_access -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
