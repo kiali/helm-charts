@@ -1,0 +1,11 @@
+name: "networkpolicy_custom_both_ports"
+description: "Verify NetworkPolicy uses both custom server port and custom metrics port when both are configured"
+helm_args:
+  - "--set"
+  - "server.port=8080"
+  - "--set"
+  - "server.observability.metrics.port=9091"
+yq_query: 'select(.kind == "NetworkPolicy") | .spec.ingress[0].ports[].port'
+expected_result: |
+  8080 9091
+should_fail: false

@@ -7,6 +7,8 @@ helm_args:
   - "auth.strategy=token"
 yq_query: ".kind"
 expected_result: |
+  NetworkPolicy
+  ---
   ServiceAccount
   ---
   ConfigMap
