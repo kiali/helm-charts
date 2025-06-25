@@ -1,0 +1,24 @@
+{{- if and (not .Values.deployment.remote_cluster_resources_only) .Values.deployment.network_policy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "kiali-server.selectorLabels" . | nindent 6 }}
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: {{ .Values.server.port | default 20001 }}
+    {{- if .Values.server.observability.metrics.enabled }}
+    - protocol: TCP
+      port: {{ .Values.server.observability.metrics.port | default 9090 }}
+    {{- end }}
+{{- end }}
