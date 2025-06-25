@@ -5,6 +5,8 @@ helm_args:
   - "skipResources={clusterrole,clusterrolebinding}"
 yq_query: ".kind"
 expected_result: |
+  NetworkPolicy
+  ---
   ServiceAccount
   ---
   ConfigMap

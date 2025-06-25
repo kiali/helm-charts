@@ -1,0 +1,9 @@
+name: "networkpolicy_custom_metrics_port"
+description: "Verify NetworkPolicy uses custom metrics port when configured"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.port=9091"
+yq_query: 'select(.kind == "NetworkPolicy") | .spec.ingress[0].ports[] | select(.port == 9091) | .port'
+expected_result: |
+  9091
+should_fail: false

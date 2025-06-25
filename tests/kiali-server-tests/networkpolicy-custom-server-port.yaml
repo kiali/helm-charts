@@ -1,0 +1,9 @@
+name: "networkpolicy_custom_server_port"
+description: "Verify NetworkPolicy uses custom server port when configured"
+helm_args:
+  - "--set"
+  - "server.port=8080"
+yq_query: 'select(.kind == "NetworkPolicy") | .spec.ingress[0].ports[] | select(.port == 8080) | .port'
+expected_result: |
+  8080
+should_fail: false
