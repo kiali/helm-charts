@@ -20,12 +20,56 @@ DORP ?= docker
 # When building the helm chart, this is the helm version to use
 HELM_VERSION ?= v3.10.1
 
+# Organization/Repository/Branch(or ref) to use when fetching golden CRDs from kiali-operator repository
+KIALI_OPERATOR_ORG_REPO_REF ?= kiali/kiali-operator/master
+
 .PHONY: help
 help: Makefile
 	@echo
 	@echo "Targets"
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo
+
+## validate-crd-sync: Validates that CRDs are in sync with golden copies from kiali-operator repo
+validate-crd-sync:
+	@echo "Validating CRD synchronization with kiali-operator repository..."
+	@temp_dir=$$(mktemp -d) && \
+	trap "rm -rf $$temp_dir" EXIT && \
+	echo "Downloading golden Kiali CRD from kiali-operator repository (ref: ${KIALI_OPERATOR_ORG_REPO_REF})..." && \
+	if ! curl -f -s -L "https://raw.githubusercontent.com/${KIALI_OPERATOR_ORG_REPO_REF}/crd-docs/crd/kiali.io_kialis.yaml" -o "$$temp_dir/golden-kiali.yaml"; then \
+		echo "ERROR: Failed to download golden Kiali CRD from kiali-operator repository"; \
+		exit 1; \
+	fi && \
+	echo "Creating expected helm-charts version..." && \
+	echo "---" > $$temp_dir/expected-helm-kiali.yaml && \
+	cat $$temp_dir/golden-kiali.yaml >> $$temp_dir/expected-helm-kiali.yaml && \
+	echo "..." >> $$temp_dir/expected-helm-kiali.yaml && \
+	echo "Comparing with local CRD..." && \
+	if ! diff -q $$temp_dir/expected-helm-kiali.yaml kiali-operator/crds/crds.yaml >/dev/null 2>&1; then \
+		echo ""; \
+		echo "ERROR: Local Kiali CRD is out of sync with golden copy!"; \
+		echo ""; \
+		echo "Please update the CRD in helm-charts to match the golden copy from kiali-operator."; \
+		echo "You can do this by running 'make sync-crds' here or from within the kiali-operator repository."; \
+		exit 1; \
+	fi && \
+	echo "✓ Kiali CRD is in sync with golden copy"
+
+## sync-crds: Updates local CRDs with golden copies from kiali-operator repo
+sync-crds:
+	@echo "Updating CRDs from kiali-operator repository..."
+	@temp_dir=$$(mktemp -d) && \
+	trap "rm -rf $$temp_dir" EXIT && \
+	echo "Downloading golden Kiali CRD (ref: ${KIALI_OPERATOR_ORG_REPO_REF})..." && \
+	if ! curl -f -s -L "https://raw.githubusercontent.com/${KIALI_OPERATOR_ORG_REPO_REF}/crd-docs/crd/kiali.io_kialis.yaml" -o "$$temp_dir/golden-kiali.yaml"; then \
+		echo "ERROR: Failed to download golden Kiali CRD from kiali-operator repository"; \
+		exit 1; \
+	fi && \
+	echo "Creating helm-charts version with YAML separators..." && \
+	echo "---" > kiali-operator/crds/crds.yaml && \
+	cat $$temp_dir/golden-kiali.yaml >> kiali-operator/crds/crds.yaml && \
+	echo "..." >> kiali-operator/crds/crds.yaml && \
+	echo "✓ Updated kiali-operator/crds/crds.yaml with golden copy"
 
 ## clean: Cleans _output
 clean:
@@ -76,7 +120,7 @@ clean:
 	@"${HELM}" lint "${OUTDIR}/charts/kiali-operator"
 	@"${HELM}" package "${OUTDIR}/charts/kiali-operator" -d "${OUTDIR}/charts" --version ${SEMVER} --app-version ${VERSION}
 
-## build-helm-charts: Build Kiali operator and server Helm Charts
+## build-helm-charts: Build Kiali operator and server Helm Charts (without CRD validation)
 build-helm-charts: .build-helm-chart-operator .build-helm-chart-server
 
 .update-helm-repo-server: .download-helm-if-needed
