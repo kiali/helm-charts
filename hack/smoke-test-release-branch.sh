@@ -208,9 +208,13 @@ if [ "${ACTUAL_OPERATOR_IMAGE}" != "${EXPECTED_OPERATOR_IMAGE}" ]; then
 fi
 
 if ! ${CLIENT_EXE} wait deployment -l app.kubernetes.io/name=kiali-operator --for=condition=Available -n ${OPERATOR_NAMESPACE} --timeout=5m; then
+  ${CLIENT_EXE} describe deployments -n ${OPERATOR_NAMESPACE} || true
   abort_now "The operator deployment failed to become available. The smoke test has FAILED!"
 fi
 if ! ${CLIENT_EXE} wait pods -l app.kubernetes.io/name=kiali-operator --for=condition=Ready -n ${OPERATOR_NAMESPACE} --timeout=5m; then
+  ${CLIENT_EXE} describe deployments -n ${OPERATOR_NAMESPACE} || true
+  ${CLIENT_EXE} describe pods -n ${OPERATOR_NAMESPACE} || true
+  ${CLIENT_EXE} logs -l app.kubernetes.io/name=kiali-operator -n ${OPERATOR_NAMESPACE} || true
   abort_now "The operator pod failed to start. The smoke test has FAILED!"
 fi
 
@@ -233,9 +237,13 @@ if [ "${ACTUAL_SERVER_IMAGE}" != "${EXPECTED_SERVER_IMAGE}" ]; then
 fi
 
 if ! ${CLIENT_EXE} wait deployment -l app.kubernetes.io/name=kiali --for=condition=Available -n ${SERVER_NAMESPACE} --timeout=5m; then
+  ${CLIENT_EXE} describe deployments -n ${SERVER_NAMESPACE} || true
   abort_now "The server deployment failed to become available. The smoke test has FAILED!"
 fi
 if ! ${CLIENT_EXE} wait pods -l app.kubernetes.io/name=kiali --for=condition=Ready -n ${SERVER_NAMESPACE} --timeout=5m; then
+  ${CLIENT_EXE} describe deployments -n ${SERVER_NAMESPACE} || true
+  ${CLIENT_EXE} describe pods -n ${SERVER_NAMESPACE} || true
+  ${CLIENT_EXE} logs -l app.kubernetes.io/name=kiali -n ${SERVER_NAMESPACE} || true
   abort_now "The server pod failed to start. The smoke test has FAILED!"
 fi
 
