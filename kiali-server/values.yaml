@@ -29,8 +29,6 @@ additional_display_details:
   icon_annotation: kiali.io/api-type
   title: API Documentation
 
-istio_namespace: "" # default is where Kiali is installed
-
 auth:
   openid: {}
   openshift: {}
