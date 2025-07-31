@@ -129,17 +129,6 @@ Determine the default deployment.ingress.enabled. Disable it on k8s; enable it o
 {{- end }}
 
 {{/*
-Determine the istio namespace - default is where Kiali is installed.
-*/}}
-{{- define "kiali-server.istio_namespace" -}}
-{{- if .Values.istio_namespace }}
-  {{- .Values.istio_namespace }}
-{{- else }}
-  {{- .Release.Namespace }}
-{{- end }}
-{{- end }}
-
-{{/*
 Determine the auth strategy to use - default is "token" on Kubernetes and "openshift" on OpenShift.
 */}}
 {{- define "kiali-server.auth.strategy" -}}
