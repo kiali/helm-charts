@@ -1,0 +1,21 @@
+name: "deployment_containers_volume_readonly"
+description: "Verify secret volumes are automatically forced to read-only"
+helm_args:
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].name=volume-init"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].image=registry.access.redhat.com/ubi9/ubi-minimal:latest"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[0]=echo"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[1]=test"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].volumeMounts[0].name=kiali-secret"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].volumeMounts[0].mountPath=/test-secret"
+yq_query: ".spec.template.spec.containers[0].volumeMounts"
+expected_result: |
+  - mountPath: /test-secret
+    name: kiali-secret
+    readOnly: true
+should_fail: false
