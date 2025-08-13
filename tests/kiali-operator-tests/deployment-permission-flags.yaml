@@ -6,14 +6,18 @@ helm_args:
   - "--set"
   - "allowAdHocKialiImage=true"
   - "--set"
+  - "allowAdHocContainers=true"
+  - "--set"
   - "allowSecurityContextOverride=true"
   - "--set"
   - "allowAllAccessibleNamespaces=false"
-yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ALLOW_AD_HOC_KIALI_NAMESPACE\" or .name == \"ALLOW_AD_HOC_KIALI_IMAGE\" or .name == \"ALLOW_SECURITY_CONTEXT_OVERRIDE\" or .name == \"ALLOW_ALL_ACCESSIBLE_NAMESPACES\") | {\"name\": .name, \"value\": .value}"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ALLOW_AD_HOC_KIALI_NAMESPACE\" or .name == \"ALLOW_AD_HOC_KIALI_IMAGE\" or .name == \"ALLOW_SECURITY_CONTEXT_OVERRIDE\" or .name == \"ALLOW_ALL_ACCESSIBLE_NAMESPACES\" or .name == \"ALLOW_AD_HOC_CONTAINERS\") | {\"name\": .name, \"value\": .value}"
 expected_result: |
   name: ALLOW_AD_HOC_KIALI_NAMESPACE
   value: "false"
   name: ALLOW_AD_HOC_KIALI_IMAGE
+  value: "true"
+  name: ALLOW_AD_HOC_CONTAINERS
   value: "true"
   name: ALLOW_SECURITY_CONTEXT_OVERRIDE
   value: "true"
