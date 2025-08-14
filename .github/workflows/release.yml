@@ -175,7 +175,13 @@ jobs:
         git config user.name 'kiali-bot'
 
     - name: Build Helm charts
-      run: make -e VERSION=$RELEASE_VERSION clean build-helm-charts
+      run: |
+        if [[ "$RELEASE_TYPE" == "patch" ]]; then
+          KIALI_OPERATOR_ORG_REPO_REF="kiali/kiali-operator/$BRANCH_VERSION"
+        else
+          KIALI_OPERATOR_ORG_REPO_REF="kiali/kiali-operator/master"
+        fi
+        make -e VERSION=$RELEASE_VERSION KIALI_OPERATOR_ORG_REPO_REF=$KIALI_OPERATOR_ORG_REPO_REF clean validate-crd-sync build-helm-charts
 
     # Switch to `master` branch before updating docs/index.yaml
     - name: Checkout master
