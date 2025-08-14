@@ -89,3 +89,21 @@ build-helm-charts: .build-helm-chart-operator .build-helm-chart-server
 
 ## update-helm-repos: Adds the VERSION helm charts to the local Helm repo directory.
 update-helm-repos: .update-helm-repo-operator .update-helm-repo-server
+
+## verify-kiali-server-permissions: Downloads and runs the permission verification script from kiali-operator repo
+verify-kiali-server-permissions:
+	@printf "\n========== Verifying Kiali Server Permissions ==========\n"
+	@mkdir -p ${ROOTDIR}/hack
+	@SCRIPT_DOWNLOADED=false ;\
+	if [ ! -f "${ROOTDIR}/hack/verify-kiali-server-permissions.sh" ]; then \
+		echo "Downloading permission verification script from kiali-operator repository..." ;\
+		curl -sSL https://raw.githubusercontent.com/kiali/kiali-operator/master/hack/verify-kiali-server-permissions.sh -o ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
+		chmod +x ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
+		SCRIPT_DOWNLOADED=true ;\
+	fi ;\
+	${ROOTDIR}/hack/verify-kiali-server-permissions.sh || SCRIPT_EXIT_CODE=$$? ;\
+	if [ "$$SCRIPT_DOWNLOADED" = "true" ]; then \
+		echo "Cleaning up downloaded script..." ;\
+		rm -f ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
+	fi ;\
+	exit $${SCRIPT_EXIT_CODE:-0}

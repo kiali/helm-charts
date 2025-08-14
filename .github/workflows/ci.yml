@@ -19,6 +19,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Verify Kiali Server permissions
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
+        make verify-kiali-server-permissions
+
     - name: Build
       run: make build-helm-charts
 
