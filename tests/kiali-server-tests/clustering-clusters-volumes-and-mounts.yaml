@@ -1,0 +1,28 @@
+name: "clustering_clusters_volumes_and_mounts"
+description: "Verify clustering clusters create correct volumes and volumeMounts in deployment"
+helm_args:
+  - "--set"
+  - "clustering.clusters[0].name=cluster-east"
+  - "--set"
+  - "clustering.clusters[0].secret_name=cluster-east-secret"
+  - "--set"
+  - "clustering.clusters[1].name=cluster-west"
+  - "--set"
+  - "clustering.clusters[1].secret_name=cluster-west-secret"
+yq_query: "select(.kind == \"Deployment\") | {\"volumes\": (.spec.template.spec.volumes | map(select(.name == \"cluster-east\" or .name == \"cluster-west\"))), \"volumeMounts\": (.spec.template.spec.containers[0].volumeMounts | map(select(.name == \"cluster-east\" or .name == \"cluster-west\")))}"
+expected_result: |
+  volumes:
+    - name: cluster-east
+      secret:
+        secretName: cluster-east-secret
+    - name: cluster-west
+      secret:
+        secretName: cluster-west-secret
+  volumeMounts:
+    - name: cluster-east
+      mountPath: "/kiali-remote-cluster-secrets/cluster-east-secret"
+      readOnly: true
+    - name: cluster-west
+      mountPath: "/kiali-remote-cluster-secrets/cluster-west-secret"
+      readOnly: true
+should_fail: false

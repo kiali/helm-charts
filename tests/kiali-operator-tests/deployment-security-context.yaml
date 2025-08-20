@@ -1,0 +1,15 @@
+name: "deployment_security_context"
+description: "Verify custom security context configuration"
+helm_args:
+  - "--set"
+  - "securityContext.runAsUser=1001"
+  - "--set"
+  - "securityContext.runAsGroup=1001"
+  - "--set"
+  - "securityContext.fsGroup=1001"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].securityContext"
+expected_result: |
+  fsGroup: 1001
+  runAsGroup: 1001
+  runAsUser: 1001
+should_fail: false

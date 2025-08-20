@@ -1,0 +1,11 @@
+name: "deployment_extra_labels"
+description: "Verify extra labels are applied to deployment"
+helm_args:
+  - "--set"
+  - "deployment.extra_labels.custom-label=custom-value"
+  - "--set"
+  - "deployment.extra_labels.deployment-type=kiali-server"
+yq_query: "select(.kind == \"Deployment\") | .metadata.labels.\"custom-label\""
+expected_result: |
+  custom-value
+should_fail: false

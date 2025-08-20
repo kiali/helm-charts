@@ -1,0 +1,9 @@
+name: "login_token_signing_key"
+description: "Verify custom login token signing key is stored in ConfigMap"
+helm_args:
+  - "--set"
+  - "login_token.signing_key=mycustomsigningkey12345678901234567890"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .login_token.signing_key"
+expected_result: |
+  mycustomsigningkey12345678901234567890
+should_fail: false

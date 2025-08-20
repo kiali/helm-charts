@@ -1,0 +1,13 @@
+name: "cr_creation_cluster_wide_access_override"
+description: "Verify ALLOW_ALL_ACCESSIBLE_NAMESPACES env var is overridden when CR has cluster_wide_access=true"
+helm_args:
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.spec.deployment.cluster_wide_access=true"
+  - "--set"
+  - "allowAllAccessibleNamespaces=false"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ALLOW_ALL_ACCESSIBLE_NAMESPACES\") | .value"
+expected_result: |
+  true
+should_fail: false

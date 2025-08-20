@@ -1,0 +1,23 @@
+name: "deployment_custom_env"
+description: "Verify custom environment variables are added"
+helm_args:
+  - "--set"
+  - "env[0].name=CUSTOM_VAR1"
+  - "--set"
+  - "env[0].value=custom-value1"
+  - "--set"
+  - "env[1].name=CUSTOM_VAR2"
+  - "--set"
+  - "env[1].valueFrom.secretKeyRef.name=my-secret"
+  - "--set"
+  - "env[1].valueFrom.secretKeyRef.key=secret-key"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"CUSTOM_VAR1\" or .name == \"CUSTOM_VAR2\")"
+expected_result: |
+  name: CUSTOM_VAR1
+  value: custom-value1
+  name: CUSTOM_VAR2
+  valueFrom:
+    secretKeyRef:
+      key: secret-key
+      name: my-secret
+should_fail: false

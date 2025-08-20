@@ -1,0 +1,20 @@
+name: "deployment_topology_spread_constraints"
+description: "Verify topology spread constraints configuration"
+helm_args:
+  - "--set"
+  - "deployment.topology_spread_constraints[0].maxSkew=1"
+  - "--set"
+  - "deployment.topology_spread_constraints[0].topologyKey=kubernetes.io/hostname"
+  - "--set"
+  - "deployment.topology_spread_constraints[0].whenUnsatisfiable=DoNotSchedule"
+  - "--set"
+  - "deployment.topology_spread_constraints[0].labelSelector.matchLabels.app=kiali"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.topologySpreadConstraints"
+expected_result: |
+  - labelSelector:
+      matchLabels:
+        app: kiali
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule
+should_fail: false

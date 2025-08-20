@@ -1,0 +1,9 @@
+name: "deployment_replicas"
+description: "Verify custom replica count is set correctly"
+helm_args:
+  - "--set"
+  - "replicaCount=3"
+yq_query: "select(.kind == \"Deployment\") | .spec.replicas"
+expected_result: |
+  3
+should_fail: false

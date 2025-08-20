@@ -1,0 +1,19 @@
+name: "deployment_affinity_node"
+description: "Verify node affinity configuration"
+helm_args:
+  - "--set"
+  - "deployment.affinity.node.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=kubernetes.io/arch"
+  - "--set"
+  - "deployment.affinity.node.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In"
+  - "--set"
+  - "deployment.affinity.node.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=amd64"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.affinity.nodeAffinity"
+expected_result: |
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+              - amd64
+should_fail: false

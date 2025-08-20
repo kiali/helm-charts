@@ -1,0 +1,12 @@
+name: "deployment_configmap_annotations"
+description: "Verify ConfigMap annotations are applied"
+helm_args:
+  - "--set"
+  - "deployment.configmap_annotations.config-annotation=config-value"
+  - "--set"
+  - "deployment.configmap_annotations.owner=platform-team"
+yq_query: "select(.kind == \"ConfigMap\") | .metadata.annotations | with_entries(select(.key == \"config-annotation\" or .key == \"owner\"))"
+expected_result: |
+  config-annotation: config-value
+  owner: platform-team
+should_fail: false

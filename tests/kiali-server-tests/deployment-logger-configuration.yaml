@@ -1,0 +1,22 @@
+name: "deployment_logger_configuration"
+description: "Verify logger configuration environment variables"
+helm_args:
+  - "--set"
+  - "deployment.logger.log_level=debug"
+  - "--set"
+  - "deployment.logger.log_format=json"
+  - "--set"
+  - "deployment.logger.time_field_format=2006-01-02 15:04:05"
+  - "--set"
+  - "deployment.logger.sampler_rate=0.5"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env | map(select(.name == \"LOG_LEVEL\" or .name == \"LOG_FORMAT\" or .name == \"LOG_TIME_FIELD_FORMAT\" or .name == \"LOG_SAMPLER_RATE\"))"
+expected_result: |
+  - name: LOG_LEVEL
+    value: "debug"
+  - name: LOG_FORMAT
+    value: "json"
+  - name: LOG_TIME_FIELD_FORMAT
+    value: "2006-01-02 15:04:05"
+  - name: LOG_SAMPLER_RATE
+    value: "0.5"
+should_fail: false

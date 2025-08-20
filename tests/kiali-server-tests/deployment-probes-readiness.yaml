@@ -1,0 +1,12 @@
+name: "deployment_probes_readiness"
+description: "Verify readiness probe configuration"
+helm_args:
+  - "--set"
+  - "deployment.probes.readiness.initial_delay_seconds=15"
+  - "--set"
+  - "deployment.probes.readiness.period_seconds=45"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].readinessProbe | {\"initialDelaySeconds\": .initialDelaySeconds, \"periodSeconds\": .periodSeconds}"
+expected_result: |
+  initialDelaySeconds: 15
+  periodSeconds: 45
+should_fail: false

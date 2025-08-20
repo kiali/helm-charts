@@ -1,0 +1,19 @@
+name: "deployment_remote_cluster_resources_only"
+description: "Verify only remote cluster resources are created when remote_cluster_resources_only is true, even with HPA and Ingress enabled"
+helm_args:
+  - "--set"
+  - "deployment.remote_cluster_resources_only=true"
+  - "--set"
+  - "deployment.hpa.spec.maxReplicas=5"
+  - "--set"
+  - "deployment.ingress.enabled=true"
+yq_query: ".kind"
+expected_result: |
+  ServiceAccount
+  ---
+  ConfigMap
+  ---
+  ClusterRole
+  ---
+  ClusterRoleBinding
+should_fail: false

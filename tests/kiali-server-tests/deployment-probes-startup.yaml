@@ -1,0 +1,15 @@
+name: "deployment_probes_startup"
+description: "Verify startup probe configuration"
+helm_args:
+  - "--set"
+  - "deployment.probes.startup.initial_delay_seconds=60"
+  - "--set"
+  - "deployment.probes.startup.period_seconds=20"
+  - "--set"
+  - "deployment.probes.startup.failure_threshold=10"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].startupProbe | {\"initialDelaySeconds\": .initialDelaySeconds, \"periodSeconds\": .periodSeconds, \"failureThreshold\": .failureThreshold}"
+expected_result: |
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  failureThreshold: 10
+should_fail: false

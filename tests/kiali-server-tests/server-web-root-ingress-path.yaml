@@ -1,0 +1,11 @@
+name: "server_web_root_ingress_path"
+description: "Verify web root configuration affects Ingress path routing"
+helm_args:
+  - "--set"
+  - "server.web_root=/custom-kiali"
+  - "--set"
+  - "deployment.ingress.enabled=true"
+yq_query: "select(.kind == \"Ingress\") | .spec.rules[0].http.paths[0].path"
+expected_result: |
+  /custom-kiali
+should_fail: false

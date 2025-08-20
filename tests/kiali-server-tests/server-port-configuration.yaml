@@ -1,0 +1,9 @@
+name: "server_port_configuration"
+description: "Verify server port configuration for api-port container port"
+helm_args:
+  - "--set"
+  - "server.port=8080"
+yq_query: "select(.kind == \"Deployment\") | (.spec.template.spec.containers[0].ports[] | select(.name == \"api-port\") | .containerPort)"
+expected_result: |
+  8080
+should_fail: false

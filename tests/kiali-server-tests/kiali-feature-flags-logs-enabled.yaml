@@ -1,0 +1,14 @@
+name: "kiali_feature_flags_logs_enabled"
+description: "Verify logs-tab feature enabled includes pods/log permissions in ClusterRole"
+helm_args:
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: "select(.kind == \"ClusterRole\") | {\"name\": .metadata.name, \"hasPodLogPermission\": (.rules[0].resources | contains([\"pods/log\"])), \"firstRuleResources\": .rules[0].resources}"
+expected_result: |
+  name: kiali
+  hasPodLogPermission: true
+  firstRuleResources:
+    - configmaps
+    - endpoints
+    - pods/log
+should_fail: false

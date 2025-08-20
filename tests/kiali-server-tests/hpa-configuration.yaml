@@ -1,0 +1,35 @@
+name: "hpa_configuration"
+description: "Verify HPA is created when spec is provided"
+helm_args:
+  - "--set"
+  - "deployment.hpa.api_version=autoscaling/v2"
+  - "--set"
+  - "deployment.hpa.spec.minReplicas=2"
+  - "--set"
+  - "deployment.hpa.spec.maxReplicas=10"
+  - "--set"
+  - "deployment.hpa.spec.metrics[0].type=Resource"
+  - "--set"
+  - "deployment.hpa.spec.metrics[0].resource.name=cpu"
+  - "--set"
+  - "deployment.hpa.spec.metrics[0].resource.target.type=Utilization"
+  - "--set"
+  - "deployment.hpa.spec.metrics[0].resource.target.averageUtilization=80"
+yq_query: "select(.kind == \"HorizontalPodAutoscaler\") | {\"apiVersion\": .apiVersion, \"spec\": {\"minReplicas\": .spec.minReplicas, \"maxReplicas\": .spec.maxReplicas, \"scaleTargetRef\": .spec.scaleTargetRef, \"metrics\": .spec.metrics}}"
+expected_result: |
+  apiVersion: autoscaling/v2
+  spec:
+    minReplicas: 2
+    maxReplicas: 10
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: kiali
+    metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 80
+            type: Utilization
+        type: Resource
+should_fail: false

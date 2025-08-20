@@ -1,0 +1,18 @@
+name: "deployment_view_only_mode_disabled"
+description: "Verify view only mode disabled creates ClusterRole with write permissions"
+helm_args:
+  - "--set"
+  - "deployment.view_only_mode=false"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: "select(.kind == \"ClusterRole\") | {\"name\": .metadata.name, \"istioVerbs\": (.rules[] | select(.apiGroups[] | test(\"istio.io\")) | .verbs)}"
+expected_result: |
+  name: kiali
+  istioVerbs:
+    - get
+    - list
+    - watch
+    - create
+    - delete
+    - patch
+should_fail: false

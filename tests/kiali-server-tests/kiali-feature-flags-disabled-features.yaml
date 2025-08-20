@@ -1,0 +1,15 @@
+name: "kiali_feature_flags_disabled_features"
+description: "Verify disabling logs-tab feature removes pods/log permissions from ClusterRole"
+helm_args:
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "kiali_feature_flags.disabled_features[0]=logs-tab"
+yq_query: "select(.kind == \"ClusterRole\") | {\"name\": .metadata.name, \"hasPodLogPermission\": (.rules[0].resources | contains([\"pods/log\"])), \"firstRuleResources\": .rules[0].resources}"
+expected_result: |
+  name: kiali
+  hasPodLogPermission: false
+  firstRuleResources:
+    - configmaps
+    - endpoints
+should_fail: false

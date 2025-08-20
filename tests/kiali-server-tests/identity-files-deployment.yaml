@@ -1,0 +1,13 @@
+name: "identity_files"
+description: "Verify identity cert file and private key file configuration changes Deployment probe schemes to HTTPS"
+helm_args:
+  - "--set"
+  - "identity.cert_file=/custom/path/cert.pem"
+  - "--set"
+  - "identity.private_key_file=/custom/path/key.pem"
+yq_query: "select(.kind == \"Deployment\") | {\"livenessProbe\": .spec.template.spec.containers[0].livenessProbe.httpGet.scheme, \"readinessProbe\": .spec.template.spec.containers[0].readinessProbe.httpGet.scheme, \"startupProbe\": .spec.template.spec.containers[0].startupProbe.httpGet.scheme}"
+expected_result: |
+  livenessProbe: HTTPS
+  readinessProbe: HTTPS
+  startupProbe: HTTPS
+should_fail: false

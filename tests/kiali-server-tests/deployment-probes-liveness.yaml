@@ -1,0 +1,12 @@
+name: "deployment_probes_liveness"
+description: "Verify liveness probe configuration"
+helm_args:
+  - "--set"
+  - "deployment.probes.liveness.initial_delay_seconds=10"
+  - "--set"
+  - "deployment.probes.liveness.period_seconds=60"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].livenessProbe | {\"initialDelaySeconds\": .initialDelaySeconds, \"periodSeconds\": .periodSeconds}"
+expected_result: |
+  initialDelaySeconds: 10
+  periodSeconds: 60
+should_fail: false

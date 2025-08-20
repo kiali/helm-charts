@@ -1,0 +1,12 @@
+name: "rbac_cluster_wide_access"
+description: "Verify ClusterRole is generated when cluster_wide_access is true"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+  - "--set"
+  - "auth.strategy=token"
+yq_query: "select(.kind == \"ClusterRole\") | {\"kind\": .kind, \"name\": .metadata.name}"
+expected_result: |
+  kind: ClusterRole
+  name: kiali-viewer
+should_fail: false

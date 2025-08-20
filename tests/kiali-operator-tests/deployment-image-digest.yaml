@@ -1,0 +1,13 @@
+name: "deployment_image_digest"
+description: "Verify image digest configuration takes precedence over tag"
+helm_args:
+  - "--set"
+  - "image.repo=quay.io/kiali/kiali-operator"
+  - "--set"
+  - "image.tag=v1.75.0"
+  - "--set"
+  - "image.digest=sha256:abcd1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].image"
+expected_result: |
+  quay.io/kiali/kiali-operator@sha256:abcd1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab:v1.75.0
+should_fail: false

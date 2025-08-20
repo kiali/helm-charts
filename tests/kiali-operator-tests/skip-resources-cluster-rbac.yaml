@@ -1,0 +1,11 @@
+name: "skip_resources_cluster_rbac"
+description: "Verify ClusterRole and ClusterRoleBinding are not created but ServiceAccount is created when skipResources includes both"
+helm_args:
+  - "--set"
+  - "skipResources={clusterrole,clusterrolebinding}"
+yq_query: ".kind"
+expected_result: |
+  ServiceAccount
+  ---
+  Deployment
+should_fail: false

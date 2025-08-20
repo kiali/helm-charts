@@ -1,0 +1,12 @@
+name: "deployment_pod_annotations"
+description: "Verify custom pod annotations are applied"
+helm_args:
+  - "--set"
+  - "podAnnotations.sidecar\\.istio\\.io/inject=false"
+  - "--set"
+  - "podAnnotations.custom-annotation=custom-value"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.metadata.annotations | {\"sidecar.istio.io/inject\": .\"sidecar.istio.io/inject\", \"custom-annotation\": .\"custom-annotation\"}"
+expected_result: |
+  sidecar.istio.io/inject: false
+  custom-annotation: custom-value
+should_fail: false

@@ -1,0 +1,14 @@
+name: "deployment_image_configuration"
+description: "Verify custom image repo, tag, and pull policy configuration"
+helm_args:
+  - "--set"
+  - "image.repo=custom.registry.com/kiali/kiali-operator"
+  - "--set"
+  - "image.tag=v1.75.0"
+  - "--set"
+  - "image.pullPolicy=IfNotPresent"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0] | {\"image\": .image, \"imagePullPolicy\": .imagePullPolicy}"
+expected_result: |
+  image: "custom.registry.com/kiali/kiali-operator:v1.75.0"
+  imagePullPolicy: IfNotPresent
+should_fail: false

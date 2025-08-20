@@ -1,0 +1,9 @@
+name: "server_metrics_disabled"
+description: "Verify metrics port is not exposed when metrics disabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=false"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].ports | map(select(.name == \"http-metrics\")) | length"
+expected_result: |
+  0
+should_fail: false

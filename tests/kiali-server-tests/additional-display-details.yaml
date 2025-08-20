@@ -1,0 +1,15 @@
+name: "additional_display_details"
+description: "Verify additional display details configuration"
+helm_args:
+  - "--set"
+  - "additional_display_details[0].annotation=custom.io/spec"
+  - "--set"
+  - "additional_display_details[0].icon_annotation=custom.io/type"
+  - "--set"
+  - "additional_display_details[0].title=Custom Documentation"
+yq_query: ".data.\"config.yaml\" | from_yaml | .additional_display_details"
+expected_result: |
+  - annotation: custom.io/spec
+    icon_annotation: custom.io/type
+    title: Custom Documentation
+should_fail: false
