@@ -1,0 +1,18 @@
+name: "clustering_clusters_configuration"
+description: "Verify clustering clusters configuration"
+helm_args:
+  - "--set"
+  - "clustering.clusters[0].name=cluster-east"
+  - "--set"
+  - "clustering.clusters[0].secret_name=cluster-east-secret"
+  - "--set"
+  - "clustering.clusters[1].name=cluster-west"
+  - "--set"
+  - "clustering.clusters[1].secret_name=cluster-west-secret"
+yq_query: ".data.\"config.yaml\" | from_yaml | .clustering.clusters"
+expected_result: |
+  - name: cluster-east
+    secret_name: cluster-east-secret
+  - name: cluster-west
+    secret_name: cluster-west-secret
+should_fail: false

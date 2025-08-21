@@ -1,0 +1,18 @@
+name: "deployment_debug_configuration"
+description: "Verify debug configuration environment variables"
+helm_args:
+  - "--set"
+  - "debug.enabled=false"
+  - "--set"
+  - "debug.verbosity=3"
+  - "--set"
+  - "debug.enableProfiler=true"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ANSIBLE_DEBUG_LOGS\" or .name == \"ANSIBLE_VERBOSITY_KIALI_KIALI_IO\" or .name == \"ANSIBLE_CONFIG\") | {\"name\": .name, \"value\": .value}"
+expected_result: |
+  name: ANSIBLE_DEBUG_LOGS
+  value: "false"
+  name: ANSIBLE_VERBOSITY_KIALI_KIALI_IO
+  value: "3"
+  name: ANSIBLE_CONFIG
+  value: "/opt/ansible/ansible-profiler.cfg"
+should_fail: false

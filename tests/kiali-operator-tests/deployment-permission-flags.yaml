@@ -1,0 +1,22 @@
+name: "deployment_permission_flags"
+description: "Verify permission-related environment variables"
+helm_args:
+  - "--set"
+  - "allowAdHocKialiNamespace=false"
+  - "--set"
+  - "allowAdHocKialiImage=true"
+  - "--set"
+  - "allowSecurityContextOverride=true"
+  - "--set"
+  - "allowAllAccessibleNamespaces=false"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ALLOW_AD_HOC_KIALI_NAMESPACE\" or .name == \"ALLOW_AD_HOC_KIALI_IMAGE\" or .name == \"ALLOW_SECURITY_CONTEXT_OVERRIDE\" or .name == \"ALLOW_ALL_ACCESSIBLE_NAMESPACES\") | {\"name\": .name, \"value\": .value}"
+expected_result: |
+  name: ALLOW_AD_HOC_KIALI_NAMESPACE
+  value: "false"
+  name: ALLOW_AD_HOC_KIALI_IMAGE
+  value: "true"
+  name: ALLOW_SECURITY_CONTEXT_OVERRIDE
+  value: "true"
+  name: ALLOW_ALL_ACCESSIBLE_NAMESPACES
+  value: "false"
+should_fail: false

@@ -1,0 +1,11 @@
+name: "server_metrics_enabled"
+description: "Verify metrics port is exposed when metrics enabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=true"
+  - "--set"
+  - "server.observability.metrics.port=9091"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].ports | map(select(.name == \"http-metrics\")) | .[0].containerPort"
+expected_result: |
+  9091
+should_fail: false

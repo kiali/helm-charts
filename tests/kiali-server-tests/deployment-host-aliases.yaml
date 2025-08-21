@@ -1,0 +1,16 @@
+name: "deployment_host_aliases"
+description: "Verify host aliases configuration"
+helm_args:
+  - "--set"
+  - "deployment.host_aliases[0].ip=192.168.1.100"
+  - "--set"
+  - "deployment.host_aliases[0].hostnames[0]=example.com"
+  - "--set"
+  - "deployment.host_aliases[0].hostnames[1]=www.example.com"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.hostAliases"
+expected_result: |
+  - hostnames:
+      - example.com
+      - www.example.com
+    ip: 192.168.1.100
+should_fail: false

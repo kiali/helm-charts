@@ -1,0 +1,9 @@
+name: "deployment_watch_namespace"
+description: "Verify WATCH_NAMESPACE environment variable configuration"
+helm_args:
+  - "--set"
+  - "watchNamespace=istio-system"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"WATCH_NAMESPACE\") | .value"
+expected_result: |
+  istio-system
+should_fail: false

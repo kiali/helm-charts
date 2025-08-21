@@ -1,0 +1,9 @@
+name: "deployment_watches_file_custom"
+description: "Verify custom watches file configuration"
+helm_args:
+  - "--set"
+  - "watchesFile=watches-k8s-ns.yaml"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"WATCHES_FILE\") | .value"
+expected_result: |
+  watches-k8s-ns.yaml
+should_fail: false

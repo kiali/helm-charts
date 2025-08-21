@@ -1,0 +1,15 @@
+name: "cr_creation_cluster_wide_access"
+description: "Verify Kiali CR cluster_wide_access setting and environment variable override"
+helm_args:
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.spec.deployment.cluster_wide_access=false"
+  - "--set"
+  - "allowAllAccessibleNamespaces=false"
+yq_query: "(select(.kind == \"Kiali\") | .spec.deployment.cluster_wide_access), (select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env[] | select(.name == \"ALLOW_ALL_ACCESSIBLE_NAMESPACES\") | .value)"
+expected_result: |
+  false
+  ---
+  false
+should_fail: false

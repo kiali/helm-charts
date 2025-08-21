@@ -1,0 +1,11 @@
+name: "deployment_image_configuration"
+description: "Verify custom image name and version configuration"
+helm_args:
+  - "--set"
+  - "deployment.image_name=custom.registry.com/kiali/kiali"
+  - "--set"
+  - "deployment.image_version=v1.75.0"
+yq_query: ".spec.template.spec.containers[0].image"
+expected_result: |
+  custom.registry.com/kiali/kiali:v1.75.0
+should_fail: false

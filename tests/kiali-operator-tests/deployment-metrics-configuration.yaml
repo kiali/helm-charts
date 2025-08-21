@@ -1,0 +1,9 @@
+name: "deployment_metrics_configuration"
+description: "Verify metrics configuration in pod annotations"
+helm_args:
+  - "--set"
+  - "metrics.enabled=false"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.metadata.annotations.\"prometheus.io/scrape\""
+expected_result: |
+  false
+should_fail: false

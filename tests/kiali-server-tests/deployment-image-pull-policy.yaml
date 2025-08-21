@@ -1,0 +1,9 @@
+name: "deployment_image_pull_policy"
+description: "Verify custom image pull policy is applied"
+helm_args:
+  - "--set"
+  - "deployment.image_pull_policy=IfNotPresent"
+yq_query: ".spec.template.spec.containers[0].imagePullPolicy"
+expected_result: |
+  IfNotPresent
+should_fail: false

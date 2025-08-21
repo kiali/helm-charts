@@ -1,0 +1,20 @@
+name: "deployment_resources"
+description: "Verify custom resource requests and limits"
+helm_args:
+  - "--set"
+  - "resources.requests.cpu=100m"
+  - "--set"
+  - "resources.requests.memory=128Mi"
+  - "--set"
+  - "resources.limits.cpu=500m"
+  - "--set"
+  - "resources.limits.memory=512Mi"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].resources"
+expected_result: |
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+should_fail: false

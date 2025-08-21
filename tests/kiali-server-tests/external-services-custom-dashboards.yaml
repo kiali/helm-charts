@@ -1,0 +1,16 @@
+name: "external_services_custom_dashboards"
+description: "Verify external services custom dashboards configuration"
+helm_args:
+  - "--set"
+  - "external_services.custom_dashboards.enabled=true"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.url=http://prometheus:9090"
+  - "--set"
+  - "external_services.custom_dashboards.namespace_label=kubernetes_namespace"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.custom_dashboards"
+expected_result: |
+  enabled: true
+  namespace_label: kubernetes_namespace
+  prometheus:
+    url: http://prometheus:9090
+should_fail: false

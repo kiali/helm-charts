@@ -1,0 +1,15 @@
+name: "cr_creation_and_operator_deployment"
+description: "Verify that when CR creation is enabled, both operator Deployment and Kiali CR are generated correctly"
+helm_args:
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.namespace=kiali-home-namespace"
+yq_query: "(select(.kind == \"Deployment\") | .kind), (select(.kind == \"Kiali\") | {\"kind\": .kind, \"name\": .metadata.name, \"namespace\": .metadata.namespace})"
+expected_result: |
+  Deployment
+  ---
+  kind: Kiali
+  name: kiali
+  namespace: "kiali-home-namespace"
+should_fail: false

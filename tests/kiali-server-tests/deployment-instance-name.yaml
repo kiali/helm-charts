@@ -1,0 +1,9 @@
+name: "deployment_instance_name"
+description: "Verify custom instance name is applied correctly"
+helm_args:
+  - "--set"
+  - "deployment.instance_name=my-custom-kiali"
+yq_query: "select(.kind == \"Deployment\") | .metadata.name"
+expected_result: |
+  my-custom-kiali
+should_fail: false

@@ -1,0 +1,9 @@
+name: "deployment_version_label"
+description: "Verify version label is applied correctly"
+helm_args:
+  - "--set"
+  - "deployment.version_label=v1.75.0"
+yq_query: "select(.kind == \"Deployment\") | .metadata.labels.version"
+expected_result: |
+  v1.75.0
+should_fail: false

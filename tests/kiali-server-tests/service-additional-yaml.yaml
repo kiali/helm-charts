@@ -1,0 +1,11 @@
+name: "service_additional_yaml_combined"
+description: "Verify additional_service_yaml correctly adds loadBalancerIP to Service spec (as documented)"
+helm_args:
+  - "--set"
+  - "deployment.service_type=LoadBalancer"
+  - "--set"
+  - "deployment.additional_service_yaml.loadBalancerIP=78.11.24.19"
+yq_query: "select(.kind == \"Service\") | .spec.loadBalancerIP"
+expected_result: |
+  78.11.24.19
+should_fail: false

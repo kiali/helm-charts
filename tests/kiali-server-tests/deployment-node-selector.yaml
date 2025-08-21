@@ -1,0 +1,12 @@
+name: "deployment_node_selector"
+description: "Verify node selector configuration"
+helm_args:
+  - "--set"
+  - "deployment.node_selector.kubernetes\\.io/arch=amd64"
+  - "--set"
+  - "deployment.node_selector.node-type=worker"
+yq_query: ".spec.template.spec.nodeSelector"
+expected_result: |
+  kubernetes.io/arch: amd64
+  node-type: worker
+should_fail: false

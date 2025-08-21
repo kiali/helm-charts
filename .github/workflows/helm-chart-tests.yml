@@ -1,0 +1,92 @@
+name: Kiali Helm Chart Tests
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'kiali-server/**'
+      - 'kiali-operator/**'
+      - 'tests/**'
+      - '.github/workflows/helm-chart-tests.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'kiali-server/**'
+      - 'kiali-operator/**'
+      - 'tests/**'
+      - '.github/workflows/helm-chart-tests.yml'
+
+env:
+  HELM_VERSION: v3.14.0
+  YQ_VERSION: v4.40.5
+
+jobs:
+  kiali-server-helm-tests:
+    name: Kiali Server Helm Chart Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: ${{ env.HELM_VERSION }}
+
+    - name: Install yq
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
+
+    - name: Verify prerequisites
+      run: |
+        helm version
+        yq --version
+
+    - name: Run Kiali Server Helm Chart Tests
+      run: |
+        ./tests/run-helm-chart-tests.sh --debug true
+
+    - name: Upload server test artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: server-test-artifacts
+        path: /tmp/kiali-helm-tests/
+        retention-days: 3
+
+  kiali-operator-helm-tests:
+    name: Kiali Operator Helm Chart Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: ${{ env.HELM_VERSION }}
+
+    - name: Install yq
+      run: |
+        sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
+
+    - name: Verify prerequisites
+      run: |
+        helm version
+        yq --version
+
+    - name: Run Kiali Operator Helm Chart Tests
+      run: |
+        ./tests/run-helm-chart-tests.sh --test-suite operator --debug true
+
+    - name: Upload operator test artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: operator-test-artifacts
+        path: /tmp/kiali-helm-tests/
+        retention-days: 3

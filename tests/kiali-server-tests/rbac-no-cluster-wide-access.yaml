@@ -1,0 +1,17 @@
+name: "rbac_no_cluster_wide_access"
+description: "Verify no ClusterRole or Role is generated when cluster_wide_access is false (only ServiceAccount, ConfigMap, Service, Deployment)"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "auth.strategy=token"
+yq_query: ".kind"
+expected_result: |
+  ServiceAccount
+  ---
+  ConfigMap
+  ---
+  Service
+  ---
+  Deployment
+should_fail: false

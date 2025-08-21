@@ -1,0 +1,12 @@
+name: "deployment_node_selector"
+description: "Verify nodeSelector configuration"
+helm_args:
+  - "--set"
+  - "nodeSelector.zone=us-west-1a"
+  - "--set"
+  - "nodeSelector.instance-type=m5.large"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.nodeSelector"
+expected_result: |
+  instance-type: m5.large
+  zone: us-west-1a
+should_fail: false

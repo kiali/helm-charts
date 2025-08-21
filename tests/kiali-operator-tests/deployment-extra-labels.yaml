@@ -1,0 +1,12 @@
+name: "deployment_extra_labels"
+description: "Verify extraLabels are applied to deployment metadata"
+helm_args:
+  - "--set"
+  - "extraLabels.environment=production"
+  - "--set"
+  - "extraLabels.team=platform"
+yq_query: "select(.kind == \"Deployment\") | .metadata.labels | {\"environment\": .environment, \"team\": .team}"
+expected_result: |
+  environment: production
+  team: platform
+should_fail: false

@@ -1,0 +1,21 @@
+name: "deployment_dns"
+description: "Verify DNS policy and config configuration"
+helm_args:
+  - "--set"
+  - "deployment.dns.policy=ClusterFirstWithHostNet"
+  - "--set"
+  - "deployment.dns.config.nameservers[0]=8.8.8.8"
+  - "--set"
+  - "deployment.dns.config.nameservers[1]=8.8.4.4"
+  - "--set"
+  - "deployment.dns.config.searches[0]=example.com"
+yq_query: "select(.kind == \"Deployment\") | {\"dnsPolicy\": .spec.template.spec.dnsPolicy, \"dnsConfig\": .spec.template.spec.dnsConfig}"
+expected_result: |
+  dnsPolicy: "ClusterFirstWithHostNet"
+  dnsConfig:
+    nameservers:
+      - 8.8.8.8
+      - 8.8.4.4
+    searches:
+      - example.com
+should_fail: false

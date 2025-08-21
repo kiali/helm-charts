@@ -1,0 +1,9 @@
+name: "auth_strategy_token"
+description: "Verify auth strategy configuration in ConfigMap"
+helm_args:
+  - "--set"
+  - "auth.strategy=token"
+yq_query: ".data.\"config.yaml\" | from_yaml | .auth.strategy"
+expected_result: |
+  token
+should_fail: false

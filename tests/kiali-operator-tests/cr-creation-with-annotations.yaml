@@ -1,0 +1,15 @@
+name: "cr_creation_with_annotations"
+description: "Verify Kiali CR is created with custom annotations"
+helm_args:
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.annotations.custom-annotation=custom-value"
+  - "--set"
+  - "cr.annotations.another-annotation=another-value"
+yq_query: "select(.kind == \"Kiali\") | .metadata.annotations"
+expected_result: |
+  ansible.sdk.operatorframework.io/verbosity: "1"
+  another-annotation: another-value
+  custom-annotation: custom-value
+should_fail: false

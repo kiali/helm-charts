@@ -1,0 +1,12 @@
+name: "kiali_feature_flags_validations"
+description: "Verify Kiali feature flags validations ignore configuration"
+helm_args:
+  - "--set"
+  - "kiali_feature_flags.validations.ignore[0]=KIA1106"
+  - "--set"
+  - "kiali_feature_flags.validations.ignore[1]=KIA1301"
+yq_query: ".data.\"config.yaml\" | from_yaml | .kiali_feature_flags.validations.ignore"
+expected_result: |
+  - KIA1106
+  - KIA1301
+should_fail: false

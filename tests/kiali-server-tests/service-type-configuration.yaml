@@ -1,0 +1,9 @@
+name: "service_type_configuration"
+description: "Verify service type configuration"
+helm_args:
+  - "--set"
+  - "deployment.service_type=NodePort"
+yq_query: "select(.kind == \"Service\") | .spec.type"
+expected_result: |
+  NodePort
+should_fail: false

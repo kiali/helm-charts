@@ -1,0 +1,12 @@
+name: "deployment_pod_labels"
+description: "Verify custom pod labels are applied"
+helm_args:
+  - "--set"
+  - "deployment.pod_labels.environment=production"
+  - "--set"
+  - "deployment.pod_labels.team=platform"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.metadata.labels | {\"environment\": .environment, \"team\": .team}"
+expected_result: |
+  environment: production
+  team: platform
+should_fail: false

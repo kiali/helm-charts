@@ -1,0 +1,12 @@
+name: "deployment_pod_annotations"
+description: "Verify custom pod annotations are applied"
+helm_args:
+  - "--set"
+  - "deployment.pod_annotations.custom-annotation=custom-value"
+  - "--set"
+  - "deployment.pod_annotations.another-annotation=another-value"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.metadata.annotations | {\"custom-annotation\": .[\"custom-annotation\"], \"another-annotation\": .[\"another-annotation\"]}"
+expected_result: |
+  custom-annotation: custom-value
+  another-annotation: another-value
+should_fail: false

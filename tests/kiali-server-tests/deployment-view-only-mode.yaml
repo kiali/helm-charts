@@ -1,0 +1,15 @@
+name: "deployment_view_only_mode"
+description: "Verify view only mode creates ClusterRole with only read permissions"
+helm_args:
+  - "--set"
+  - "deployment.view_only_mode=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: "select(.kind == \"ClusterRole\") | {\"name\": .metadata.name, \"istioVerbs\": (.rules[] | select(.apiGroups[] | test(\"istio.io\")) | .verbs)}"
+expected_result: |
+  name: kiali-viewer
+  istioVerbs:
+    - get
+    - list
+    - watch
+should_fail: false

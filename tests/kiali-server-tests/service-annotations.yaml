@@ -1,0 +1,12 @@
+name: "service_annotations"
+description: "Verify service annotations are applied"
+helm_args:
+  - "--set"
+  - "deployment.service_annotations.service-annotation=service-value"
+  - "--set"
+  - "deployment.service_annotations.load-balancer=custom"
+yq_query: "select(.kind == \"Service\") | .metadata.annotations | keys | sort"
+expected_result: |
+  - load-balancer
+  - service-annotation
+should_fail: false

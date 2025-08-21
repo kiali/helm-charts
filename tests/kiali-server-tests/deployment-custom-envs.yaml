@@ -1,0 +1,18 @@
+name: "deployment_custom_envs"
+description: "Verify custom environment variables are set"
+helm_args:
+  - "--set"
+  - "deployment.custom_envs[0].name=CUSTOM_VAR1"
+  - "--set"
+  - "deployment.custom_envs[0].value=custom-value1"
+  - "--set"
+  - "deployment.custom_envs[1].name=CUSTOM_VAR2"
+  - "--set"
+  - "deployment.custom_envs[1].value=custom-value2"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].env | map(select(.name == \"CUSTOM_VAR1\" or .name == \"CUSTOM_VAR2\"))"
+expected_result: |
+  - name: "CUSTOM_VAR1"
+    value: "custom-value1"
+  - name: "CUSTOM_VAR2"
+    value: "custom-value2"
+should_fail: false

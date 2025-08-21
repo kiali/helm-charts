@@ -1,0 +1,11 @@
+name: "server_web_root"
+description: "Verify web root configuration affects Deployment health check probes"
+helm_args:
+  - "--set"
+  - "server.web_root=/custom-kiali"
+yq_query: "select(.kind == \"Deployment\") | {\"readinessProbe\": .spec.template.spec.containers[0].readinessProbe.httpGet.path, \"livenessProbe\": .spec.template.spec.containers[0].livenessProbe.httpGet.path, \"startupProbe\": .spec.template.spec.containers[0].startupProbe.httpGet.path}"
+expected_result: |
+  readinessProbe: /custom-kiali/healthz
+  livenessProbe: /custom-kiali/healthz
+  startupProbe: /custom-kiali/healthz
+should_fail: false

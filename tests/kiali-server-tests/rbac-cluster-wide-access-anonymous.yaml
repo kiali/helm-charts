@@ -1,0 +1,12 @@
+name: "rbac_cluster_wide_access_anonymous"
+description: "Verify 'kiali' ClusterRole is generated when cluster_wide_access is true and auth.strategy is anonymous"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: "select(.kind == \"ClusterRole\") | {\"kind\": .kind, \"name\": .metadata.name}"
+expected_result: |
+  kind: ClusterRole
+  name: kiali
+should_fail: false

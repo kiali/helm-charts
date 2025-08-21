@@ -1,0 +1,9 @@
+name: "deployment_priority_class"
+description: "Verify priority class name is set correctly"
+helm_args:
+  - "--set"
+  - "deployment.priority_class_name=high-priority"
+yq_query: ".spec.template.spec.priorityClassName"
+expected_result: |
+  high-priority
+should_fail: false

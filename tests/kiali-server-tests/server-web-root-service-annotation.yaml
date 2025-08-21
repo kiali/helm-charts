@@ -1,0 +1,13 @@
+name: "server_web_root_service_annotation"
+description: "Verify web root configuration affects Service external URL annotation"
+helm_args:
+  - "--set"
+  - "server.web_root=/custom-kiali"
+  - "--set"
+  - "server.web_fqdn=kiali.example.com"
+  - "--set"
+  - "server.web_schema=https"
+yq_query: "select(.kind == \"Service\") | .metadata.annotations[\"kiali.io/external-url\"]"
+expected_result: |
+  https://kiali.example.com/custom-kiali
+should_fail: false

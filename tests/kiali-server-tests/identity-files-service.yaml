@@ -1,0 +1,12 @@
+name: "identity_files_service"
+description: "Verify identity files configuration affects Service port configuration"
+helm_args:
+  - "--set"
+  - "identity.cert_file=/custom/path/cert.pem"
+  - "--set"
+  - "identity.private_key_file=/custom/path/key.pem"
+yq_query: "select(.kind == \"Service\") | .spec.ports[0] | {\"name\": .name, \"appProtocol\": .appProtocol}"
+expected_result: |
+  name: tcp
+  appProtocol: https
+should_fail: false

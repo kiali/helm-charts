@@ -1,0 +1,12 @@
+name: "auth_openid_configuration"
+description: "Verify OpenID configuration in ConfigMap"
+helm_args:
+  - "--set"
+  - "auth.openid.client_id=kiali-client"
+  - "--set"
+  - "auth.openid.issuer_uri=https://auth.example.com"
+yq_query: ".data.\"config.yaml\" | from_yaml | .auth.openid"
+expected_result: |
+  client_id: kiali-client
+  issuer_uri: https://auth.example.com
+should_fail: false

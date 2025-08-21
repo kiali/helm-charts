@@ -1,0 +1,9 @@
+name: "external_services_istio_root_namespace"
+description: "Verify external services Istio root namespace configuration"
+helm_args:
+  - "--set"
+  - "external_services.istio.root_namespace=istio-control-plane"
+yq_query: ".data.\"config.yaml\" | from_yaml | .external_services.istio.root_namespace"
+expected_result: |
+  istio-control-plane
+should_fail: false
