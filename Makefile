@@ -35,31 +35,36 @@ clean:
 clean-charts:
 	@rm -rf ${OUTDIR}/charts
 
+# Shared function to download helm binary
+.download-helm-binary:
+	@echo "Downloading helm binary to ${OUTDIR}/helm-install/helm"
+	@mkdir -p "${OUTDIR}/helm-install"
+	@os=$$(uname -s | tr '[:upper:]' '[:lower:]') ;\
+	arch="" ;\
+	case $$(uname -m) in \
+	    i386)   arch="386" ;; \
+	    i686)   arch="386" ;; \
+	    x86_64) arch="amd64" ;; \
+	    arm) arch="arm" ;; \
+	    arm64|aarch64) arch="arm64" ;; \
+	esac ;\
+	cd "${OUTDIR}/helm-install" ;\
+	curl -L "https://get.helm.sh/helm-${HELM_VERSION}-$${os}-$${arch}.tar.gz" > "${OUTDIR}/helm-install/helm.tar.gz" ;\
+	tar xzf "${OUTDIR}/helm-install/helm.tar.gz" ;\
+	mv "${OUTDIR}/helm-install/$${os}-$${arch}/helm" "${OUTDIR}/helm-install/helm" ;\
+	chmod +x "${OUTDIR}/helm-install/helm" ;\
+	"${OUTDIR}/helm-install/helm" version ;\
+	rm -rf "${OUTDIR}/helm-install/$${os}-$${arch}" "${OUTDIR}/helm-install/helm.tar.gz"
+
 # Check if helm is available in PATH, if not set up download
 ifeq ($(shell which helm 2>/dev/null),)
 HELM = ${OUTDIR}/helm-install/helm
 .download-helm-if-needed:
 	@echo "Helm not found in PATH. Will use or download to ${OUTDIR}/helm-install/helm"
-	@mkdir -p "${OUTDIR}/helm-install"
 	@if [ -x "${OUTDIR}/helm-install/helm" ]; then \
 	  echo "Will use the one found here: ${OUTDIR}/helm-install/helm" ;\
 	else \
-	  echo "The binary will be downloaded to ${OUTDIR}/helm-install/helm" ;\
-	  os=$$(uname -s | tr '[:upper:]' '[:lower:]') ;\
-	  arch="" ;\
-	  case $$(uname -m) in \
-	      i386)   arch="386" ;; \
-	      i686)   arch="386" ;; \
-	      x86_64) arch="amd64" ;; \
-	      arm) arch="arm" ;; \
-	      arm64|aarch64) arch="arm64" ;; \
-	  esac ;\
-	  cd "${OUTDIR}/helm-install" ;\
-	  curl -L "https://get.helm.sh/helm-${HELM_VERSION}-$${os}-$${arch}.tar.gz" > "${OUTDIR}/helm-install/helm.tar.gz" ;\
-	  tar xzf "${OUTDIR}/helm-install/helm.tar.gz" ;\
-	  mv "${OUTDIR}/helm-install/$${os}-$${arch}/helm" "${OUTDIR}/helm-install/helm" ;\
-	  chmod +x "${OUTDIR}/helm-install/helm" ;\
-	  rm -rf "${OUTDIR}/helm-install/$${os}-$${arch}" "${OUTDIR}/helm-install/helm.tar.gz" ;\
+	  $(MAKE) .download-helm-binary ;\
 	fi
 	@echo Will use this helm executable: ${HELM}
 else
@@ -67,6 +72,7 @@ HELM = helm
 .download-helm-if-needed:
 	@echo "Using helm from PATH: $(shell which helm)"
 	@echo Will use this helm executable: ${HELM}
+	${HELM} version
 endif
 
 .build-helm-chart-server: .download-helm-if-needed
