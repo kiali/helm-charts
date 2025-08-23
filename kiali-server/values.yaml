@@ -41,9 +41,9 @@ clustering:
   clusters: []
 
 deployment:
-  # The operator will apply a restrictive security context to user-defined initContainers and will prevent
+  # The operator will apply a restrictive security context to user-defined containers and will prevent
   # write access to secret-backed volumes. These restrictions cannot be overridden.
-  additional_pod_init_containers_yaml: []
+  additional_pod_containers_yaml: []
   additional_service_yaml: {}
   affinity:
     node: {}

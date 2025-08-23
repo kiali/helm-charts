@@ -104,8 +104,8 @@ spec:
         - name: ALLOW_AD_HOC_OSSMCONSOLE_IMAGE
           value: {{ .Values.allowAdHocOSSMConsoleImage | quote }}
 {{- end }}
-        - name: ALLOW_AD_HOC_INIT_CONTAINERS
-          value: {{ .Values.allowAdHocInitContainers | quote }}
+        - name: ALLOW_AD_HOC_CONTAINERS
+          value: {{ .Values.allowAdHocContainers | quote }}
         - name: ALLOW_SECURITY_CONTEXT_OVERRIDE
           value: {{ .Values.allowSecurityContextOverride | quote }}
         - name: ALLOW_ALL_ACCESSIBLE_NAMESPACES
