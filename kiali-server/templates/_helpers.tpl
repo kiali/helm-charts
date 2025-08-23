@@ -203,11 +203,11 @@ This aborts if .Values.skipResources has invalid values.
 {{- end }}
 
 {{/*
-Apply security guardrails to user-defined initContainers.
+Apply security guardrails to user-defined containers.
 This enforces the same restrictive security context as the main Kiali container,
 ensures secret-backed volumes are mounted read-only, and validates volume mount security.
 */}}
-{{- define "kiali-server.secureInitContainers" -}}
+{{- define "kiali-server.secureContainers" -}}
 {{- $securedContainers := list }}
 {{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
 {{- /* Identify secret-backed volumes dynamically */ -}}
@@ -228,18 +228,18 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
     {{- $secretVolumes = append $secretVolumes .name }}
   {{- end }}
 {{- end }}
-{{- /* Validate initContainers don't mount secret volumes read-write */ -}}
-{{- range .Values.deployment.additional_pod_init_containers_yaml }}
+{{- /* Validate containers don't mount secret volumes read-write */ -}}
+{{- range .Values.deployment.additional_pod_containers_yaml }}
   {{- if hasKey . "volumeMounts" }}
     {{- range .volumeMounts }}
       {{- if and (has .name $secretVolumes) (hasKey . "readOnly") (not .readOnly) }}
-        {{- fail (printf "User-defined initContainer cannot mount secret-backed volume [%s] as read-write. This volume must be mounted read-only for security." .name) }}
+        {{- fail (printf "User-defined container cannot mount secret-backed volume [%s] as read-write. This volume must be mounted read-only for security." .name) }}
       {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
-{{- /* Apply security guardrails to each initContainer */ -}}
-{{- range .Values.deployment.additional_pod_init_containers_yaml }}
+{{- /* Apply security guardrails to each container */ -}}
+{{- range .Values.deployment.additional_pod_containers_yaml }}
   {{- $container := . }}
   {{- /* Apply mandatory security context */ -}}
   {{- $container = mergeOverwrite $container (dict "securityContext" $mandatorySecurityContext) }}
