@@ -297,11 +297,6 @@ rules:
   {{- if eq .Values.onlyViewOnlyMode false }}
   - patch
   {{- end }}
-- apiGroups: ["project.openshift.io"]
-  resources:
-  - projects
-  verbs:
-  - get
 - apiGroups: ["route.openshift.io"]
   resources:
   - routes
