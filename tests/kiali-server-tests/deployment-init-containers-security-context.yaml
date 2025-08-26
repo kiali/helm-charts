@@ -1,0 +1,23 @@
+name: "deployment_init_containers_security_context"
+description: "Verify initContainers receive mandatory security context"
+helm_args:
+  - "--set"
+  - "deployment.additional_pod_init_containers_yaml[0].name=basic-init"
+  - "--set"
+  - "deployment.additional_pod_init_containers_yaml[0].image=registry.access.redhat.com/ubi9/ubi-minimal:latest"
+  - "--set"
+  - "deployment.additional_pod_init_containers_yaml[0].command[0]=sh"
+  - "--set"
+  - "deployment.additional_pod_init_containers_yaml[0].command[1]=-c"
+  - "--set"
+  - "deployment.additional_pod_init_containers_yaml[0].command[2]=echo hello"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.initContainers[0].securityContext"
+expected_result: |
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+should_fail: false

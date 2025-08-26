@@ -64,6 +64,10 @@ spec:
       {{- toYaml .Values.deployment.dns.config | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.deployment.additional_pod_init_containers_yaml }}
+      initContainers:
+      {{- include "kiali-server.secureInitContainers" . | nindent 6 }}
+      {{- end }}
       containers:
       {{- if .Values.deployment.additional_pod_containers_yaml }}
       {{- include "kiali-server.secureContainers" . | nindent 6 }}
