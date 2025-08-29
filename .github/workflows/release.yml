@@ -181,6 +181,11 @@ jobs:
         else
           KIALI_OPERATOR_ORG_REPO_REF="kiali/kiali-operator/master"
         fi
+
+        echo "Validating CRDs against kiali-operator reference: $KIALI_OPERATOR_ORG_REPO_REF"
+
+        # The validate-crd-sync target will download golden CRDs from the operator repo and validate
+        # If this fails, it means the helm-charts CRDs are out of sync and the release cannot proceed
         make -e VERSION=$RELEASE_VERSION KIALI_OPERATOR_ORG_REPO_REF=$KIALI_OPERATOR_ORG_REPO_REF clean validate-crd-sync build-helm-charts
 
     # Switch to `master` branch before updating docs/index.yaml

@@ -40,12 +40,12 @@ validate-crd-sync:
 		echo "ERROR: Failed to download golden Kiali CRD from kiali-operator repository"; \
 		exit 1; \
 	fi && \
-	echo "Creating expected helm-charts version..." && \
-	echo "---" > $$temp_dir/expected-helm-kiali.yaml && \
-	cat $$temp_dir/golden-kiali.yaml >> $$temp_dir/expected-helm-kiali.yaml && \
-	echo "..." >> $$temp_dir/expected-helm-kiali.yaml && \
-	echo "Comparing with local CRD..." && \
-	if ! diff -q $$temp_dir/expected-helm-kiali.yaml kiali-operator/crds/crds.yaml >/dev/null 2>&1; then \
+	echo "Creating expected helm-charts version (Kiali CRD only)..." && \
+	echo "---" > "$$temp_dir/expected-helm-kiali.yaml" && \
+	cat "$$temp_dir/golden-kiali.yaml" >> "$$temp_dir/expected-helm-kiali.yaml" && \
+	echo "..." >> "$$temp_dir/expected-helm-kiali.yaml" && \
+	echo "Comparing with local Kiali CRD..." && \
+	if ! diff -q "$$temp_dir/expected-helm-kiali.yaml" kiali-operator/crds/crds.yaml >/dev/null 2>&1; then \
 		echo ""; \
 		echo "ERROR: Local Kiali CRD is out of sync with golden copy!"; \
 		echo ""; \
@@ -53,7 +53,41 @@ validate-crd-sync:
 		echo "You can do this by running 'make sync-crds' here or from within the kiali-operator repository."; \
 		exit 1; \
 	fi && \
-	echo "✓ Kiali CRD is in sync with golden copy"
+	echo "Downloading golden OSSMConsole CRD from kiali-operator repository (ref: ${KIALI_OPERATOR_ORG_REPO_REF})..." && \
+	if ! curl -f -s -L "https://raw.githubusercontent.com/${KIALI_OPERATOR_ORG_REPO_REF}/crd-docs/crd/kiali.io_ossmconsoles.yaml" -o "$$temp_dir/golden-ossmconsole.yaml"; then \
+		echo "ERROR: Failed to download golden OSSMConsole CRD from kiali-operator repository"; \
+		exit 1; \
+	fi && \
+	echo "Validating OSSMConsole CRD template..." && \
+	if [ -f "kiali-operator/templates/ossmconsole-crd.yaml" ]; then \
+		template_file="kiali-operator/templates/ossmconsole-crd.yaml"; \
+		start_line=$$(grep -n "^---$$" "$$template_file" | head -1 | cut -d: -f1); \
+		if [ -z "$$start_line" ]; then \
+			echo "ERROR: Could not find YAML document start marker --- in $$template_file"; \
+			exit 1; \
+		fi; \
+		end_line=$$(grep -n "^\\.\\.\\.$$" "$$template_file" | tail -1 | cut -d: -f1); \
+		if [ -n "$$end_line" ]; then \
+			end_content_line=$$((end_line - 1)); \
+		else \
+			after_crd_line=$$(grep -n "^{{-" "$$template_file" | tail -1 | cut -d: -f1); \
+			if [ -n "$$after_crd_line" ]; then \
+				end_content_line=$$((after_crd_line - 1)); \
+			else \
+				end_content_line=$$(wc -l < "$$template_file"); \
+			fi; \
+		fi; \
+		start_content_line=$$((start_line + 1)); \
+		sed -n "$${start_content_line},$${end_content_line}p" "$$template_file" > "$$temp_dir/template-crd-content.yaml"; \
+		if ! diff -q "$$temp_dir/golden-ossmconsole.yaml" "$$temp_dir/template-crd-content.yaml" >/dev/null 2>&1; then \
+			echo "ERROR: OSSMConsole CRD template content is out of sync with golden copy!"; \
+			echo "Please run 'make sync-crds' here or from within the kiali-operator repository."; \
+			exit 1; \
+		fi; \
+		echo "✓ Kiali CRD and OSSMConsole CRD template are in sync with golden copies"; \
+	else \
+		echo "✓ Kiali CRD is in sync with golden copy - OSSMConsole template not found"; \
+	fi
 
 ## sync-crds: Updates local CRDs with golden copies from kiali-operator repo
 sync-crds:
@@ -65,11 +99,40 @@ sync-crds:
 		echo "ERROR: Failed to download golden Kiali CRD from kiali-operator repository"; \
 		exit 1; \
 	fi && \
-	echo "Creating helm-charts version with YAML separators..." && \
+	echo "Creating helm-charts version with YAML separators (Kiali CRD only)..." && \
 	echo "---" > kiali-operator/crds/crds.yaml && \
 	cat $$temp_dir/golden-kiali.yaml >> kiali-operator/crds/crds.yaml && \
 	echo "..." >> kiali-operator/crds/crds.yaml && \
-	echo "✓ Updated kiali-operator/crds/crds.yaml with golden copy"
+	echo "Downloading golden OSSMConsole CRD (ref: ${KIALI_OPERATOR_ORG_REPO_REF})..." && \
+	if ! curl -f -s -L "https://raw.githubusercontent.com/${KIALI_OPERATOR_ORG_REPO_REF}/crd-docs/crd/kiali.io_ossmconsoles.yaml" -o "$$temp_dir/golden-ossmconsole.yaml"; then \
+		echo "ERROR: Failed to download golden OSSMConsole CRD from kiali-operator repository"; \
+		exit 1; \
+	fi && \
+	echo "Updating OSSMConsole CRD template (preserving template structure)..." && \
+	if [ -f "kiali-operator/templates/ossmconsole-crd.yaml" ]; then \
+		template_file="kiali-operator/templates/ossmconsole-crd.yaml"; \
+		temp_file=$$(mktemp); \
+		start_line=$$(grep -n "^---$$" "$$template_file" | head -1 | cut -d: -f1); \
+		if [ -z "$$start_line" ]; then \
+			echo "ERROR: Could not find YAML document start marker --- in $$template_file"; \
+			exit 1; \
+		fi; \
+		head -n "$$start_line" "$$template_file" > "$$temp_file"; \
+		cat "$$temp_dir/golden-ossmconsole.yaml" >> "$$temp_file"; \
+		end_line=$$(grep -n "^\\.\\.\\.$$" "$$template_file" | tail -1 | cut -d: -f1); \
+		if [ -n "$$end_line" ]; then \
+			tail -n +"$$end_line" "$$template_file" >> "$$temp_file"; \
+		else \
+			after_crd_lines=$$(grep -n "^{{-" "$$template_file" | tail -1 | cut -d: -f1); \
+			if [ -n "$$after_crd_lines" ]; then \
+				tail -n +"$$after_crd_lines" "$$template_file" >> "$$temp_file"; \
+			fi; \
+		fi; \
+		mv "$$temp_file" "$$template_file"; \
+		echo "✓ Updated kiali-operator/crds/crds.yaml with Kiali CRD and kiali-operator/templates/ossmconsole-crd.yaml"; \
+	else \
+		echo "✓ Updated kiali-operator/crds/crds.yaml with Kiali CRD - OSSMConsole template not found"; \
+	fi
 
 ## clean: Cleans _output
 clean:
