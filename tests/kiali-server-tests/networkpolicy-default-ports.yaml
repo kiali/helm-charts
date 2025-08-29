@@ -1,0 +1,7 @@
+name: "networkpolicy_default_ports"
+description: "Verify NetworkPolicy includes default server port and metrics port"
+helm_args: []
+yq_query: 'select(.kind == "NetworkPolicy") | .spec.ingress[0].ports[].port'
+expected_result: |
+  20001 9090
+should_fail: false
