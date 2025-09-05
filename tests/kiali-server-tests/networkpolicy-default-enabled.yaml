@@ -1,0 +1,7 @@
+name: "networkpolicy_default_enabled"
+description: "Verify NetworkPolicy is created by default"
+helm_args: []
+yq_query: 'select(.kind == "NetworkPolicy") | .metadata.name'
+expected_result: |
+  kiali
+should_fail: false
