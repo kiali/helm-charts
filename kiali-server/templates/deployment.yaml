@@ -64,10 +64,17 @@ spec:
       {{- toYaml .Values.deployment.dns.config | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.deployment.additional_pod_init_containers_yaml }}
+      initContainers:
+      {{- include "kiali-server.secureInitContainers" . | nindent 6 }}
+      {{- end }}
       containers:
+      {{- if .Values.deployment.additional_pod_containers_yaml }}
+      {{- include "kiali-server.secureContainers" . | nindent 6 }}
+      {{- end }}
       - image: "{{ .Values.deployment.image_name }}{{ if .Values.deployment.image_digest }}@{{ .Values.deployment.image_digest }}{{ end }}:{{ .Values.deployment.image_version }}"
         imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" }}
-        name: {{ include "kiali-server.fullname" . }}
+        name: kiali
         command:
         - "/opt/kiali/kiali"
         - "-config"
