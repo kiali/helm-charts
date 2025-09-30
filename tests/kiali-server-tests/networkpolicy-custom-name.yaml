@@ -1,0 +1,9 @@
+name: "networkpolicy_custom_name"
+description: "Verify NetworkPolicy uses custom instance name when configured"
+helm_args:
+  - "--set"
+  - "deployment.instance_name=my-kiali"
+yq_query: 'select(.kind == "NetworkPolicy") | .metadata.name'
+expected_result: |
+  my-kiali
+should_fail: false

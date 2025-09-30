@@ -1,0 +1,9 @@
+name: "networkpolicy_metrics_disabled"
+description: "Verify NetworkPolicy only includes server port when metrics are disabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=false"
+yq_query: 'select(.kind == "NetworkPolicy") | .spec.ingress[0].ports | length'
+expected_result: |
+  1
+should_fail: false
