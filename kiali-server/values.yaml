@@ -124,6 +124,7 @@ identity: {}
   #private_key_file:
 
 kiali_feature_flags:
+  custom_workload_types: []
   disabled_features: []
   validations:
     ignore: ["KIA1301"]
