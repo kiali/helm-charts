@@ -28,4 +28,24 @@ to have the correct permissions to access the service mesh namespaces.
 ===============
 {{- end }}
 
+{{- if or (.Values.deployment.additional_pod_containers_yaml) (.Values.deployment.additional_pod_init_containers_yaml) }}
+===============
+SECURITY AUDIT
+===============
+{{- if .Values.deployment.additional_pod_init_containers_yaml }}
+Additional initContainers have been deployed in the Kiali server pod:
+{{- range .Values.deployment.additional_pod_init_containers_yaml }}
+- {{ .name }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.deployment.additional_pod_containers_yaml }}
+Additional containers have been deployed in the Kiali server pod:
+{{- range .Values.deployment.additional_pod_containers_yaml }}
+- {{ .name }}
+{{- end }}
+{{- end }}
+===============
+{{- end }}
+
 (Helm: Chart=[{{ .Chart.Name }}], Release=[{{ .Release.Name }}], Version=[{{ .Chart.Version }}])
