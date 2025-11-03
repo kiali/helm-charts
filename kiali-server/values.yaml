@@ -9,6 +9,8 @@
 # creating these resources yourself manually; if you do not then the installation
 # will be broken. Therefore, only use this feature if you know what you are doing.
 # Valid list item values are: "clusterrole", "clusterrolebinding", "sa"
+# Note: "clusterrole" controls creation of ClusterRole when cluster_wide_access is true, and Role when cluster_wide_access is false.
+#       "clusterrolebinding" controls creation of ClusterRoleBinding when cluster_wide_access is true, and RoleBinding when cluster_wide_access is false.
 skipResources: []
 
 # This is required for "openshift" auth strategy.
@@ -50,10 +52,26 @@ deployment:
     node: {}
     pod: {}
     pod_anti: {}
-  # The Kiali server helm chart only supports cluster-wide access; setting cluster_wide_access to false is not supported.
-  # For more control over what the Kial Service Account can see, use the Kiali Operator.
+  # When cluster_wide_access is true, ClusterRole and ClusterRoleBinding are created giving Kiali access to all namespaces.
+  # When cluster_wide_access is false, Role and RoleBinding are created for each accessible namespace defined in discovery_selectors.
   cluster_wide_access: true
   configmap_annotations: {}
+  # Discovery selectors are used when cluster_wide_access is false to determine which namespaces Kiali can access.
+  # The format matches Istio's discovery selectors - a map where each entry is a list of label selectors.
+  # For example:
+  #   discovery_selectors:
+  #     default:
+  #     - matchLabels:
+  #         istio-injection: enabled
+  #     - matchExpressions:
+  #       - key: env
+  #         operator: In
+  #         values:
+  #         - production
+  # If not specified and cluster_wide_access is false, only the Kiali deployment namespace will be accessible.
+  # Note: The Kiali deployment namespace is always included automatically.
+  # Note: Include Istio control plane namespaces in discovery selectors for access to them.
+  discovery_selectors: {}
   custom_envs: []
   custom_secrets: []
   dns:

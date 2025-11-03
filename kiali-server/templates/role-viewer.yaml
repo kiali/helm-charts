@@ -1,19 +1,31 @@
 {{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrole")) -}}
-{{- if .Values.deployment.cluster_wide_access -}}
 {{- if or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous") -}}
+{{- $namespaces := list "" -}}
+{{- if not .Values.deployment.cluster_wide_access -}}
+{{- $accessibleNamespacesStr := include "kiali-server.accessible-namespaces" . -}}
+{{- $namespaces = splitList "," $accessibleNamespacesStr -}}
+{{- end -}}
+{{- range $namespace := $namespaces }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+{{- if $.Values.deployment.cluster_wide_access }}
 kind: ClusterRole
+{{- else }}
+kind: Role
+{{- end }}
 metadata:
-  name: {{ include "kiali-server.fullname" . }}-viewer
+  name: {{ include "kiali-server.fullname" $ }}-viewer
+{{- if not $.Values.deployment.cluster_wide_access }}
+  namespace: {{ $namespace | quote }}
+{{- end }}
   labels:
-    {{- include "kiali-server.labels" . | nindent 4 }}
+    {{- include "kiali-server.labels" $ | nindent 4 }}
 rules:
 - apiGroups: [""]
   resources:
   - configmaps
   - endpoints
-{{- if not (has "logs-tab" .Values.kiali_feature_flags.disabled_features) }}
+{{- if not (has "logs-tab" $.Values.kiali_feature_flags.disabled_features) }}
   - pods/log
 {{- end }}
   verbs:
@@ -87,7 +99,7 @@ rules:
   resources:
   - oauthclients
   resourceNames:
-  - {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}
+  - {{ include "kiali-server.fullname" $ }}-{{ $.Release.Namespace }}
   verbs:
   - get
 - apiGroups: ["admissionregistration.k8s.io"]
@@ -98,6 +110,6 @@ rules:
   - list
   - watch
 ...
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- end -}} {{/* range $namespace */}}
+{{- end -}} {{/* if view_only_mode or auth.strategy is not anonymous */}}
+{{- end -}} {{/* if not isSkippedResource */}}

@@ -1,5 +1,5 @@
 name: "rbac_no_cluster_wide_access"
-description: "Verify no ClusterRole or Role is generated when cluster_wide_access is false (only ServiceAccount, ConfigMap, Service, Deployment)"
+description: "Verify Role and RoleBinding (not ClusterRole/ClusterRoleBinding) are generated when cluster_wide_access is false"
 helm_args:
   - "--set"
   - "deployment.cluster_wide_access=false"
@@ -12,6 +12,10 @@ expected_result: |
   ServiceAccount
   ---
   ConfigMap
+  ---
+  Role
+  ---
+  RoleBinding
   ---
   Service
   ---

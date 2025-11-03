@@ -1,0 +1,10 @@
+name: "cluster-wide-access-true-no-ds"
+description: "Verify that when cluster_wide_access is true and no discovery_selectors are set, discovery_selectors in ConfigMap remains empty dict"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+yq_query: 'select(.kind == "ConfigMap") | .data."config.yaml" | from_yaml | .deployment.discovery_selectors'
+expected_result: |
+  {}
+should_fail: false
+

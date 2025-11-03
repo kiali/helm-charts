@@ -231,3 +231,140 @@ verify-kiali-server-permissions:
 		rm -f ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
 	fi ;\
 	exit $${SCRIPT_EXIT_CODE:-0}
+
+## run-helm-tests: Run Kiali Helm template tests (does not require live cluster)
+## Optional: TEST_SUITE=server|operator (runs both if not specified)
+## Optional: DEBUG=true for verbose output
+.PHONY: run-helm-tests
+run-helm-tests:
+	@if [ -n "$(TEST_SUITE)" ] && [ "$(TEST_SUITE)" != "server" ] && [ "$(TEST_SUITE)" != "operator" ]; then \
+		echo "ERROR: Invalid TEST_SUITE value: [$(TEST_SUITE)]" ;\
+		echo "Valid values are: [server, operator]" ;\
+		echo "Omit TEST_SUITE to run both test suites" ;\
+		exit 1 ;\
+	fi
+	@if [ -z "$(TEST_SUITE)" ] || [ "$(TEST_SUITE)" = "server" ]; then \
+		echo "Running Kiali Server Helm template tests..." ;\
+		if [ "$(DEBUG)" = "true" ]; then \
+			${ROOTDIR}/tests/run-helm-chart-tests.sh --test-suite server --debug true ;\
+		else \
+			${ROOTDIR}/tests/run-helm-chart-tests.sh --test-suite server ;\
+		fi ;\
+	fi
+	@if [ -z "$(TEST_SUITE)" ]; then \
+		echo "" ;\
+	fi
+	@if [ -z "$(TEST_SUITE)" ] || [ "$(TEST_SUITE)" = "operator" ]; then \
+		echo "Running Kiali Operator Helm template tests..." ;\
+		if [ "$(DEBUG)" = "true" ]; then \
+			${ROOTDIR}/tests/run-helm-chart-tests.sh --test-suite operator --debug true ;\
+		else \
+			${ROOTDIR}/tests/run-helm-chart-tests.sh --test-suite operator ;\
+		fi ;\
+	fi
+
+## run-server-itests: Run Kiali Server Helm integration tests using chart-testing (requires live cluster)
+.PHONY: run-server-itests
+run-server-itests: build-helm-charts
+	@echo "Checking if Kubernetes cluster is available..."
+	@if ! kubectl cluster-info >/dev/null 2>&1; then \
+		echo "ERROR: No Kubernetes cluster is available. Please ensure a cluster is running and accessible via kubectl." ;\
+		exit 1 ;\
+	fi
+	@echo "Kubernetes cluster is available."
+	@echo ""
+	@echo "Setting up test namespaces..."
+	@${ROOTDIR}/hack/helm-tests-setup.sh
+	@echo ""
+	@echo "Checking for chart-testing (ct)..."
+	@CT_BIN="" ;\
+	TEST_EXIT_CODE=0 ;\
+	if command -v ct >/dev/null 2>&1; then \
+		CT_BIN=ct ;\
+		echo "Using ct from PATH: $$(which ct)" ;\
+	elif [ -f "${OUTDIR}/bin/ct" ]; then \
+		CT_BIN="${OUTDIR}/bin/ct" ;\
+		echo "Using ct from ${OUTDIR}/bin/ct" ;\
+	else \
+		echo "chart-testing not found. Downloading..." ;\
+		mkdir -p ${OUTDIR}/bin ;\
+		CT_VERSION="v3.11.0" ;\
+		CT_URL="https://github.com/helm/chart-testing/releases/download/$${CT_VERSION}/chart-testing_$${CT_VERSION#v}_linux_amd64.tar.gz" ;\
+		curl -sSL "$${CT_URL}" | tar -xz -C ${OUTDIR}/bin ct ;\
+		chmod +x ${OUTDIR}/bin/ct ;\
+		CT_BIN="${OUTDIR}/bin/ct" ;\
+		echo "Downloaded ct to ${OUTDIR}/bin/ct" ;\
+	fi ;\
+	echo "Running Kiali Server Helm integration tests with chart-testing..." ;\
+	$$CT_BIN install --charts kiali-server --helm-extra-args "--timeout 2m" || TEST_EXIT_CODE=$$? ;\
+	echo "" ;\
+	echo "Cleaning up test namespaces..." ;\
+	${ROOTDIR}/hack/helm-tests-cleanup.sh ;\
+	exit $$TEST_EXIT_CODE
+
+## run-server-itest-single: Run a single Kiali Server Helm integration test (requires TEST_NAME variable and live cluster)
+## Example: make run-server-itest-single TEST_NAME=selector-and-logic
+.PHONY: run-server-itest-single
+run-server-itest-single:
+	@if [ -z "$(TEST_NAME)" ]; then \
+		echo "ERROR: TEST_NAME variable is required" ;\
+		echo "Usage: make run-server-itest-single TEST_NAME=<test-name>" ;\
+		echo "Available tests:" ;\
+		ls -1 kiali-server/ci/*.yaml | xargs -n1 basename | sed 's/-values.yaml//' ;\
+		exit 1 ;\
+	fi ;\
+	VALUES_FILE="kiali-server/ci/$(TEST_NAME)-values.yaml" ;\
+	if [ ! -f "$${VALUES_FILE}" ]; then \
+		echo "ERROR: Test values file not found: $${VALUES_FILE}" ;\
+		echo "Available tests:" ;\
+		ls -1 kiali-server/ci/*.yaml | xargs -n1 basename | sed 's/-values.yaml//' ;\
+		exit 1 ;\
+	fi ;\
+	echo "Running single integration test: $(TEST_NAME)" ;\
+	echo "Setting up test namespaces..." ;\
+	${ROOTDIR}/hack/helm-tests-setup.sh ;\
+	echo "" ;\
+	RELEASE_NAME="kiali-test-$(TEST_NAME)" ;\
+	NAMESPACE="kiali-test" ;\
+	TEST_EXIT_CODE=0 ;\
+	echo "Temporarily moving .helmignore to allow test templates..." ;\
+	if [ -f "kiali-server/.helmignore" ]; then \
+		mv kiali-server/.helmignore kiali-server/.helmignore.bak ;\
+	fi ;\
+	echo "Installing chart with values file: $${VALUES_FILE}..." ;\
+	if helm install $${RELEASE_NAME} ./kiali-server \
+		--namespace $${NAMESPACE} \
+		--create-namespace \
+		--values $${VALUES_FILE} \
+		--wait --timeout 2m ; then \
+		echo "" ;\
+		echo "Running helm test..." ;\
+		helm test $${RELEASE_NAME} -n $${NAMESPACE} || TEST_EXIT_CODE=$$? ;\
+	else \
+		echo "ERROR: Chart installation failed" ;\
+		TEST_EXIT_CODE=1 ;\
+	fi ;\
+	if [ -f "kiali-server/.helmignore.bak" ]; then \
+		mv kiali-server/.helmignore.bak kiali-server/.helmignore ;\
+	fi ;\
+	if [ $$TEST_EXIT_CODE -eq 0 ]; then \
+		echo "" ;\
+		echo "Cleaning up..." ;\
+		helm uninstall $${RELEASE_NAME} -n $${NAMESPACE} 2>/dev/null || true ;\
+		kubectl delete namespace $${NAMESPACE} --timeout=60s 2>/dev/null || true ;\
+		${ROOTDIR}/hack/helm-tests-cleanup.sh ;\
+	else \
+		echo "" ;\
+		echo "===============================================" ;\
+		echo "TEST FAILED - Resources left for debugging" ;\
+		echo "===============================================" ;\
+		echo "To view test logs:" ;\
+		echo "  kubectl logs -l ci-test=true -n $${NAMESPACE}" ;\
+		echo "" ;\
+		echo "To cleanup manually when done:" ;\
+		echo "  helm uninstall $${RELEASE_NAME} -n $${NAMESPACE}" ;\
+		echo "  kubectl delete namespace $${NAMESPACE}" ;\
+		echo "  ./hack/helm-tests-cleanup.sh" ;\
+		echo "===============================================" ;\
+	fi ;\
+	exit $$TEST_EXIT_CODE

@@ -1,0 +1,9 @@
+name: "cluster-wide-access-false-rolebinding"
+description: "Verify that when cluster_wide_access is false, namespace-scoped RoleBinding resources are created instead of ClusterRoleBinding"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+yq_query: 'select(.kind == "RoleBinding") | .kind'
+expected_result: "RoleBinding"
+should_fail: false
+

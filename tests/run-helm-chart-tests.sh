@@ -344,8 +344,8 @@ run_test() {
     local expected_file="${TEMP_DIR}/test_${test_name}_expected.yaml"
     local helm_output_file="${TEMP_DIR}/test_${test_name}_helm_output.yaml"
 
-    # Build helm template command
-    local helm_cmd="helm template test-${test_name} ${CHART_PATH}"
+    # Build helm template command (skip test hooks to avoid rendering test pod templates)
+    local helm_cmd="helm template test-${test_name} ${CHART_PATH} --skip-tests"
 
     # Write expected result to file for comparison (if not a failure test)
     if [[ "${should_fail}" != "true" ]]; then
@@ -357,7 +357,7 @@ run_test() {
         # Test expects failure
         # Convert test name to valid helm release name (replace underscores with hyphens)
         local release_name=$(echo "test-${test_name}" | tr '_' '-')
-        if helm template "${release_name}" "${CHART_PATH}" "${helm_args[@]}" &> "${helm_output_file}"; then
+        if helm template "${release_name}" "${CHART_PATH}" --skip-tests "${helm_args[@]}" &> "${helm_output_file}"; then
             if [[ "${DEBUG_MODE}" == true ]]; then
                 log_error "Test ${test_name}: Expected command to fail but it succeeded"
             else
@@ -400,7 +400,7 @@ run_test() {
         # Test expects success
         # Convert test name to valid helm release name (replace underscores with hyphens)
         local release_name=$(echo "test-${test_name}" | tr '_' '-')
-        if ! helm template "${release_name}" "${CHART_PATH}" "${helm_args[@]}" > "${helm_output_file}" 2>&1; then
+        if ! helm template "${release_name}" "${CHART_PATH}" --skip-tests "${helm_args[@]}" > "${helm_output_file}" 2>&1; then
             if [[ "${DEBUG_MODE}" == true ]]; then
                 log_error "Test ${test_name}: Helm command failed unexpectedly"
             else

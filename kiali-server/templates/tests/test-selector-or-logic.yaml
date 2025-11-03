@@ -1,0 +1,96 @@
+{{- if eq .Values.testName "selector-or-logic" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-or-logic
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      curl -LO "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+      chmod +x yq_linux_amd64
+      mv yq_linux_amd64 yq
+      export PATH="$(pwd):$PATH"
+      echo "Testing multiple discovery selectors OR logic..."
+
+      # Verify Role exists in test-or-first-match (matches first selector)
+      echo "Test 1: Verifying Role in namespace matching first selector..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-or-first-match 2>/dev/null && \
+         ! kubectl get role {{ include "kiali-server.fullname" . }} -n test-or-first-match 2>/dev/null; then
+        echo "✗ FAIL: Role should exist in test-or-first-match"
+        exit 1
+      fi
+      echo "✓ Role correctly created in test-or-first-match"
+
+      # Verify Role exists in test-or-second-match (matches second selector)
+      echo "Test 2: Verifying Role in namespace matching second selector..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-or-second-match 2>/dev/null && \
+         ! kubectl get role {{ include "kiali-server.fullname" . }} -n test-or-second-match 2>/dev/null; then
+        echo "✗ FAIL: Role should exist in test-or-second-match"
+        exit 1
+      fi
+      echo "✓ Role correctly created in test-or-second-match"
+
+      # Verify Role does NOT exist in test-or-neither (matches neither selector)
+      echo "Test 3: Verifying Role NOT in namespace matching neither selector..."
+      if kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-or-neither 2>/dev/null || \
+         kubectl get role {{ include "kiali-server.fullname" . }} -n test-or-neither 2>/dev/null; then
+        echo "✗ FAIL: Role should NOT exist in test-or-neither"
+        exit 1
+      fi
+      echo "✓ Role correctly NOT created in test-or-neither"
+
+      # Verify Role does NOT exist in default namespace
+      echo "Test 4: Verifying Role NOT in default namespace..."
+      if kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n default 2>/dev/null || \
+         kubectl get role {{ include "kiali-server.fullname" . }} -n default 2>/dev/null; then
+        echo "✗ FAIL: Role should NOT exist in default namespace"
+        exit 1
+      fi
+      echo "✓ Role correctly NOT created in default namespace"
+
+      # Verify ConfigMap discovery selectors are converted
+      echo "Test 5: Verifying ConfigMap discovery selectors are converted..."
+      DS_YAML=$(kubectl get configmap {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} -o yaml | yq '.data."config.yaml"' | yq '.deployment.discovery_selectors' | yq 'sort_keys(..)')
+      EXPECTED_DS="default:
+  - matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: In
+        values:
+          - {{ .Release.Namespace }}
+          - test-or-first-match
+          - test-or-second-match"
+      EXPECTED_DS_NORMALIZED=$(echo "$EXPECTED_DS" | yq 'sort_keys(..)')
+      echo "Expected discovery_selectors:"
+      echo "$EXPECTED_DS_NORMALIZED"
+      echo ""
+      echo "Actual discovery_selectors:"
+      echo "$DS_YAML"
+      if [ "$DS_YAML" != "$EXPECTED_DS_NORMALIZED" ]; then
+        echo "✗ FAIL: Discovery selectors do not match expected"
+        exit 1
+      fi
+      echo "✓ Discovery selectors converted correctly (OR logic validated)"
+
+      echo ""
+      echo "OR logic validated! ✅"
+      echo "Roles created in namespaces matching ANY selector"
+  restartPolicy: Never
+{{- end }}
+

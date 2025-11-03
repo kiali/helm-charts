@@ -1,0 +1,57 @@
+{{- if eq .Values.testName "zero-namespaces-matched" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-zero-match
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      curl -LO "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+      chmod +x yq_linux_amd64
+      mv yq_linux_amd64 yq
+      export PATH="$(pwd):$PATH"
+      echo "Testing zero namespaces matched edge case..."
+
+      # Verify only Kiali namespace is in discovered namespaces
+      echo "Test 1: Verifying only Kiali namespace is discovered..."
+      DISCOVERED_NS=$(kubectl get configmap {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} -o yaml | yq '.data."config.yaml"' | yq '.deployment.discovery_selectors.default[0].matchExpressions[0].values | join(",")')
+      echo "Discovered namespaces: ${DISCOVERED_NS}"
+
+      if [ "${DISCOVERED_NS}" != "{{ .Release.Namespace }}" ]; then
+        echo "✗ FAIL: Expected only [{{ .Release.Namespace }}] but got [${DISCOVERED_NS}]"
+        exit 1
+      fi
+      echo "✓ Only Kiali namespace discovered (no other namespaces matched)"
+
+      # Verify Role exists in Kiali namespace
+      echo "Test 2: Verifying Role exists in Kiali namespace..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} 2>/dev/null && \
+         ! kubectl get role {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Role should exist in Kiali namespace"
+        exit 1
+      fi
+      echo "✓ Role found in Kiali namespace"
+
+      echo ""
+      echo "Zero matches edge case validated! ✅"
+      echo "When no namespaces match selectors, only Kiali namespace gets access"
+  restartPolicy: Never
+{{- end }}
+

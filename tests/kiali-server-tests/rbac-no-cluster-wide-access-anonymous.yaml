@@ -1,5 +1,5 @@
 name: "rbac_no_cluster_wide_access_anonymous"
-description: "Verify no ClusterRole or Role is generated when cluster_wide_access is false even with auth.strategy=anonymous"
+description: "Verify Role and RoleBinding (not ClusterRole/ClusterRoleBinding) are generated when cluster_wide_access is false with auth.strategy=anonymous"
 helm_args:
   - "--set"
   - "deployment.cluster_wide_access=false"
@@ -12,6 +12,10 @@ expected_result: |
   ServiceAccount
   ---
   ConfigMap
+  ---
+  Role
+  ---
+  RoleBinding
   ---
   Service
   ---

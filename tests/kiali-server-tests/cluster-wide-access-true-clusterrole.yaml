@@ -1,0 +1,9 @@
+name: "cluster-wide-access-true-clusterrole"
+description: "Verify that when cluster_wide_access is true (default), ClusterRole is created"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+yq_query: 'select(.kind == "ClusterRole") | .kind'
+expected_result: "ClusterRole"
+should_fail: false
+
