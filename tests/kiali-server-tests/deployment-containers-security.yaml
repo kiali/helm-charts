@@ -1,0 +1,40 @@
+name: "deployment_containers_security"
+description: "Verify security context is enforced on multiple containers despite override attempts"
+helm_args:
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].name=init-1"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].image=registry.access.redhat.com/ubi9/ubi-minimal:latest"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[0]=echo"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[1]=first"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[1].name=init-2"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[1].image=registry.access.redhat.com/ubi9/ubi-minimal:latest"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[1].command[0]=echo"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[1].command[1]=second"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[1].securityContext.privileged=true"
+yq_query: "select(.kind == \"Deployment\") | {\"firstContainerSecurity\": .spec.template.spec.containers[0].securityContext, \"secondContainerSecurity\": .spec.template.spec.containers[1].securityContext}"
+expected_result: |
+  firstContainerSecurity:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+  secondContainerSecurity:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+should_fail: false

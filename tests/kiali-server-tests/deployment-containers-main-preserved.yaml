@@ -1,0 +1,15 @@
+name: "deployment_containers_main_preserved"
+description: "Verify main Kiali container is preserved alongside containers"
+helm_args:
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].name=test-init"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].image=registry.access.redhat.com/ubi9/ubi-minimal:latest"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[0]=echo"
+  - "--set"
+  - "deployment.additional_pod_containers_yaml[0].command[1]=test"
+yq_query: ".spec.template.spec.containers[1].name"
+expected_result: |
+  kiali
+should_fail: false

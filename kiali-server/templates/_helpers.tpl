@@ -201,3 +201,121 @@ This aborts if .Values.skipResources has invalid values.
   {{- end }}
   {{- has $name $ctx.Values.skipResources }}
 {{- end }}
+
+{{/*
+Apply security guardrails to user-defined containers.
+This enforces the same restrictive security context as the main Kiali container,
+ensures secret-backed volumes are mounted read-only, and validates volume mount security.
+*/}}
+{{- define "kiali-server.secureContainers" -}}
+{{- $securedContainers := list }}
+{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
+{{- /* Identify secret-backed volumes dynamically */ -}}
+{{- $secretVolumes := list }}
+{{- $secretVolumes = append $secretVolumes (printf "%s-secret" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes (printf "%s-cert" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes "kiali-multi-cluster-secret" }}
+{{- range .Values.deployment.custom_secrets }}
+  {{- if not .csi }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $key }}
+{{- end }}
+{{- range .Values.clustering.clusters }}
+  {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- /* Validate containers don't mount secret volumes read-write */ -}}
+{{- range .Values.deployment.additional_pod_containers_yaml }}
+  {{- if hasKey . "volumeMounts" }}
+    {{- range .volumeMounts }}
+      {{- if and (has .name $secretVolumes) (hasKey . "readOnly") (not .readOnly) }}
+        {{- fail (printf "User-defined container cannot mount secret-backed volume [%s] as read-write. This volume must be mounted read-only for security." .name) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- /* Apply security guardrails to each container */ -}}
+{{- range .Values.deployment.additional_pod_containers_yaml }}
+  {{- $container := . }}
+  {{- /* Apply mandatory security context */ -}}
+  {{- $container = mergeOverwrite $container (dict "securityContext" $mandatorySecurityContext) }}
+  {{- /* Secure volume mounts */ -}}
+  {{- if hasKey $container "volumeMounts" }}
+    {{- $securedMounts := list }}
+    {{- range $container.volumeMounts }}
+      {{- $mount := . }}
+      {{- /* Force read-only for secret-backed volumes */ -}}
+      {{- if has $mount.name $secretVolumes }}
+        {{- $mount = mergeOverwrite $mount (dict "readOnly" true) }}
+      {{- end }}
+      {{- $securedMounts = append $securedMounts $mount }}
+    {{- end }}
+    {{- $container = mergeOverwrite $container (dict "volumeMounts" $securedMounts) }}
+  {{- end }}
+  {{- $securedContainers = append $securedContainers $container }}
+{{- end }}
+{{- $securedContainers | toYaml }}
+{{- end }}
+
+{{/*
+Apply security guardrails to user-defined initContainers.
+This enforces the same restrictive security context as the main Kiali container,
+ensures secret-backed volumes are mounted read-only, and validates volume mount security.
+*/}}
+{{- define "kiali-server.secureInitContainers" -}}
+{{- $securedInitContainers := list }}
+{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
+{{- /* Identify secret-backed volumes dynamically */ -}}
+{{- $secretVolumes := list }}
+{{- $secretVolumes = append $secretVolumes (printf "%s-secret" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes (printf "%s-cert" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes "kiali-multi-cluster-secret" }}
+{{- range .Values.deployment.custom_secrets }}
+  {{- if not .csi }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $key }}
+{{- end }}
+{{- range .Values.clustering.clusters }}
+  {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- /* Validate initContainers don't mount secret volumes read-write */ -}}
+{{- range .Values.deployment.additional_pod_init_containers_yaml }}
+  {{- if hasKey . "volumeMounts" }}
+    {{- range .volumeMounts }}
+      {{- if and (has .name $secretVolumes) (hasKey . "readOnly") (not .readOnly) }}
+        {{- fail (printf "User-defined initContainer cannot mount secret-backed volume [%s] as read-write. This volume must be mounted read-only for security." .name) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- /* Apply security guardrails to each initContainer */ -}}
+{{- range .Values.deployment.additional_pod_init_containers_yaml }}
+  {{- $container := . }}
+  {{- /* Apply mandatory security context */ -}}
+  {{- $container = mergeOverwrite $container (dict "securityContext" $mandatorySecurityContext) }}
+  {{- /* Secure volume mounts */ -}}
+  {{- if hasKey $container "volumeMounts" }}
+    {{- $securedMounts := list }}
+    {{- range $container.volumeMounts }}
+      {{- $mount := . }}
+      {{- /* Force read-only for secret-backed volumes */ -}}
+      {{- if has $mount.name $secretVolumes }}
+        {{- $mount = mergeOverwrite $mount (dict "readOnly" true) }}
+      {{- end }}
+      {{- $securedMounts = append $securedMounts $mount }}
+    {{- end }}
+    {{- $container = mergeOverwrite $container (dict "volumeMounts" $securedMounts) }}
+  {{- end }}
+  {{- $securedInitContainers = append $securedInitContainers $container }}
+{{- end }}
+{{- $securedInitContainers | toYaml }}
+{{- end }}

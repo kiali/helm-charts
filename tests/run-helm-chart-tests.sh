@@ -322,6 +322,22 @@ run_test() {
         log_info "Description: ${description}"
         log_info "Helm Args: ${helm_args[*]}"
         log_info "YQ Query: ${yq_query}"
+
+        # Show the full helm command for manual execution with properly quoted arguments
+        local release_name=$(echo "test-${test_name}" | tr '_' '-')
+        local quoted_helm_args=""
+        for arg in "${helm_args[@]}"; do
+            # Quote each argument that contains spaces or special characters
+            if [[ "$arg" =~ [[:space:]] ]]; then
+                quoted_helm_args+="\"$arg\" "
+            else
+                quoted_helm_args+="$arg "
+            fi
+        done
+        log_info "Full Helm Command: helm template ${release_name} ${CHART_PATH} ${quoted_helm_args}"
+
+        # Show how to render NOTES.txt separately (NOTES.txt cannot be shown with helm template)
+        log_info "To see NOTES.txt output: helm install ${release_name} ${CHART_PATH} ${quoted_helm_args} --dry-run"
     fi
 
     local output_file="${TEMP_DIR}/test_${test_name}_output.yaml"

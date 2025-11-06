@@ -82,6 +82,13 @@ allowAdHocKialiImage: false
 # This is only applicable when running on OpenShift.
 allowAdHocOSSMConsoleImage: false
 
+# allowAdHocContainers tells the operator to allow a user to be able to install additional pod containers and initContainers to the Kiali pod.
+# In other words, it will allow the Kiali CR spec.deployment.additional_pod_containers_yaml and
+# spec.deployment.additional_pod_init_containers_yaml to be configured by the user.
+# The operator will apply a restrictive security context to user-defined containers and will prevent
+# write access to secret-backed volumes. These restrictions cannot be overridden.
+allowAdHocContainers: false
+
 # allowSecurityContextOverride tells the operator to allow a user to be able to fully override the Kiali
 # container securityContext. If this is false, certain securityContext settings must exist on the Kiali
 # container and any attempt to override them will be ignored.
