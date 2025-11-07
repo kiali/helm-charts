@@ -1,0 +1,104 @@
+{{- if eq .Values.testName "selector-and-logic" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-and-logic
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      curl -LO "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+      chmod +x yq_linux_amd64
+      mv yq_linux_amd64 yq
+      export PATH="$(pwd):$PATH"
+      echo "Testing discovery selector AND logic (matchLabels AND matchExpressions)..."
+
+      # Verify Role exists in test-and-both-match (matches BOTH conditions)
+      echo "Test 1: Verifying Role in namespace that matches BOTH conditions..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-and-both-match 2>/dev/null && \
+         ! kubectl get role {{ include "kiali-server.fullname" . }} -n test-and-both-match 2>/dev/null; then
+        echo "✗ FAIL: Role should exist in test-and-both-match (matches both matchLabels and matchExpressions)"
+        exit 1
+      fi
+      echo "✓ Role correctly created in test-and-both-match"
+
+      # Verify Role does NOT exist in test-and-labels-only (only matches matchLabels)
+      echo "Test 2: Verifying Role NOT in namespace with only matchLabels match..."
+      if kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-and-labels-only 2>/dev/null || \
+         kubectl get role {{ include "kiali-server.fullname" . }} -n test-and-labels-only 2>/dev/null; then
+        echo "✗ FAIL: Role should NOT exist in test-and-labels-only (AND logic failure)"
+        exit 1
+      fi
+      echo "✓ Role correctly NOT created in test-and-labels-only"
+
+      # Verify Role does NOT exist in test-and-expr-only (only matches matchExpressions)
+      echo "Test 3: Verifying Role NOT in namespace with only matchExpressions match..."
+      if kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n test-and-expr-only 2>/dev/null || \
+         kubectl get role {{ include "kiali-server.fullname" . }} -n test-and-expr-only 2>/dev/null; then
+        echo "✗ FAIL: Role should NOT exist in test-and-expr-only (AND logic failure)"
+        exit 1
+      fi
+      echo "✓ Role correctly NOT created in test-and-expr-only"
+
+      # Verify Role does NOT exist in default namespace (doesn't match selectors)
+      echo "Test 4: Verifying Role NOT in default namespace..."
+      if kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n default 2>/dev/null || \
+         kubectl get role {{ include "kiali-server.fullname" . }} -n default 2>/dev/null; then
+        echo "✗ FAIL: Role should NOT exist in default namespace"
+        exit 1
+      fi
+      echo "✓ Role correctly NOT created in default namespace"
+
+      # Verify Kiali namespace always has a Role
+      echo "Test 5: Verifying Role exists in Kiali namespace..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} 2>/dev/null && \
+         ! kubectl get role {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Role should always exist in Kiali namespace"
+        exit 1
+      fi
+      echo "✓ Role found in Kiali namespace"
+
+      # Test 6: Verify ConfigMap discovery selectors are converted
+      echo "Test 6: Verifying ConfigMap discovery selectors are converted..."
+      DS_YAML=$(kubectl get configmap {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} -o yaml | yq '.data."config.yaml"' | yq '.deployment.discovery_selectors' | yq 'sort_keys(..)')
+      EXPECTED_DS="default:
+  - matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: In
+        values:
+          - {{ .Release.Namespace }}
+          - test-and-both-match"
+      EXPECTED_DS_NORMALIZED=$(echo "$EXPECTED_DS" | yq 'sort_keys(..)')
+      echo "Expected discovery_selectors:"
+      echo "$EXPECTED_DS_NORMALIZED"
+      echo ""
+      echo "Actual discovery_selectors:"
+      echo "$DS_YAML"
+      if [ "$DS_YAML" != "$EXPECTED_DS_NORMALIZED" ]; then
+        echo "✗ FAIL: Discovery selectors do not match expected"
+        exit 1
+      fi
+      echo "✓ Discovery selectors converted correctly (AND logic validated)"
+
+      echo ""
+      echo "AND logic validated! ✅"
+      echo "Roles created only in namespaces matching BOTH matchLabels AND matchExpressions"
+  restartPolicy: Never
+{{- end }}
+

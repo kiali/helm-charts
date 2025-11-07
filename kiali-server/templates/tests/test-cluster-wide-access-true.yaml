@@ -1,0 +1,76 @@
+{{- if eq .Values.testName "cluster-wide-access-true" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-cwa-true
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      export PATH="$(pwd):$PATH"
+      echo "Testing cluster_wide_access=true implementation..."
+
+      # Test 1: Verify ClusterRole exists
+      echo "Test 1: Checking ClusterRole exists..."
+      kubectl get clusterrole {{ include "kiali-server.fullname" . }}-viewer
+      echo "✓ ClusterRole found"
+
+      # Test 2: Verify ClusterRoleBinding exists
+      echo "Test 2: Checking ClusterRoleBinding exists..."
+      kubectl get clusterrolebinding {{ include "kiali-server.fullname" . }}-viewer
+      echo "✓ ClusterRoleBinding found"
+
+      # Test 3: Verify namespace-scoped Role does NOT exist
+      echo "Test 3: Verifying namespace-scoped Role does NOT exist..."
+      if kubectl get role {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Role should not exist when cluster_wide_access=true"
+        exit 1
+      fi
+      echo "✓ Role correctly not created"
+
+      # Test 4: Verify namespace-scoped RoleBinding does NOT exist
+      echo "Test 4: Verifying namespace-scoped RoleBinding does NOT exist..."
+      if kubectl get rolebinding {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: RoleBinding should not exist when cluster_wide_access=true"
+        exit 1
+      fi
+      echo "✓ RoleBinding correctly not created"
+
+      # Verify ConfigMap discovery selectors are NOT converted (should be empty when not provided)
+      echo "Test 5: Verifying ConfigMap discovery selectors are empty..."
+      curl -LO "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+      chmod +x yq_linux_amd64
+      mv yq_linux_amd64 yq
+      DS_YAML=$(kubectl get configmap {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} -o yaml | yq '.data."config.yaml"' | yq '.deployment.discovery_selectors')
+      EXPECTED_DS="{}"
+      echo "Expected discovery_selectors:"
+      echo "$EXPECTED_DS"
+      echo ""
+      echo "Actual discovery_selectors:"
+      echo "$DS_YAML"
+      if [ "$DS_YAML" != "$EXPECTED_DS" ]; then
+        echo "✗ FAIL: Discovery selectors do not match expected"
+        exit 1
+      fi
+      echo "✓ Discovery selectors are empty dict (not converted)"
+
+      echo ""
+      echo "All tests passed! ✅"
+  restartPolicy: Never
+{{- end }}
+

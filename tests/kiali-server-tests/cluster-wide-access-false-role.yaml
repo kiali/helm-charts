@@ -1,0 +1,9 @@
+name: "cluster-wide-access-false-role"
+description: "Verify that when cluster_wide_access is false, namespace-scoped Role resources are created instead of ClusterRole"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+yq_query: 'select(.kind == "Role") | .kind'
+expected_result: "Role"
+should_fail: false
+

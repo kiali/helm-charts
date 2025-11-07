@@ -46,7 +46,7 @@ jobs:
 
     - name: Run Kiali Server Helm Chart Tests
       run: |
-        ./tests/run-helm-chart-tests.sh --debug true
+        make run-helm-tests TEST_SUITE=server DEBUG=true
 
     - name: Upload server test artifacts on failure
       if: failure()
@@ -81,7 +81,7 @@ jobs:
 
     - name: Run Kiali Operator Helm Chart Tests
       run: |
-        ./tests/run-helm-chart-tests.sh --test-suite operator --debug true
+        make run-helm-tests TEST_SUITE=operator DEBUG=true
 
     - name: Upload operator test artifacts on failure
       if: failure()
@@ -90,3 +90,44 @@ jobs:
         name: operator-test-artifacts
         path: /tmp/kiali-helm-tests/
         retention-days: 3
+
+  kiali-server-helm-integration-tests:
+    name: Kiali Server Helm Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: ${{ env.HELM_VERSION }}
+
+    - name: Create kind cluster
+      uses: helm/kind-action@v1
+
+    - name: Verify cluster
+      run: |
+        kubectl cluster-info
+        kubectl get nodes
+
+    - name: Install Istio and Prometheus
+      run: |
+        helm repo add istio https://istio-release.storage.googleapis.com/charts
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        kubectl create namespace istio-system
+        helm install istio-base istio/base -n istio-system --wait
+        helm install istiod istio/istiod -n istio-system --wait --set pilot.resources.requests.cpu=100m --set pilot.resources.requests.memory=128Mi
+        helm install prometheus prometheus-community/prometheus -n istio-system --wait --set server.resources.requests.cpu=100m --set server.resources.requests.memory=128Mi --set alertmanager.enabled=false --set prometheus-pushgateway.enabled=false --set kube-state-metrics.enabled=false --set prometheus-node-exporter.enabled=false
+
+    - name: Verify Istio and Prometheus installation
+      run: |
+        kubectl get pods -n istio-system
+        kubectl wait --for=condition=ready pod -l app=istiod -n istio-system --timeout=300s
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=prometheus -n istio-system --timeout=300s || kubectl get pods -n istio-system
+
+    - name: Run Kiali Server Helm integration tests
+      run: |
+        make run-server-itests

@@ -1,0 +1,50 @@
+{{- if eq .Values.testName "auth-anonymous" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-auth-anon
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      export PATH="$(pwd):$PATH"
+      echo "Testing auth.strategy=anonymous with cluster_wide_access=false..."
+
+      # Verify full Role exists (not viewer Role)
+      echo "Test 1: Verifying full Role exists (not viewer)..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Full Role should exist with anonymous auth and view_only_mode=false"
+        exit 1
+      fi
+      echo "✓ Full Role found"
+
+      # Verify full RoleBinding exists
+      echo "Test 2: Verifying full RoleBinding exists..."
+      if ! kubectl get rolebinding {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Full RoleBinding should exist"
+        exit 1
+      fi
+      echo "✓ Full RoleBinding found"
+
+      echo ""
+      echo "Anonymous auth validated! ✅"
+      echo "Full Roles (not viewer) created with auth.strategy=anonymous and view_only_mode=false"
+  restartPolicy: Never
+{{- end }}
+

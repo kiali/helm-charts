@@ -1,3 +1,8 @@
+{{- if hasKey .Values.deployment "namespace" }}
+  {{- if ne .Values.deployment.namespace .Release.Namespace }}
+    {{- fail (printf "deployment.namespace is set to [%s] but must match the Helm release namespace [%s]." .Values.deployment.namespace .Release.Namespace) }}
+  {{- end }}
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -25,5 +30,10 @@ data:
     {{- $_ := set $cm.login_token "signing_key" (include "kiali-server.login_token.signing_key" .) }}
     {{- $_ := set $cm.external_services.istio "root_namespace" (include "kiali-server.external_services.istio.root_namespace" .) }}
     {{- $_ := set $cm.server "web_root" (include "kiali-server.server.web_root" .) }}
+    {{- /* When cluster_wide_access is false, convert discovery selectors to exact namespace names */ -}}
+    {{- if not .Values.deployment.cluster_wide_access }}
+      {{- $discoverySelectorsYaml := include "kiali-server.discovery-selectors-for-config" . | fromYaml }}
+      {{- $_ := set $cm.deployment "discovery_selectors" $discoverySelectorsYaml }}
+    {{- end }}
     {{- toYaml $cm | nindent 4 }}
 ...

@@ -1,0 +1,60 @@
+{{- if eq .Values.testName "view-only-mode" }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-test-view-only
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    ci-test: "true"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      export PATH="$(pwd):$PATH"
+      echo "Testing view_only_mode with cluster_wide_access=false..."
+
+      # Verify viewer Role exists (not full Role)
+      echo "Test 1: Verifying viewer Role exists..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Viewer Role should exist in view_only_mode"
+        exit 1
+      fi
+      echo "✓ Viewer Role found"
+
+      # Verify full Role does NOT exist
+      echo "Test 2: Verifying full Role does NOT exist..."
+      FULL_ROLE_NAME="{{ include "kiali-server.fullname" . }}"
+      if [ "${FULL_ROLE_NAME}" != "{{ include "kiali-server.fullname" . }}-viewer" ]; then
+        if kubectl get role "${FULL_ROLE_NAME}" -n {{ .Release.Namespace }} 2>/dev/null; then
+          echo "✗ FAIL: Full Role should not exist in view_only_mode"
+          exit 1
+        fi
+      fi
+      echo "✓ Full Role correctly not created"
+
+      # Verify viewer RoleBinding exists
+      echo "Test 3: Verifying viewer RoleBinding exists..."
+      if ! kubectl get rolebinding {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} 2>/dev/null; then
+        echo "✗ FAIL: Viewer RoleBinding should exist"
+        exit 1
+      fi
+      echo "✓ Viewer RoleBinding found"
+
+      echo ""
+      echo "View-only mode validated! ✅"
+  restartPolicy: Never
+{{- end }}
+

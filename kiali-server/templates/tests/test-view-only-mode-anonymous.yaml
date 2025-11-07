@@ -1,0 +1,102 @@
+{{- if eq .Values.testName "view-only-mode-anonymous" }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-view-only-mode-anonymous
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  serviceAccountName: {{ include "kiali-server.fullname" . }}-test
+  containers:
+  - name: test
+    image: quay.io/curl/curl:latest
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      export PATH="$(pwd):$PATH"
+      echo "Testing view-only-mode with anonymous auth configuration..."
+      echo ""
+
+      # Test 1: Verify viewer Role exists in the kiali namespace (not regular Role)
+      echo "Test 1: Checking that viewer Role exists (cluster_wide_access=false)..."
+      if ! kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} > /dev/null 2>&1; then
+        echo "FAIL: viewer Role not found in namespace {{ .Release.Namespace }}"
+        exit 1
+      fi
+      echo "PASS: viewer Role exists in namespace {{ .Release.Namespace }}"
+      echo ""
+
+      # Test 2: Verify regular Role does NOT exist
+      echo "Test 2: Checking that regular Role does NOT exist..."
+      if kubectl get role {{ include "kiali-server.fullname" . }} -n {{ .Release.Namespace }} > /dev/null 2>&1; then
+        echo "FAIL: Regular Role should not exist when view_only_mode=true"
+        exit 1
+      fi
+      echo "PASS: Regular Role does not exist (as expected)"
+      echo ""
+
+      # Test 3: Verify ClusterRole does NOT exist (cluster_wide_access=false)
+      echo "Test 3: Checking that ClusterRole does NOT exist (cluster_wide_access=false)..."
+      if kubectl get clusterrole {{ include "kiali-server.fullname" . }} > /dev/null 2>&1; then
+        echo "FAIL: ClusterRole should not exist when cluster_wide_access=false"
+        exit 1
+      fi
+      if kubectl get clusterrole {{ include "kiali-server.fullname" . }}-viewer > /dev/null 2>&1; then
+        echo "FAIL: ClusterRole-viewer should not exist when cluster_wide_access=false"
+        exit 1
+      fi
+      echo "PASS: ClusterRole does not exist (as expected)"
+      echo ""
+
+      # Test 4: Verify RoleBinding exists and references viewer Role
+      echo "Test 4: Checking that RoleBinding references viewer Role..."
+      if ! kubectl get rolebinding {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} -o yaml | grep -q "kind: Role"; then
+        echo "FAIL: RoleBinding does not reference Role kind"
+        exit 1
+      fi
+      if ! kubectl get rolebinding {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} -o yaml | grep -q "name: {{ include "kiali-server.fullname" . }}-viewer"; then
+        echo "FAIL: RoleBinding does not reference viewer Role"
+        exit 1
+      fi
+      echo "PASS: RoleBinding correctly references viewer Role"
+      echo ""
+
+      # Test 5: Verify viewer Role has read-only permissions (no create/delete/patch on most resources)
+      echo "Test 5: Checking that viewer Role has read-only permissions..."
+      ROLE_YAML=$(kubectl get role {{ include "kiali-server.fullname" . }}-viewer -n {{ .Release.Namespace }} -o yaml)
+      
+      # Check that viewer role does NOT have write verbs on most resources
+      if echo "$ROLE_YAML" | grep -A 20 "apiGroups.*istio" | grep -q "delete"; then
+        echo "FAIL: viewer Role should not have 'delete' verb on Istio resources"
+        exit 1
+      fi
+      
+      # Check that viewer role has read verbs
+      if ! echo "$ROLE_YAML" | grep -q "get"; then
+        echo "FAIL: viewer Role should have 'get' verb"
+        exit 1
+      fi
+      if ! echo "$ROLE_YAML" | grep -q "list"; then
+        echo "FAIL: viewer Role should have 'list' verb"
+        exit 1
+      fi
+      if ! echo "$ROLE_YAML" | grep -q "watch"; then
+        echo "FAIL: viewer Role should have 'watch' verb"
+        exit 1
+      fi
+      echo "PASS: viewer Role has appropriate read-only permissions"
+      echo ""
+
+      echo "========================================"
+      echo "All tests passed successfully!"
+      echo "view_only_mode=true + auth.strategy=anonymous configuration is correct"
+      echo "========================================"
+  restartPolicy: Never
+{{- end }}
+

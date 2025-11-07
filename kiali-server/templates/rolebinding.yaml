@@ -1,28 +1,44 @@
 {{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrolebinding")) -}}
-{{- if .Values.deployment.cluster_wide_access -}}
+{{- $namespaces := list "" -}}
+{{- if not .Values.deployment.cluster_wide_access -}}
+{{- $accessibleNamespacesStr := include "kiali-server.accessible-namespaces" . -}}
+{{- $namespaces = splitList "," $accessibleNamespacesStr -}}
+{{- end -}}
+{{- range $namespace := $namespaces }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+{{- if $.Values.deployment.cluster_wide_access }}
 kind: ClusterRoleBinding
+{{- else }}
+kind: RoleBinding
+{{- end }}
 metadata:
-  {{- if or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous") }}
-  name: {{ include "kiali-server.fullname" . }}-viewer
+  {{- if or ($.Values.deployment.view_only_mode) (ne $.Values.auth.strategy "anonymous") }}
+  name: {{ include "kiali-server.fullname" $ }}-viewer
   {{- else }}
-  name: {{ include "kiali-server.fullname" . }}
+  name: {{ include "kiali-server.fullname" $ }}
   {{- end }}
+{{- if not $.Values.deployment.cluster_wide_access }}
+  namespace: {{ $namespace | quote }}
+{{- end }}
   labels:
-    {{- include "kiali-server.labels" . | nindent 4 }}
+    {{- include "kiali-server.labels" $ | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
+{{- if $.Values.deployment.cluster_wide_access }}
   kind: ClusterRole
-  {{- if or (.Values.deployment.view_only_mode) (ne .Values.auth.strategy "anonymous") }}
-  name: {{ include "kiali-server.fullname" . }}-viewer
+{{- else }}
+  kind: Role
+{{- end }}
+  {{- if or ($.Values.deployment.view_only_mode) (ne $.Values.auth.strategy "anonymous") }}
+  name: {{ include "kiali-server.fullname" $ }}-viewer
   {{- else }}
-  name: {{ include "kiali-server.fullname" . }}
+  name: {{ include "kiali-server.fullname" $ }}
   {{- end }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "kiali-server.fullname" . }}
-  namespace: "{{ .Release.Namespace }}"
+  name: {{ include "kiali-server.fullname" $ }}
+  namespace: "{{ $.Release.Namespace }}"
 ...
-{{- end -}}
-{{- end -}}
+{{- end -}} {{/* range $namespace */}}
+{{- end -}} {{/* if not isSkippedResource */}}

@@ -319,3 +319,122 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 {{- end }}
 {{- $securedInitContainers | toYaml }}
 {{- end }}
+
+{{/*
+Get the list of accessible namespaces when cluster_wide_access is false.
+This function uses discovery_selectors to find namespaces that match the label selectors (only works with helm install/upgrade, not template).
+It always includes the Kiali deployment namespace.
+Note: The Istio control plane namespace should be included by the user in the defined discovery_selectors
+Returns a comma-separated string of namespace names.
+*/}}
+{{- define "kiali-server.accessible-namespaces" -}}
+{{- $namespaces := list }}
+{{- $kialiNamespace := .Release.Namespace }}
+{{- if .Values.deployment.cluster_wide_access }}
+  {{- /* When cluster_wide_access is true, this function should not be called */ -}}
+  {{- fail "kiali-server.accessible-namespaces should only be called when cluster_wide_access is false" }}
+{{- else }}
+  {{- /* Always include Kiali's own namespace */ -}}
+  {{- $namespaces = append $namespaces $kialiNamespace }}
+  {{- /* Process discovery selectors if they are defined (only works with helm install/upgrade, not helm template) */ -}}
+  {{- if and .Values.deployment.discovery_selectors .Values.deployment.discovery_selectors.default }}
+    {{- /* Note: lookup only works with helm install/upgrade, not helm template */ -}}
+    {{- /* During helm template, lookup returns nil/empty, so this section is safely skipped */ -}}
+    {{- $allNamespaces := lookup "v1" "Namespace" "" "" }}
+    {{- if $allNamespaces }}
+      {{- if kindIs "map" $allNamespaces }}
+        {{- if hasKey $allNamespaces "items" }}
+          {{- range $selector := .Values.deployment.discovery_selectors.default }}
+            {{- range $ns := $allNamespaces.items }}
+              {{- $labelsMatch := true }}
+              {{- $exprsMatch := true }}
+              {{- if $ns.metadata.labels }}
+                {{- if $selector.matchLabels }}
+                  {{- $labelsMatch = false }}
+                  {{- $allLabelsMatch := true }}
+                  {{- range $key, $value := $selector.matchLabels }}
+                    {{- if not (hasKey $ns.metadata.labels $key) }}
+                      {{- $allLabelsMatch = false }}
+                    {{- else if ne (get $ns.metadata.labels $key) $value }}
+                      {{- $allLabelsMatch = false }}
+                    {{- end }}
+                  {{- end }}
+                  {{- if $allLabelsMatch }}
+                    {{- $labelsMatch = true }}
+                  {{- end }}
+                {{- end }}
+                {{- if $selector.matchExpressions }}
+                  {{- $exprsMatch = false }}
+                  {{- $allExprsMatch := true }}
+                  {{- range $expr := $selector.matchExpressions }}
+                    {{- if eq $expr.operator "In" }}
+                      {{- if hasKey $ns.metadata.labels $expr.key }}
+                        {{- if not (has (get $ns.metadata.labels $expr.key) $expr.values) }}
+                          {{- $allExprsMatch = false }}
+                        {{- end }}
+                      {{- else }}
+                        {{- $allExprsMatch = false }}
+                      {{- end }}
+                    {{- else if eq $expr.operator "NotIn" }}
+                      {{- if hasKey $ns.metadata.labels $expr.key }}
+                        {{- if has (get $ns.metadata.labels $expr.key) $expr.values }}
+                          {{- $allExprsMatch = false }}
+                        {{- end }}
+                      {{- end }}
+                    {{- else if eq $expr.operator "Exists" }}
+                      {{- if not (hasKey $ns.metadata.labels $expr.key) }}
+                        {{- $allExprsMatch = false }}
+                      {{- end }}
+                    {{- else if eq $expr.operator "DoesNotExist" }}
+                      {{- if hasKey $ns.metadata.labels $expr.key }}
+                        {{- $allExprsMatch = false }}
+                      {{- end }}
+                    {{- end }}
+                  {{- end }}
+                  {{- if $allExprsMatch }}
+                    {{- $exprsMatch = true }}
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+              {{- if and $labelsMatch $exprsMatch }}
+                {{- if not (has $ns.metadata.name $namespaces) }}
+                  {{- $namespaces = append $namespaces $ns.metadata.name }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $namespaces | uniq | sortAlpha | join "," }}
+{{- end }}
+
+{{/*
+Convert accessible namespaces to discovery selectors format for the ConfigMap.
+When cluster_wide_access is false, this converts the discovered namespace list into
+a discovery selector that uses matchExpressions on kubernetes.io/metadata.name.
+This ensures the Kiali server knows the exact namespaces it has RBAC access to.
+Returns a dict structure (not YAML string).
+*/}}
+{{- define "kiali-server.discovery-selectors-for-config" -}}
+{{- if not .Values.deployment.cluster_wide_access }}
+  {{- $accessibleNamespacesStr := include "kiali-server.accessible-namespaces" . -}}
+  {{- $accessibleNamespaces := splitList "," $accessibleNamespacesStr -}}
+  {{- if $accessibleNamespaces }}
+    {{- $matchExpression := dict "key" "kubernetes.io/metadata.name" "operator" "In" "values" $accessibleNamespaces }}
+    {{- $selector := dict "matchExpressions" (list $matchExpression) }}
+    {{- $result := dict "default" (list $selector) }}
+    {{- $result | toYaml }}
+  {{- else }}
+    {{- dict | toYaml }}
+  {{- end }}
+{{- else }}
+  {{- if .Values.deployment.discovery_selectors }}
+    {{- .Values.deployment.discovery_selectors | toYaml }}
+  {{- else }}
+    {{- dict | toYaml }}
+  {{- end }}
+{{- end }}
+{{- end }}

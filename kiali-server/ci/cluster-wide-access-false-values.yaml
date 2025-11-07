@@ -1,0 +1,17 @@
+testName: cluster-wide-access-false
+deployment:
+  image_version: latest
+  version_label: test
+  probes:
+    liveness:
+      initial_delay_seconds: 1
+      period_seconds: 1
+    readiness:
+      initial_delay_seconds: 1
+      period_seconds: 1
+    startup:
+      failure_threshold: 10
+      initial_delay_seconds: 1
+      period_seconds: 1
+  cluster_wide_access: false
+
