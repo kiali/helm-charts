@@ -203,6 +203,41 @@ This aborts if .Values.skipResources has invalid values.
 {{- end }}
 
 {{/*
+Returns a list of all secret-backed volume names that require read-only protection.
+This centralizes the logic for identifying protected volumes used by both
+secureContainers and secureInitContainers helpers.
+Returns a JSON array that must be parsed with fromJsonArray.
+*/}}
+{{- define "kiali-server.secret-volume-names" -}}
+{{- $secretVolumes := list }}
+{{- /* Core Kiali secrets */ -}}
+{{- $secretVolumes = append $secretVolumes (printf "%s-secret" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes (printf "%s-cert" (include "kiali-server.fullname" .)) }}
+{{- $secretVolumes = append $secretVolumes "kiali-multi-cluster-secret" }}
+{{- /* Custom secrets (non-CSI only) */ -}}
+{{- range .Values.deployment.custom_secrets }}
+  {{- if not .csi }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- /* Remote cluster secrets from autodetection */ -}}
+{{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $key }}
+{{- end }}
+{{- /* Explicitly configured cluster secrets */ -}}
+{{- range .Values.clustering.clusters }}
+  {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
+    {{- $secretVolumes = append $secretVolumes .name }}
+  {{- end }}
+{{- end }}
+{{- /* Auto-detected credential secrets */ -}}
+{{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $name }}
+{{- end }}
+{{- $secretVolumes | toJson }}
+{{- end }}
+
+{{/*
 Apply security guardrails to user-defined containers.
 This enforces the same restrictive security context as the main Kiali container,
 ensures secret-backed volumes are mounted read-only, and validates volume mount security.
@@ -210,28 +245,7 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 {{- define "kiali-server.secureContainers" -}}
 {{- $securedContainers := list }}
 {{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
-{{- /* Identify secret-backed volumes dynamically */ -}}
-{{- $secretVolumes := list }}
-{{- $secretVolumes = append $secretVolumes (printf "%s-secret" (include "kiali-server.fullname" .)) }}
-{{- $secretVolumes = append $secretVolumes (printf "%s-cert" (include "kiali-server.fullname" .)) }}
-{{- $secretVolumes = append $secretVolumes "kiali-multi-cluster-secret" }}
-{{- range .Values.deployment.custom_secrets }}
-  {{- if not .csi }}
-    {{- $secretVolumes = append $secretVolumes .name }}
-  {{- end }}
-{{- end }}
-{{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
-  {{- $secretVolumes = append $secretVolumes $key }}
-{{- end }}
-{{- range .Values.clustering.clusters }}
-  {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
-    {{- $secretVolumes = append $secretVolumes .name }}
-  {{- end }}
-{{- end }}
-{{- /* Add auto-detected credential secrets to protected list */ -}}
-{{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
-  {{- $secretVolumes = append $secretVolumes $name }}
-{{- end }}
+{{- $secretVolumes := include "kiali-server.secret-volume-names" . | fromJsonArray }}
 {{- /* Validate containers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_containers_yaml }}
   {{- if hasKey . "volumeMounts" }}
@@ -273,28 +287,7 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 {{- define "kiali-server.secureInitContainers" -}}
 {{- $securedInitContainers := list }}
 {{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
-{{- /* Identify secret-backed volumes dynamically */ -}}
-{{- $secretVolumes := list }}
-{{- $secretVolumes = append $secretVolumes (printf "%s-secret" (include "kiali-server.fullname" .)) }}
-{{- $secretVolumes = append $secretVolumes (printf "%s-cert" (include "kiali-server.fullname" .)) }}
-{{- $secretVolumes = append $secretVolumes "kiali-multi-cluster-secret" }}
-{{- range .Values.deployment.custom_secrets }}
-  {{- if not .csi }}
-    {{- $secretVolumes = append $secretVolumes .name }}
-  {{- end }}
-{{- end }}
-{{- range $key, $val := (include "kiali-server.remote-cluster-secrets" .) | fromJson }}
-  {{- $secretVolumes = append $secretVolumes $key }}
-{{- end }}
-{{- range .Values.clustering.clusters }}
-  {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
-    {{- $secretVolumes = append $secretVolumes .name }}
-  {{- end }}
-{{- end }}
-{{- /* Add auto-detected credential secrets to protected list */ -}}
-{{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
-  {{- $secretVolumes = append $secretVolumes $name }}
-{{- end }}
+{{- $secretVolumes := include "kiali-server.secret-volume-names" . | fromJsonArray }}
 {{- /* Validate initContainers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_init_containers_yaml }}
   {{- if hasKey . "volumeMounts" }}
@@ -448,12 +441,69 @@ Returns a dict structure (not YAML string).
 {{- end }}
 
 {{/*
+Extract a single credential secret from a value if it matches the secret:<name>:<key> pattern.
+Returns a single-entry dict as JSON, or empty dict if no match.
+
+Parameters (passed as dict):
+  - value: The credential value to check
+  - volumeName: The volume name to use for the secret
+  - fileName: The file name to use (or "useSecretKey" to use the secret key as filename)
+
+Example: include "kiali-server.extract-secret" (dict "value" $auth.password "volumeName" "prometheus-password" "fileName" "value.txt")
+*/}}
+{{- define "kiali-server.extract-secret" -}}
+{{- $result := dict }}
+{{- if and .value (regexMatch "^secret:.+:.+" .value) }}
+  {{- $parts := regexSplit ":" .value 3 }}
+  {{- $secretName := index $parts 1 }}
+  {{- $secretKey := index $parts 2 }}
+  {{- $fileName := .fileName }}
+  {{- if eq $fileName "useSecretKey" }}
+    {{- $fileName = $secretKey }}
+  {{- end }}
+  {{- $result = dict .volumeName (dict "secret_name" $secretName "secret_key" $secretKey "file_name" $fileName) }}
+{{- end }}
+{{- $result | toJson }}
+{{- end }}
+
+{{/*
+Process all standard auth credentials for a service.
+Returns a dict of secrets as JSON.
+
+Parameters (passed as dict):
+  - auth: The auth object containing username, password, token, cert_file, key_file
+  - prefix: The volume name prefix (e.g., "prometheus", "grafana")
+  - hasToken: Whether token auth is supported (default true)
+
+Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead.
+*/}}
+{{- define "kiali-server.process-auth-secrets" -}}
+{{- $result := dict }}
+{{- if .auth }}
+  {{- /* Username */ -}}
+  {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.username "volumeName" (printf "%s-username" .prefix) "fileName" "value.txt") | fromJson) }}
+  {{- /* Password */ -}}
+  {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.password "volumeName" (printf "%s-password" .prefix) "fileName" "value.txt") | fromJson) }}
+  {{- /* Token (if supported) */ -}}
+  {{- if (ne .hasToken false) }}
+    {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.token "volumeName" (printf "%s-token" .prefix) "fileName" "value.txt") | fromJson) }}
+  {{- end }}
+  {{- /* Cert file - uses secret key as filename */ -}}
+  {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.cert_file "volumeName" (printf "%s-cert" .prefix) "fileName" "useSecretKey") | fromJson) }}
+  {{- /* Key file - uses secret key as filename */ -}}
+  {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.key_file "volumeName" (printf "%s-key" .prefix) "fileName" "useSecretKey") | fromJson) }}
+{{- end }}
+{{- $result | toJson }}
+{{- end }}
+
+{{/*
 Detect credential values that use the secret:<secretName>:<secretKey> pattern.
 Scans external_services auth fields and login_token.signing_key.
 Returns a JSON object with volume configurations for auto-mounting these secrets.
 
 For simple credentials (username, password, token), the file is named "value.txt".
-For file-based credentials (ca_file, cert_file, key_file), the original secret key name is preserved.
+For file-based credentials (cert_file, key_file), the original secret key name is preserved.
+Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead.
 
 Example output:
 {
@@ -464,160 +514,36 @@ Example output:
 {{- define "kiali-server.credential-secrets" -}}
 {{- $secrets := dict }}
 
-{{- /* Helper to check if value matches secret pattern and add to secrets dict */ -}}
-{{- /* Process Prometheus auth credentials (always processed, no enabled check) */ -}}
 {{- if .Values.external_services }}
-  {{- if .Values.external_services.prometheus }}
-    {{- if .Values.external_services.prometheus.auth }}
-      {{- $auth := .Values.external_services.prometheus.auth }}
-      {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
-        {{- $parts := regexSplit ":" $auth.username 3 }}
-        {{- $secrets = set $secrets "prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-      {{- end }}
-      {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
-        {{- $parts := regexSplit ":" $auth.password 3 }}
-        {{- $secrets = set $secrets "prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-      {{- end }}
-      {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
-        {{- $parts := regexSplit ":" $auth.token 3 }}
-        {{- $secrets = set $secrets "prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-      {{- end }}
-      {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
-      {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
-        {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-        {{- $secrets = set $secrets "prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-      {{- end }}
-      {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
-        {{- $parts := regexSplit ":" $auth.key_file 3 }}
-        {{- $secrets = set $secrets "prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-      {{- end }}
-    {{- end }}
+  {{- /* Prometheus - always processed, no enabled check */ -}}
+  {{- if and .Values.external_services.prometheus .Values.external_services.prometheus.auth }}
+    {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.prometheus.auth "prefix" "prometheus") | fromJson) }}
   {{- end }}
 
-  {{- /* Process Grafana auth credentials (only if enabled) */ -}}
-  {{- if .Values.external_services.grafana }}
-    {{- if .Values.external_services.grafana.enabled }}
-      {{- if .Values.external_services.grafana.auth }}
-        {{- $auth := .Values.external_services.grafana.auth }}
-        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
-          {{- $parts := regexSplit ":" $auth.username 3 }}
-          {{- $secrets = set $secrets "grafana-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
-          {{- $parts := regexSplit ":" $auth.password 3 }}
-          {{- $secrets = set $secrets "grafana-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
-          {{- $parts := regexSplit ":" $auth.token 3 }}
-          {{- $secrets = set $secrets "grafana-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
-        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
-          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-          {{- $secrets = set $secrets "grafana-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
-          {{- $parts := regexSplit ":" $auth.key_file 3 }}
-          {{- $secrets = set $secrets "grafana-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
+  {{- /* Grafana - only if enabled */ -}}
+  {{- if and .Values.external_services.grafana .Values.external_services.grafana.enabled .Values.external_services.grafana.auth }}
+    {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.grafana.auth "prefix" "grafana") | fromJson) }}
   {{- end }}
 
-  {{- /* Process Tracing auth credentials (only if enabled) */ -}}
-  {{- if .Values.external_services.tracing }}
-    {{- if .Values.external_services.tracing.enabled }}
-      {{- if .Values.external_services.tracing.auth }}
-        {{- $auth := .Values.external_services.tracing.auth }}
-        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
-          {{- $parts := regexSplit ":" $auth.username 3 }}
-          {{- $secrets = set $secrets "tracing-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
-          {{- $parts := regexSplit ":" $auth.password 3 }}
-          {{- $secrets = set $secrets "tracing-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
-          {{- $parts := regexSplit ":" $auth.token 3 }}
-          {{- $secrets = set $secrets "tracing-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
-        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
-          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-          {{- $secrets = set $secrets "tracing-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
-          {{- $parts := regexSplit ":" $auth.key_file 3 }}
-          {{- $secrets = set $secrets "tracing-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
+  {{- /* Tracing - only if enabled */ -}}
+  {{- if and .Values.external_services.tracing .Values.external_services.tracing.enabled .Values.external_services.tracing.auth }}
+    {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.tracing.auth "prefix" "tracing") | fromJson) }}
   {{- end }}
 
-  {{- /* Process Perses auth credentials (only if enabled) */ -}}
-  {{- if .Values.external_services.perses }}
-    {{- if .Values.external_services.perses.enabled }}
-      {{- if .Values.external_services.perses.auth }}
-        {{- $auth := .Values.external_services.perses.auth }}
-        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
-          {{- $parts := regexSplit ":" $auth.username 3 }}
-          {{- $secrets = set $secrets "perses-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
-          {{- $parts := regexSplit ":" $auth.password 3 }}
-          {{- $secrets = set $secrets "perses-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- /* Note: Perses does not support token auth in Kiali server */ -}}
-        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
-        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
-          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-          {{- $secrets = set $secrets "perses-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
-          {{- $parts := regexSplit ":" $auth.key_file 3 }}
-          {{- $secrets = set $secrets "perses-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
+  {{- /* Perses - only if enabled, no token support */ -}}
+  {{- if and .Values.external_services.perses .Values.external_services.perses.enabled .Values.external_services.perses.auth }}
+    {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.perses.auth "prefix" "perses" "hasToken" false) | fromJson) }}
   {{- end }}
 
-  {{- /* Process Custom Dashboards Prometheus auth credentials (always processed) */ -}}
-  {{- if .Values.external_services.custom_dashboards }}
-    {{- if .Values.external_services.custom_dashboards.prometheus }}
-      {{- if .Values.external_services.custom_dashboards.prometheus.auth }}
-        {{- $auth := .Values.external_services.custom_dashboards.prometheus.auth }}
-        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
-          {{- $parts := regexSplit ":" $auth.username 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
-          {{- $parts := regexSplit ":" $auth.password 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
-          {{- $parts := regexSplit ":" $auth.token 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
-        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
-          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
-          {{- $parts := regexSplit ":" $auth.key_file 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
+  {{- /* Custom Dashboards Prometheus - only if enabled */ -}}
+  {{- if and .Values.external_services.custom_dashboards .Values.external_services.custom_dashboards.enabled .Values.external_services.custom_dashboards.prometheus .Values.external_services.custom_dashboards.prometheus.auth }}
+    {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.custom_dashboards.prometheus.auth "prefix" "customdashboards-prometheus") | fromJson) }}
   {{- end }}
 {{- end }}
 
-{{- /* Process login_token.signing_key (always processed) */ -}}
+{{- /* Login token signing key - always processed */ -}}
 {{- if .Values.login_token }}
-  {{- if and .Values.login_token.signing_key (regexMatch "^secret:.+:.+" .Values.login_token.signing_key) }}
-    {{- $parts := regexSplit ":" .Values.login_token.signing_key 3 }}
-    {{- $secrets = set $secrets "login-token-signing-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-  {{- end }}
+  {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" .Values.login_token.signing_key "volumeName" "login-token-signing-key" "fileName" "value.txt") | fromJson) }}
 {{- end }}
 
 {{- $secrets | toJson }}
