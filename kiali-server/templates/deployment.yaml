@@ -178,6 +178,12 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
+        {{- /* Auto-detected credential secret mounts */ -}}
+        {{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
+        - name: {{ $name }}
+          mountPath: "/kiali-override-secrets/{{ $name }}"
+          readOnly: true
+        {{- end }}
         {{- if .Values.deployment.resources }}
         resources:
         {{- toYaml .Values.deployment.resources | nindent 10 }}
@@ -231,6 +237,15 @@ spec:
         secret:
           secretName: {{ .secret_name }}
       {{- end }}
+      {{- end }}
+      {{- /* Auto-detected credential secret volumes */ -}}
+      {{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
+      - name: {{ $name }}
+        secret:
+          secretName: {{ $config.secret_name }}
+          items:
+            - key: {{ $config.secret_key }}
+              path: {{ $config.file_name }}
       {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
       affinity:

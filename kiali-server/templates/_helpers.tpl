@@ -228,6 +228,10 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
     {{- $secretVolumes = append $secretVolumes .name }}
   {{- end }}
 {{- end }}
+{{- /* Add auto-detected credential secrets to protected list */ -}}
+{{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $name }}
+{{- end }}
 {{- /* Validate containers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_containers_yaml }}
   {{- if hasKey . "volumeMounts" }}
@@ -286,6 +290,10 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
   {{- if and (.secret_name) (ne .secret_name "kiali-multi-cluster-secret") }}
     {{- $secretVolumes = append $secretVolumes .name }}
   {{- end }}
+{{- end }}
+{{- /* Add auto-detected credential secrets to protected list */ -}}
+{{- range $name, $config := (include "kiali-server.credential-secrets" .) | fromJson }}
+  {{- $secretVolumes = append $secretVolumes $name }}
 {{- end }}
 {{- /* Validate initContainers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_init_containers_yaml }}
@@ -437,4 +445,198 @@ Returns a dict structure (not YAML string).
     {{- dict | toYaml }}
   {{- end }}
 {{- end }}
+{{- end }}
+
+{{/*
+Detect credential values that use the secret:<secretName>:<secretKey> pattern.
+Scans external_services auth fields and login_token.signing_key.
+Returns a JSON object with volume configurations for auto-mounting these secrets.
+
+For simple credentials (username, password, token), the file is named "value.txt".
+For file-based credentials (ca_file, cert_file, key_file), the original secret key name is preserved.
+
+Example output:
+{
+  "prometheus-password": {"secret_name": "my-creds", "secret_key": "password", "file_name": "value.txt"},
+  "grafana-cert": {"secret_name": "tls-certs", "secret_key": "tls.crt", "file_name": "tls.crt"}
+}
+*/}}
+{{- define "kiali-server.credential-secrets" -}}
+{{- $secrets := dict }}
+
+{{- /* Helper to check if value matches secret pattern and add to secrets dict */ -}}
+{{- /* Process Prometheus auth credentials (always processed, no enabled check) */ -}}
+{{- if .Values.external_services }}
+  {{- if .Values.external_services.prometheus }}
+    {{- if .Values.external_services.prometheus.auth }}
+      {{- $auth := .Values.external_services.prometheus.auth }}
+      {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
+        {{- $parts := regexSplit ":" $auth.username 3 }}
+        {{- $secrets = set $secrets "prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+      {{- end }}
+      {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
+        {{- $parts := regexSplit ":" $auth.password 3 }}
+        {{- $secrets = set $secrets "prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+      {{- end }}
+      {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
+        {{- $parts := regexSplit ":" $auth.token 3 }}
+        {{- $secrets = set $secrets "prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+      {{- end }}
+      {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
+        {{- $parts := regexSplit ":" $auth.ca_file 3 }}
+        {{- $secrets = set $secrets "prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+      {{- end }}
+      {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
+        {{- $parts := regexSplit ":" $auth.cert_file 3 }}
+        {{- $secrets = set $secrets "prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+      {{- end }}
+      {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
+        {{- $parts := regexSplit ":" $auth.key_file 3 }}
+        {{- $secrets = set $secrets "prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Process Grafana auth credentials (only if enabled) */ -}}
+  {{- if .Values.external_services.grafana }}
+    {{- if .Values.external_services.grafana.enabled }}
+      {{- if .Values.external_services.grafana.auth }}
+        {{- $auth := .Values.external_services.grafana.auth }}
+        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
+          {{- $parts := regexSplit ":" $auth.username 3 }}
+          {{- $secrets = set $secrets "grafana-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
+          {{- $parts := regexSplit ":" $auth.password 3 }}
+          {{- $secrets = set $secrets "grafana-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
+          {{- $parts := regexSplit ":" $auth.token 3 }}
+          {{- $secrets = set $secrets "grafana-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
+          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
+          {{- $secrets = set $secrets "grafana-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
+          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
+          {{- $secrets = set $secrets "grafana-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
+          {{- $parts := regexSplit ":" $auth.key_file 3 }}
+          {{- $secrets = set $secrets "grafana-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Process Tracing auth credentials (only if enabled) */ -}}
+  {{- if .Values.external_services.tracing }}
+    {{- if .Values.external_services.tracing.enabled }}
+      {{- if .Values.external_services.tracing.auth }}
+        {{- $auth := .Values.external_services.tracing.auth }}
+        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
+          {{- $parts := regexSplit ":" $auth.username 3 }}
+          {{- $secrets = set $secrets "tracing-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
+          {{- $parts := regexSplit ":" $auth.password 3 }}
+          {{- $secrets = set $secrets "tracing-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
+          {{- $parts := regexSplit ":" $auth.token 3 }}
+          {{- $secrets = set $secrets "tracing-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
+          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
+          {{- $secrets = set $secrets "tracing-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
+          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
+          {{- $secrets = set $secrets "tracing-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
+          {{- $parts := regexSplit ":" $auth.key_file 3 }}
+          {{- $secrets = set $secrets "tracing-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Process Perses auth credentials (only if enabled) */ -}}
+  {{- if .Values.external_services.perses }}
+    {{- if .Values.external_services.perses.enabled }}
+      {{- if .Values.external_services.perses.auth }}
+        {{- $auth := .Values.external_services.perses.auth }}
+        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
+          {{- $parts := regexSplit ":" $auth.username 3 }}
+          {{- $secrets = set $secrets "perses-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
+          {{- $parts := regexSplit ":" $auth.password 3 }}
+          {{- $secrets = set $secrets "perses-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
+          {{- $parts := regexSplit ":" $auth.token 3 }}
+          {{- $secrets = set $secrets "perses-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
+          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
+          {{- $secrets = set $secrets "perses-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
+          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
+          {{- $secrets = set $secrets "perses-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
+          {{- $parts := regexSplit ":" $auth.key_file 3 }}
+          {{- $secrets = set $secrets "perses-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Process Custom Dashboards Prometheus auth credentials (always processed) */ -}}
+  {{- if .Values.external_services.custom_dashboards }}
+    {{- if .Values.external_services.custom_dashboards.prometheus }}
+      {{- if .Values.external_services.custom_dashboards.prometheus.auth }}
+        {{- $auth := .Values.external_services.custom_dashboards.prometheus.auth }}
+        {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
+          {{- $parts := regexSplit ":" $auth.username 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
+          {{- $parts := regexSplit ":" $auth.password 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
+          {{- $parts := regexSplit ":" $auth.token 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+        {{- end }}
+        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
+          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
+          {{- $parts := regexSplit ":" $auth.cert_file 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+        {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
+          {{- $parts := regexSplit ":" $auth.key_file 3 }}
+          {{- $secrets = set $secrets "custom-dashboards-prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* Process login_token.signing_key (always processed) */ -}}
+{{- if .Values.login_token }}
+  {{- if and .Values.login_token.signing_key (regexMatch "^secret:.+:.+" .Values.login_token.signing_key) }}
+    {{- $parts := regexSplit ":" .Values.login_token.signing_key 3 }}
+    {{- $secrets = set $secrets "login-token-signing-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+  {{- end }}
+{{- end }}
+
+{{- $secrets | toJson }}
 {{- end }}
