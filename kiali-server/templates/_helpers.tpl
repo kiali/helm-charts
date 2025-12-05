@@ -603,27 +603,27 @@ Example output:
         {{- $auth := .Values.external_services.custom_dashboards.prometheus.auth }}
         {{- if and $auth.username (regexMatch "^secret:.+:.+" $auth.username) }}
           {{- $parts := regexSplit ":" $auth.username 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-username" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
         {{- if and $auth.password (regexMatch "^secret:.+:.+" $auth.password) }}
           {{- $parts := regexSplit ":" $auth.password 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
         {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
           {{- $parts := regexSplit ":" $auth.token 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
         {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
           {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
         {{- end }}
         {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
           {{- $parts := regexSplit ":" $auth.cert_file 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
         {{- end }}
         {{- if and $auth.key_file (regexMatch "^secret:.+:.+" $auth.key_file) }}
           {{- $parts := regexSplit ":" $auth.key_file 3 }}
-          {{- $secrets = set $secrets "custom-dashboards-prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
+          {{- $secrets = set $secrets "customdashboards-prometheus-key" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
         {{- end }}
       {{- end }}
     {{- end }}
