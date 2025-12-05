@@ -482,10 +482,7 @@ Example output:
         {{- $parts := regexSplit ":" $auth.token 3 }}
         {{- $secrets = set $secrets "prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
       {{- end }}
-      {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
-        {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-        {{- $secrets = set $secrets "prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-      {{- end }}
+      {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
       {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
         {{- $parts := regexSplit ":" $auth.cert_file 3 }}
         {{- $secrets = set $secrets "prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
@@ -514,10 +511,7 @@ Example output:
           {{- $parts := regexSplit ":" $auth.token 3 }}
           {{- $secrets = set $secrets "grafana-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
-        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
-          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-          {{- $secrets = set $secrets "grafana-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
+        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
         {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
           {{- $parts := regexSplit ":" $auth.cert_file 3 }}
           {{- $secrets = set $secrets "grafana-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
@@ -547,10 +541,7 @@ Example output:
           {{- $parts := regexSplit ":" $auth.token 3 }}
           {{- $secrets = set $secrets "tracing-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
-        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
-          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-          {{- $secrets = set $secrets "tracing-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
+        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
         {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
           {{- $parts := regexSplit ":" $auth.cert_file 3 }}
           {{- $secrets = set $secrets "tracing-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
@@ -576,14 +567,8 @@ Example output:
           {{- $parts := regexSplit ":" $auth.password 3 }}
           {{- $secrets = set $secrets "perses-password" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
-        {{- if and $auth.token (regexMatch "^secret:.+:.+" $auth.token) }}
-          {{- $parts := regexSplit ":" $auth.token 3 }}
-          {{- $secrets = set $secrets "perses-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
-        {{- end }}
-        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
-          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-          {{- $secrets = set $secrets "perses-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
+        {{- /* Note: Perses does not support token auth in Kiali server */ -}}
+        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
         {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
           {{- $parts := regexSplit ":" $auth.cert_file 3 }}
           {{- $secrets = set $secrets "perses-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
@@ -613,10 +598,7 @@ Example output:
           {{- $parts := regexSplit ":" $auth.token 3 }}
           {{- $secrets = set $secrets "customdashboards-prometheus-token" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" "value.txt") }}
         {{- end }}
-        {{- if and $auth.ca_file (regexMatch "^secret:.+:.+" $auth.ca_file) }}
-          {{- $parts := regexSplit ":" $auth.ca_file 3 }}
-          {{- $secrets = set $secrets "customdashboards-prometheus-ca" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
-        {{- end }}
+        {{- /* Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead */ -}}
         {{- if and $auth.cert_file (regexMatch "^secret:.+:.+" $auth.cert_file) }}
           {{- $parts := regexSplit ":" $auth.cert_file 3 }}
           {{- $secrets = set $secrets "customdashboards-prometheus-cert" (dict "secret_name" (index $parts 1) "secret_key" (index $parts 2) "file_name" (index $parts 2)) }}
