@@ -19,7 +19,7 @@ helm_args:
   - "deployment.additional_pod_init_containers_yaml[0].securityContext.readOnlyRootFilesystem=false"
   - "--set"
   - "deployment.additional_pod_init_containers_yaml[0].securityContext.runAsNonRoot=false"
-yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.initContainers[0].securityContext"
+yq_query: "select(.kind == \"Deployment\") | (.spec.template.spec.initContainers[] | select(.name == \"privilege-attempt\") | .securityContext)"
 expected_result: |
   allowPrivilegeEscalation: false
   capabilities:
