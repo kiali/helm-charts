@@ -13,7 +13,7 @@ helm_args:
   - "deployment.additional_pod_init_containers_yaml[0].securityContext.runAsUser=2448"
   - "--set"
   - "deployment.additional_pod_init_containers_yaml[0].securityContext.seccompProfile.type=RuntimeDefault"
-yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.initContainers[0].securityContext"
+yq_query: "select(.kind == \"Deployment\") | (.spec.template.spec.initContainers[] | select(.name == \"extra-init\") | .securityContext)"
 expected_result: |
   allowPrivilegeEscalation: false
   capabilities:
