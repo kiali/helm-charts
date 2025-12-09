@@ -3,13 +3,6 @@ description: "Verify no NetworkPolicy resources exist when remote_cluster_resour
 helm_args:
   - "--set"
   - "deployment.remote_cluster_resources_only=true"
-yq_query: '.kind == "NetworkPolicy"'
-expected_result: |
-  false
-  ---
-  false
-  ---
-  false
-  ---
-  false
+yq_query: 'select(.kind == "NetworkPolicy") | .kind'
+expected_result: ""
 should_fail: false

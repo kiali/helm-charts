@@ -3,17 +3,6 @@ description: "Verify no NetworkPolicy resources exist when disabled"
 helm_args:
   - "--set"
   - "deployment.network_policy.enabled=false"
-yq_query: '.kind == "NetworkPolicy"'
-expected_result: |
-  false
-  ---
-  false
-  ---
-  false
-  ---
-  false
-  ---
-  false
-  ---
-  false
+yq_query: 'select(.kind == "NetworkPolicy") | .kind'
+expected_result: ""
 should_fail: false
