@@ -244,8 +244,8 @@ spec:
         secret:
           secretName: {{ $config.secret_name }}
           items:
-            - key: {{ $config.secret_key }}
-              path: {{ $config.file_name }}
+          - key: {{ $config.secret_key }}
+            path: {{ $config.file_name }}
       {{- end }}
       {{- if or (.Values.deployment.affinity.node) (or (.Values.deployment.affinity.pod) (.Values.deployment.affinity.pod_anti)) }}
       affinity:
