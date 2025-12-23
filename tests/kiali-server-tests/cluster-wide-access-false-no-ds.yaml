@@ -1,6 +1,8 @@
 name: "cluster-wide-access-false-no-ds"
 description: "Verify that when cluster_wide_access is false and no discovery_selectors are set, discovery_selectors in ConfigMap is converted to exact namespace names (only Kiali namespace)"
 helm_args:
+  - "-n"
+  - "default"
   - "--set"
   - "deployment.cluster_wide_access=false"
 yq_query: 'select(.kind == "ConfigMap") | .data."config.yaml" | from_yaml | .deployment.discovery_selectors'
@@ -12,4 +14,3 @@ expected_result: |
           values:
             - default
 should_fail: false
-

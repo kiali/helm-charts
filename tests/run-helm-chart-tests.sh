@@ -349,7 +349,11 @@ run_test() {
 
     # Write expected result to file for comparison (if not a failure test)
     if [[ "${should_fail}" != "true" ]]; then
-        echo "${expected_result}" > "${expected_file}"
+        if [[ -n "${expected_result}" ]]; then
+            printf '%s\n' "${expected_result}" > "${expected_file}"
+        else
+            : > "${expected_file}"
+        fi
     fi
 
     # Run helm template command
