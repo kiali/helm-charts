@@ -1,0 +1,11 @@
+name: "deployment_tls_config_source_default_openshift"
+description: "Ensures tls_config.source defaults to auto on OpenShift when not set"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: ". | select(.kind == \"ConfigMap\" and .metadata.name == \"kiali\") | .data[\"config.yaml\"] | from_yaml | .deployment.tls_config.source"
+expected_result: |
+  auto
+should_fail: false

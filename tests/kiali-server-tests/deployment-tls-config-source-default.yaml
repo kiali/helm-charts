@@ -1,0 +1,7 @@
+name: "deployment_tls_config_source_default"
+description: "Ensures tls_config.source defaults to config when not set"
+helm_args: []
+yq_query: ". | select(.kind == \"ConfigMap\" and .metadata.name == \"kiali\") | .data[\"config.yaml\"] | from_yaml | .deployment.tls_config.source"
+expected_result: |
+  config
+should_fail: false

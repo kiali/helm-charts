@@ -25,6 +25,9 @@ data:
     {{- $_ := set $cm.auth "strategy" (include "kiali-server.auth.strategy" .) }}
     {{- $_ := set $cm.auth.openshift "client_id_prefix" (include "kiali-server.fullname" .) }}
     {{- $_ := set $cm.deployment "instance_name" (include "kiali-server.fullname" .) }}
+    {{- /* Default TLS source is auto on OpenShift, config elsewhere, unless user overrides */}}
+    {{- if not $cm.deployment.tls_config }}{{- $_ := set $cm.deployment "tls_config" (dict) }}{{- end }}
+    {{- $_ := set $cm.deployment.tls_config "source" (include "kiali-server.deployment.tls_config.source" .) }}
     {{- $_ := set $cm.identity "cert_file" (include "kiali-server.identity.cert_file" .) }}
     {{- $_ := set $cm.identity "private_key_file" (include "kiali-server.identity.private_key_file" .) }}
     {{- $_ := set $cm.login_token "signing_key" (include "kiali-server.login_token.signing_key" .) }}

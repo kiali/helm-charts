@@ -150,6 +150,23 @@ Determine the auth strategy to use - default is "token" on Kubernetes and "opens
 {{- end }}
 
 {{/*
+Determine the default deployment.tls_config.source.
+- If user sets it, honor it.
+- Otherwise: "auto" on OpenShift (to read TLSSecurityProfile), "config" elsewhere.
+*/}}
+{{- define "kiali-server.deployment.tls_config.source" -}}
+{{- if .Values.deployment.tls_config.source }}
+  {{- .Values.deployment.tls_config.source }}
+{{- else }}
+  {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
+    {{- "auto" }}
+  {{- else }}
+    {{- "config" }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Determine the root namespace - default is where Kiali is installed.
 */}}
 {{- define "kiali-server.external_services.istio.root_namespace" -}}
