@@ -1,5 +1,5 @@
 name: "clusterrole_openshift_apiservers_rule"
-description: "ClusterRole (OpenShift) includes apiservers get permission for TLS policy reading"
+description: "ClusterRole (OpenShift) includes apiservers get permission when tls_config.source=auto"
 helm_args:
   - "--set"
   - "isOpenShift=true"

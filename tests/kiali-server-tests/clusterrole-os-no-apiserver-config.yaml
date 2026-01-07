@@ -1,0 +1,16 @@
+name: "clusterrole_os_no_apiserver_config"
+description: "ClusterRole (OpenShift) should not include apiservers permission when tls_config.source=config"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+  - "--set"
+  - "deployment.tls_config.source=config"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.resources[] == "apiservers") | .resources[0]
+expected_result: |
+should_fail: false

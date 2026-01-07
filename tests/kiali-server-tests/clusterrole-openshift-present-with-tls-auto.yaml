@@ -1,0 +1,14 @@
+name: "clusterrole_openshift_present_with_tls_auto"
+description: "ClusterRole (OpenShift) should be rendered when tls_config.source=auto even if auth.strategy != openshift"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "deployment.tls_config.source=auto"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) | .kind
+expected_result: |
+  ClusterRole
+should_fail: false
