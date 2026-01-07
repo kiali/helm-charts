@@ -1,0 +1,30 @@
+{{- if eq "true" (include "kiali-server.isOpenShift" .) }}
+---
+# OpenShift-specific ClusterRole for permissions that require cluster scope
+# This is always created on OpenShift regardless of cluster_wide_access setting
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-openshift
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+rules:
+{{- if eq .Values.auth.strategy "openshift" }}
+# Permission to read the OAuthClient for this Kiali instance
+- apiGroups: ["oauth.openshift.io"]
+  resources:
+  - oauthclients
+  resourceNames:
+  - {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}
+  verbs:
+  - get
+{{- end }}
+# Permission to read OpenShift TLSSecurityProfile for tls_config.source=auto
+- apiGroups: ["config.openshift.io"]
+  resources:
+  - apiservers
+  verbs:
+  - get
+...
+{{- end }}
+

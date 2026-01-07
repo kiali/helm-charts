@@ -1,0 +1,20 @@
+{{- if eq "true" (include "kiali-server.isOpenShift" .) }}
+---
+# Binds the OpenShift-specific ClusterRole to the Kiali service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-openshift
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-openshift
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+...
+{{- end }}
+
