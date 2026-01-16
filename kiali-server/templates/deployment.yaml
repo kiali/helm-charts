@@ -32,9 +32,11 @@ spec:
         {{- if .Values.server.observability.metrics.enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.server.observability.metrics.port | quote }}
+        prometheus.io/scheme: {{ if (include "kiali-server.identity.cert_file" .) }}"https"{{ else }}"http"{{ end }}
         {{- else }}
         prometheus.io/scrape: "false"
         prometheus.io/port: ""
+        prometheus.io/scheme: ""
         {{- end }}
         kiali.io/dashboards: go,kiali
         {{- if .Values.deployment.pod_annotations }}

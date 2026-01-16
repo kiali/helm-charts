@@ -39,8 +39,8 @@ spec:
     nodePort: {{ .Values.server.node_port }}
     {{- end }}
   {{- if .Values.server.observability.metrics.enabled }}
-  - name: http-metrics
-    appProtocol: http
+  - name: {{ if (include "kiali-server.identity.cert_file" .) }}tcp{{ else }}http{{ end }}-metrics
+    appProtocol: {{ if (include "kiali-server.identity.cert_file" .) }}https{{ else }}http{{ end }}
     protocol: TCP
     port: {{ .Values.server.observability.metrics.port }}
   {{- end }}

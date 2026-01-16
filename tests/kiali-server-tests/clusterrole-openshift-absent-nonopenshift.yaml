@@ -1,0 +1,13 @@
+name: "clusterrole_openshift_absent_nonopenshift"
+description: "ClusterRole (OpenShift) should not be rendered when not on OpenShift"
+helm_args:
+  - "--set"
+  - "isOpenShift=false"
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) | .kind
+expected_result: |
+should_fail: false

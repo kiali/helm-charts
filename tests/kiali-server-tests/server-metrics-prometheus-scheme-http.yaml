@@ -1,0 +1,11 @@
+name: "server_metrics_prometheus_scheme_http"
+description: "Verify prometheus.io/scheme annotation is http when TLS disabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=true"
+yq_query: >
+  select(.kind == "Deployment") |
+  .spec.template.metadata.annotations."prometheus.io/scheme"
+expected_result: |
+  http
+should_fail: false

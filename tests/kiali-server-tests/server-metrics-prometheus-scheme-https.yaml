@@ -1,0 +1,15 @@
+name: "server_metrics_prometheus_scheme_https"
+description: "Verify prometheus.io/scheme annotation is https when TLS enabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=true"
+  - "--set"
+  - "identity.cert_file=/kiali-cert/tls.crt"
+  - "--set"
+  - "identity.private_key_file=/kiali-cert/tls.key"
+yq_query: >
+  select(.kind == "Deployment") |
+  .spec.template.metadata.annotations."prometheus.io/scheme"
+expected_result: |
+  https
+should_fail: false

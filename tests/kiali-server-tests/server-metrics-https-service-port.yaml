@@ -1,0 +1,17 @@
+name: "server_metrics_https_service_port"
+description: "Verify metrics Service port uses tcp-metrics name and https appProtocol when TLS enabled"
+helm_args:
+  - "--set"
+  - "server.observability.metrics.enabled=true"
+  - "--set"
+  - "identity.cert_file=/kiali-cert/tls.crt"
+  - "--set"
+  - "identity.private_key_file=/kiali-cert/tls.key"
+yq_query: >
+  select(.kind == "Service") |
+  .spec.ports[] | select(.port == 9090) |
+  {"name": .name, "appProtocol": .appProtocol}
+expected_result: |
+  name: tcp-metrics
+  appProtocol: https
+should_fail: false

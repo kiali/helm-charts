@@ -1,0 +1,18 @@
+name: "clusterrole_openshift_apiservers_rule"
+description: "ClusterRole (OpenShift) includes apiservers get permission when tls_config.source=auto"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.resources[] == "apiservers") |
+  {"apiGroups": .apiGroups[0], "resources": .resources[0], "verbs": .verbs[0]}
+expected_result: |
+  apiGroups: "config.openshift.io"
+  resources: apiservers
+  verbs: get
+should_fail: false
