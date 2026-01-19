@@ -590,5 +590,38 @@ Example output:
   {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" .Values.login_token.signing_key "volumeName" "login-token-signing-key" "fileName" "value.txt") | fromJson) }}
 {{- end }}
 
+{{- /* ChatAI provider and model keys */ -}}
+{{- if and .Values.chat_ai .Values.chat_ai.providers }}
+  {{- range $idx, $provider := .Values.chat_ai.providers }}
+    {{- if $provider.key }}
+      {{- $providerName := get $provider "name" }}
+      {{- $providerSanitized := $providerName | lower | replace " " "-" | replace "_" "-" }}
+      {{- if not $providerSanitized }}
+        {{- $providerSanitized = "unknown" }}
+      {{- end }}
+      {{- $volumeName := printf "chat-ai-provider-%s" $providerSanitized }}
+      {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $provider.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+    {{- end }}
+    {{- if $provider.models }}
+      {{- range $midx, $model := $provider.models }}
+        {{- if $model.key }}
+          {{- $providerName := get $provider "name" }}
+          {{- $providerSanitized := $providerName | lower | replace " " "-" | replace "_" "-" }}
+          {{- if not $providerSanitized }}
+            {{- $providerSanitized = "unknown" }}
+          {{- end }}
+          {{- $modelName := get $model "name" }}
+          {{- $modelSanitized := $modelName | lower | replace " " "-" | replace "_" "-" }}
+          {{- if not $modelSanitized }}
+            {{- $modelSanitized = "unknown" }}
+          {{- end }}
+          {{- $volumeName := printf "chat-ai-model-%s-%s" $providerSanitized $modelSanitized }}
+          {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $model.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 {{- $secrets | toJson }}
 {{- end }}
