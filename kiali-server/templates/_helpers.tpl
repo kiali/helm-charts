@@ -568,18 +568,20 @@ Example output:
   {{- end }}
 {{- end }}
 
-{{- if .Values.chat_ai }}
+{{- if and .Values.chat_ai .Values.chat_ai.enabled }}
   {{- range $provider := .Values.chat_ai.providers }}
     {{- $providerName := include "kiali-server.sanitize-credential-name" $provider.name }}
-    {{- if and $provider.key (regexMatch "^secret:.+:.+" $provider.key) }}
-      {{- $volumeName := printf "chat-ai-provider-%s" $providerName }}
-      {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $provider.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
-    {{- end }}
-    {{- range $model := $provider.models }}
-      {{- $modelName := include "kiali-server.sanitize-credential-name" $model.name }}
-      {{- if and $model.key (regexMatch "^secret:.+:.+" $model.key) }}
-        {{- $volumeName := printf "chat-ai-model-%s-%s" $providerName $modelName }}
-        {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $model.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+    {{- if $provider.enabled }}
+      {{- if and $provider.key (regexMatch "^secret:.+:.+" $provider.key) }}
+        {{- $volumeName := printf "chat-ai-provider-%s" $providerName }}
+        {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $provider.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+      {{- end }}
+      {{- range $model := $provider.models }}
+        {{- $modelName := include "kiali-server.sanitize-credential-name" $model.name }}
+        {{- if and $model.enabled $model.key (regexMatch "^secret:.+:.+" $model.key) }}
+          {{- $volumeName := printf "chat-ai-model-%s-%s" $providerName $modelName }}
+          {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $model.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+        {{- end }}
       {{- end }}
     {{- end }}
   {{- end }}
@@ -588,39 +590,6 @@ Example output:
 {{- /* Login token signing key - always processed */ -}}
 {{- if .Values.login_token }}
   {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" .Values.login_token.signing_key "volumeName" "login-token-signing-key" "fileName" "value.txt") | fromJson) }}
-{{- end }}
-
-{{- /* ChatAI provider and model keys */ -}}
-{{- if and .Values.chat_ai .Values.chat_ai.providers }}
-  {{- range $idx, $provider := .Values.chat_ai.providers }}
-    {{- if $provider.key }}
-      {{- $providerName := get $provider "name" }}
-      {{- $providerSanitized := $providerName | lower | replace " " "-" | replace "_" "-" }}
-      {{- if not $providerSanitized }}
-        {{- $providerSanitized = "unknown" }}
-      {{- end }}
-      {{- $volumeName := printf "chat-ai-provider-%s" $providerSanitized }}
-      {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $provider.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
-    {{- end }}
-    {{- if $provider.models }}
-      {{- range $midx, $model := $provider.models }}
-        {{- if $model.key }}
-          {{- $providerName := get $provider "name" }}
-          {{- $providerSanitized := $providerName | lower | replace " " "-" | replace "_" "-" }}
-          {{- if not $providerSanitized }}
-            {{- $providerSanitized = "unknown" }}
-          {{- end }}
-          {{- $modelName := get $model "name" }}
-          {{- $modelSanitized := $modelName | lower | replace " " "-" | replace "_" "-" }}
-          {{- if not $modelSanitized }}
-            {{- $modelSanitized = "unknown" }}
-          {{- end }}
-          {{- $volumeName := printf "chat-ai-model-%s-%s" $providerSanitized $modelSanitized }}
-          {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $model.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
 {{- end }}
 
 {{- $secrets | toJson }}
