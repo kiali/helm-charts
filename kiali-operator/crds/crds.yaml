@@ -252,7 +252,7 @@ spec:
                           description: "Enable or disable the provider."
                           type: boolean
                         key:
-                          description: "The key of the provider."
+                          description: "The key of the provider. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart."
                           type: string
                         models:
                           description: "A list of models that can be used for the ChatAI feature. This is the list of models that will be available to the user to choose from."
@@ -270,7 +270,7 @@ spec:
                                 description: "The endpoint of the model."
                                 type: string
                               key:
-                                description: "The key of the model."
+                                description: "The key of the model. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart."
                                 type: string
                               name:
                                 description: "The name of the model."
@@ -906,27 +906,6 @@ spec:
                   service_type:
                     description: "The Kiali service type. Kubernetes determines what values are valid. Common values are 'NodePort', 'ClusterIP', and 'LoadBalancer'."
                     type: string
-                  tls_config:
-                    description: "TLS policy configuration. When source is 'auto' on OpenShift, the APIServer TLSSecurityProfile is used. Otherwise, the explicit config values are enforced."
-                    type: object
-                    properties:
-                      cipher_suites:
-                        description: "Explicit TLS cipher suites (OpenSSL names). Ignored for TLS 1.3."
-                        type: array
-                        items:
-                          type: string
-                      max_version:
-                        description: "Maximum TLS version (e.g., TLSv1.3, TLSv1.2)."
-                        type: string
-                      min_version:
-                        description: "Minimum TLS version (e.g., TLSv1.3, TLSv1.2)."
-                        type: string
-                      source:
-                        description: "TLS policy source: 'auto' to use OpenShift TLSSecurityProfile; 'config' to use explicit settings."
-                        type: string
-                        enum:
-                        - auto
-                        - config
                   tolerations:
                     description: "A list of tolerations which declare which node taints Kiali can tolerate. See the Kubernetes documentation on Taints and Tolerations for more details."
                     type: array

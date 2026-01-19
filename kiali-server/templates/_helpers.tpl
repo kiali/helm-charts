@@ -514,6 +514,16 @@ Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead.
 {{- end }}
 
 {{/*
+Sanitize a name to be used in credential secret volume names.
+*/}}
+{{- define "kiali-server.sanitize-credential-name" -}}
+{{- $name := lower . -}}
+{{- $name = regexReplaceAll "[^a-z0-9-]+" $name "-" -}}
+{{- $name = trimAll "-" $name -}}
+{{- if eq $name "" }}unknown{{ else }}{{ $name }}{{ end }}
+{{- end }}
+
+{{/*
 Detect credential values that use the secret:<secretName>:<secretKey> pattern.
 Scans external_services auth fields and login_token.signing_key.
 Returns a JSON object with volume configurations for auto-mounting these secrets.
@@ -555,6 +565,23 @@ Example output:
   {{- /* Custom Dashboards Prometheus - only if enabled */ -}}
   {{- if and .Values.external_services.custom_dashboards .Values.external_services.custom_dashboards.enabled .Values.external_services.custom_dashboards.prometheus .Values.external_services.custom_dashboards.prometheus.auth }}
     {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.custom_dashboards.prometheus.auth "prefix" "customdashboards-prometheus") | fromJson) }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.chat_ai }}
+  {{- range $provider := .Values.chat_ai.providers }}
+    {{- $providerName := include "kiali-server.sanitize-credential-name" $provider.name }}
+    {{- if and $provider.key (regexMatch "^secret:.+:.+" $provider.key) }}
+      {{- $volumeName := printf "chat-ai-provider-%s" $providerName }}
+      {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $provider.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+    {{- end }}
+    {{- range $model := $provider.models }}
+      {{- $modelName := include "kiali-server.sanitize-credential-name" $model.name }}
+      {{- if and $model.key (regexMatch "^secret:.+:.+" $model.key) }}
+        {{- $volumeName := printf "chat-ai-model-%s-%s" $providerName $modelName }}
+        {{- $secrets = merge $secrets (include "kiali-server.extract-secret" (dict "value" $model.key "volumeName" $volumeName "fileName" "value.txt") | fromJson) }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}
 
