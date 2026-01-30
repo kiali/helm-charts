@@ -177,3 +177,31 @@ server:
       enabled: true
       port: 9090
   web_root: ""
+
+# Istio Gateway / VirtualService configuration
+# When enabled, creates a VirtualService for exposing Kiali through Istio ingress gateway
+# Assisted-by: Claude Code
+istioGateway:
+  enabled: false
+  # Labels to add to the VirtualService
+  labels: {}
+  # Hosts for the VirtualService (defaults to "*" if not specified)
+  hosts: []
+  #  - kiali.example.com
+  # Gateway name(s) - can be a string or list
+  gateway: ""
+  #  - istio-system/istio-ingressgateway
+  # Port for the destination (defaults to server.port)
+  port: ""
+  # Match conditions
+  match: []
+  # URL rewrite
+  rewrite: {}
+  # Request timeout (defaults to "0s" for WebSocket support)
+  timeout: ""
+  # Retry policy
+  retries: {}
+  # Header manipulation
+  headers: {}
+  # Extra routes to add before the default route
+  extraRoutes: []

@@ -1,0 +1,22 @@
+name: "virtualservice_configuration"
+description: "Verify VirtualService is created with correct configuration when istioGateway is enabled"
+helm_args:
+  - "--set"
+  - "istioGateway.enabled=true"
+  - "--set"
+  - "istioGateway.gateway=istio-system/istio-ingressgateway"
+  - "--set"
+  - "istioGateway.hosts[0]=kiali.example.com"
+yq_query: "select(.kind == \"VirtualService\") | {\"hosts\": .spec.hosts, \"gateways\": .spec.gateways, \"routeName\": .spec.http[0].name, \"timeout\": .spec.http[0].timeout, \"destinationHost\": .spec.http[0].route[0].destination.host, \"destinationPort\": .spec.http[0].route[0].destination.port.number, \"weight\": .spec.http[0].route[0].weight}"
+expected_result: |
+  hosts:
+    - kiali.example.com
+  gateways:
+    - istio-system/istio-ingressgateway
+  routeName: "kiali-default-route"
+  timeout: 0s
+  destinationHost: kiali
+  destinationPort: 20001
+  weight: 100
+should_fail: false
+

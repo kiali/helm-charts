@@ -1,0 +1,9 @@
+name: "virtualservice_disabled"
+description: "Verify VirtualService is NOT created when istioGateway.enabled is false (default)"
+helm_args:
+  - "--set"
+  - "deployment.replicas=1"
+yq_query: "select(.kind == \"VirtualService\") | .kind"
+expected_result: ""
+should_fail: false
+
