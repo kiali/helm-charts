@@ -1,0 +1,12 @@
+name: "cabundle_kubernetes_simple_volume"
+description: "Verify Kubernetes deployment uses simple ConfigMap volume for CA bundle"
+helm_args:
+  - "--set"
+  - "isOpenShift=false"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.volumes[] | select(.name == \"kiali-cabundle\")"
+expected_result: |
+  name: kiali-cabundle
+  configMap:
+    name: kiali-cabundle
+    optional: true
+should_fail: false

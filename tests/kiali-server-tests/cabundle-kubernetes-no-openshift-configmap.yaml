@@ -1,0 +1,8 @@
+name: "cabundle_kubernetes_no_openshift_configmap"
+description: "Verify Kubernetes does not create kiali-cabundle-openshift ConfigMap"
+helm_args:
+  - "--set"
+  - "isOpenShift=false"
+yq_query: "select(.kind == \"ConfigMap\" and .metadata.name == \"kiali-cabundle-openshift\")"
+expected_result: ""
+should_fail: false

@@ -1,10 +1,14 @@
 {{- if not .Values.deployment.remote_cluster_resources_only }}
 {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
 ---
+# This ConfigMap is for OpenShift service CA injection only.
+# OpenShift automatically populates this with service-ca.crt.
+# Custom CAs should be added to a separate ConfigMap named {{ include "kiali-server.fullname" . }}-cabundle
+# which will be combined via projected volume.
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "kiali-server.fullname" . }}-cabundle
+  name: {{ include "kiali-server.fullname" . }}-cabundle-openshift
   namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
