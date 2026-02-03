@@ -209,9 +209,20 @@ spec:
           secretName: {{ .Values.deployment.secret_name }}
           optional: true
       - name: {{ include "kiali-server.fullname" . }}-cabundle
+      {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
+        projected:
+          sources:
+          - configMap:
+              name: {{ include "kiali-server.fullname" . }}-cabundle-openshift
+          - configMap:
+              name: {{ include "kiali-server.fullname" . }}-cabundle
+              optional: true
+          - configMap:
+              name: {{ include "kiali-server.fullname" . }}-oauth-cabundle
+              optional: true
+      {{- else }}
         configMap:
           name: {{ include "kiali-server.fullname" . }}-cabundle
-      {{- if not (eq "true" (include "kiali-server.isOpenShift" .)) }}
           optional: true
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}

@@ -1,0 +1,12 @@
+name: "cabundle_openshift_configmap_created"
+description: "Verify OpenShift creates kiali-cabundle-openshift ConfigMap with service CA injection annotation"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=token"
+yq_query: "select(.kind == \"ConfigMap\" and .metadata.name == \"kiali-cabundle-openshift\") | {\"name\": .metadata.name, \"annotation\": .metadata.annotations.\"service.beta.openshift.io/inject-cabundle\"}"
+expected_result: |
+  name: kiali-cabundle-openshift
+  annotation: "true"
+should_fail: false

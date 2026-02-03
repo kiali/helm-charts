@@ -1,0 +1,12 @@
+name: "cabundle_mount_path"
+description: "Verify CA bundle is mounted at /kiali-cabundle in the deployment"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=token"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0].volumeMounts[] | select(.name == \"kiali-cabundle\")"
+expected_result: |
+  name: kiali-cabundle
+  mountPath: "/kiali-cabundle"
+should_fail: false

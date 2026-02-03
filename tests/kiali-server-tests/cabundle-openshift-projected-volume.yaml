@@ -1,0 +1,21 @@
+name: "cabundle_openshift_projected_volume"
+description: "Verify OpenShift deployment uses projected volume for CA bundle to combine multiple ConfigMaps"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=token"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.volumes[] | select(.name == \"kiali-cabundle\")"
+expected_result: |
+  name: kiali-cabundle
+  projected:
+    sources:
+      - configMap:
+          name: kiali-cabundle-openshift
+      - configMap:
+          name: kiali-cabundle
+          optional: true
+      - configMap:
+          name: kiali-oauth-cabundle
+          optional: true
+should_fail: false
