@@ -227,7 +227,7 @@ spec:
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}
       - name: {{ .name }}
-      {{- if .csi}}
+      {{- if .csi }}
         csi: {{ toYaml .csi | nindent 10 }}
       {{- else }}
         secret:
