@@ -124,3 +124,11 @@ cr:
   spec:
     deployment:
       cluster_wide_access: true
+      # Istio Gateway / VirtualService configuration (alternative to nginx Ingress)
+      # Assisted-by: Claude Code
+      # istio_gateway:
+      #   enabled: false
+      #   gateway: "istio-system/istio-ingressgateway"
+      #   hosts:
+      #     - "kiali.example.com"
+      #   timeout: "0s"  # Important for WebSocket support
