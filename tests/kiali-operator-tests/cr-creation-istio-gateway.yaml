@@ -1,0 +1,23 @@
+# Assisted-by: Claude Code
+name: "cr_creation_istio_gateway"
+description: "Verify Kiali CR istio_gateway configuration is properly set"
+helm_args:
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.spec.deployment.istio_gateway.enabled=true"
+  - "--set"
+  - "cr.spec.deployment.istio_gateway.gateway=istio-system/istio-ingressgateway"
+  - "--set"
+  - "cr.spec.deployment.istio_gateway.hosts[0]=kiali.example.com"
+  - "--set"
+  - "cr.spec.deployment.istio_gateway.timeout=0s"
+yq_query: "select(.kind == \"Kiali\") | .spec.deployment.istio_gateway | {\"enabled\": .enabled, \"gateway\": .gateway, \"hosts\": .hosts, \"timeout\": .timeout}"
+expected_result: |
+  enabled: true
+  gateway: istio-system/istio-ingressgateway
+  hosts:
+    - kiali.example.com
+  timeout: 0s
+should_fail: false
+
