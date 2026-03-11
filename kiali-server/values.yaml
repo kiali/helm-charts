@@ -66,6 +66,7 @@ deployment:
   # When cluster_wide_access is false, Role and RoleBinding are created for each accessible namespace defined in discovery_selectors.
   cluster_wide_access: true
   configmap_annotations: {}
+  deployment_annotations: {}
   # Discovery selectors are used when cluster_wide_access is false to determine which namespaces Kiali can access.
   # The format matches Istio's discovery selectors - a map where each entry is a list of label selectors.
   # For example:
