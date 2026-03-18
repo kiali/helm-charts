@@ -140,6 +140,7 @@ deployment:
   security_context: {}
   service_annotations: {}
   service_type: ""
+  strategy: {}
   tls_config:
     cipher_suites: []
     max_version: ""

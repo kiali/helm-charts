@@ -1,0 +1,10 @@
+name: "deployment_strategy_default"
+description: "Verify that the default deployment strategy is RollingUpdate with maxSurge=1 and maxUnavailable=1"
+helm_args: []
+yq_query: "select(.kind == \"Deployment\") | .spec.strategy"
+expected_result: |
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+  type: RollingUpdate
+should_fail: false

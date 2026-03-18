@@ -15,10 +15,14 @@ spec:
     matchLabels:
       {{- include "kiali-server.selectorLabels" . | nindent 6 }}
   strategy:
+{{- if .Values.deployment.strategy }}
+  {{- toYaml .Values.deployment.strategy | nindent 4 }}
+{{- else }}
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
     type: RollingUpdate
+{{- end }}
   template:
     metadata:
       name: {{ include "kiali-server.fullname" . }}
