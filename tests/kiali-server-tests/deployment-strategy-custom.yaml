@@ -1,5 +1,5 @@
 name: "deployment_strategy_custom"
-description: "Verify custom deployment strategy with maxUnavailable=0 for zero-downtime rolling updates"
+description: "Verify custom deployment strategy"
 helm_args:
   - "--set"
   - "deployment.strategy.type=RollingUpdate"
