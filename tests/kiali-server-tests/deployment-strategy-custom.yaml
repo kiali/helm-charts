@@ -1,0 +1,16 @@
+name: "deployment_strategy_custom"
+description: "Verify custom deployment strategy"
+helm_args:
+  - "--set"
+  - "deployment.strategy.type=RollingUpdate"
+  - "--set"
+  - "deployment.strategy.rollingUpdate.maxSurge=2"
+  - "--set"
+  - "deployment.strategy.rollingUpdate.maxUnavailable=1"
+yq_query: "select(.kind == \"Deployment\") | .spec.strategy"
+expected_result: |
+  rollingUpdate:
+    maxSurge: 2
+    maxUnavailable: 1
+  type: RollingUpdate
+should_fail: false
