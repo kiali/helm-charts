@@ -7,6 +7,10 @@ metadata:
   namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "kiali-server.labels" . | nindent 4 }}
+  {{- if .Values.deployment.deployment_annotations }}
+  annotations:
+    {{- toYaml .Values.deployment.deployment_annotations | nindent 4 }}
+  {{- end }}
 spec:
 {{- if not .Values.deployment.hpa.spec }}
   replicas: {{ .Values.deployment.replicas }}
