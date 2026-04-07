@@ -113,5 +113,5 @@ spec:
                   servicePort:
                     description: "The internal port used by the Kiali service for the API. If empty, an attempt will be made to auto-discover it from the Kiali OpenShift Route."
                     type: integer
-...
+            x-kubernetes-preserve-unknown-fields: true
 {{- end }}
