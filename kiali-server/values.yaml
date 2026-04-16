@@ -162,6 +162,8 @@ identity: {}
   #private_key_file:
 
 kiali_feature_flags:
+  authz:
+    require_namespace_get: false
   custom_workload_types: []
   disabled_features: []
   validations:
