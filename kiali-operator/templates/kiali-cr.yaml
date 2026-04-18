@@ -8,7 +8,7 @@ metadata:
   {{- else if .Values.cr.namespace }}
   namespace: "{{ .Values.cr.namespace }}"
   {{- end }}
-  name: {{ .Values.cr.name }}
+  name: {{ .Values.cr.name | quote }}
   labels:
   {{- include "kiali-operator.labels" . | nindent 4 }}
   annotations:

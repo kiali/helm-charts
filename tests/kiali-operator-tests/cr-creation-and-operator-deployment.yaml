@@ -10,6 +10,6 @@ expected_result: |
   Deployment
   ---
   kind: Kiali
-  name: kiali
+  name: "kiali"
   namespace: "kiali-home-namespace"
 should_fail: false

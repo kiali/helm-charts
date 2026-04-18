@@ -101,7 +101,7 @@ sync-crds:
 	fi && \
 	echo "Creating helm-charts version with YAML separators (Kiali CRD only)..." && \
 	echo "---" > kiali-operator/crds/crds.yaml && \
-	cat $$temp_dir/golden-kiali.yaml >> kiali-operator/crds/crds.yaml && \
+	cat "$$temp_dir/golden-kiali.yaml" >> kiali-operator/crds/crds.yaml && \
 	echo "..." >> kiali-operator/crds/crds.yaml && \
 	echo "Downloading golden OSSMConsole CRD (ref: ${KIALI_OPERATOR_ORG_REPO_REF})..." && \
 	if ! curl -f -s -L "https://raw.githubusercontent.com/${KIALI_OPERATOR_ORG_REPO_REF}/crd-docs/crd/kiali.io_ossmconsoles.yaml" -o "$$temp_dir/golden-ossmconsole.yaml"; then \
@@ -217,12 +217,12 @@ update-helm-repos: .update-helm-repo-operator .update-helm-repo-server
 ## verify-kiali-server-permissions: Downloads and runs the permission verification script from kiali-operator repo
 verify-kiali-server-permissions:
 	@printf "\n========== Verifying Kiali Server Permissions ==========\n"
-	@mkdir -p ${ROOTDIR}/hack
+	@mkdir -p "${ROOTDIR}/hack"
 	@SCRIPT_DOWNLOADED=false ;\
 	if [ ! -f "${ROOTDIR}/hack/verify-kiali-server-permissions.sh" ]; then \
 		echo "Downloading permission verification script from kiali-operator repository..." ;\
-		curl -sSL https://raw.githubusercontent.com/kiali/kiali-operator/master/hack/verify-kiali-server-permissions.sh -o ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
-		chmod +x ${ROOTDIR}/hack/verify-kiali-server-permissions.sh ;\
+		curl -sSL https://raw.githubusercontent.com/kiali/kiali-operator/master/hack/verify-kiali-server-permissions.sh -o "${ROOTDIR}/hack/verify-kiali-server-permissions.sh" ;\
+		chmod +x "${ROOTDIR}/hack/verify-kiali-server-permissions.sh" ;\
 		SCRIPT_DOWNLOADED=true ;\
 	fi ;\
 	${ROOTDIR}/hack/verify-kiali-server-permissions.sh || SCRIPT_EXIT_CODE=$$? ;\
@@ -287,11 +287,11 @@ run-server-itests: build-helm-charts
 		echo "Using ct from ${OUTDIR}/bin/ct" ;\
 	else \
 		echo "chart-testing not found. Downloading..." ;\
-		mkdir -p ${OUTDIR}/bin ;\
+		mkdir -p "${OUTDIR}/bin" ;\
 		CT_VERSION="v3.11.0" ;\
 		CT_URL="https://github.com/helm/chart-testing/releases/download/$${CT_VERSION}/chart-testing_$${CT_VERSION#v}_linux_amd64.tar.gz" ;\
-		curl -sSL "$${CT_URL}" | tar -xz -C ${OUTDIR}/bin ct ;\
-		chmod +x ${OUTDIR}/bin/ct ;\
+		curl -sSL "$${CT_URL}" | tar -xz -C "${OUTDIR}/bin" ct ;\
+		chmod +x "${OUTDIR}/bin/ct" ;\
 		CT_BIN="${OUTDIR}/bin/ct" ;\
 		echo "Downloaded ct to ${OUTDIR}/bin/ct" ;\
 	fi ;\
@@ -332,14 +332,14 @@ run-server-itest-single:
 		mv kiali-server/.helmignore kiali-server/.helmignore.bak ;\
 	fi ;\
 	echo "Installing chart with values file: $${VALUES_FILE}..." ;\
-	if helm install $${RELEASE_NAME} ./kiali-server \
-		--namespace $${NAMESPACE} \
+	if helm install "$${RELEASE_NAME}" ./kiali-server \
+		--namespace "$${NAMESPACE}" \
 		--create-namespace \
-		--values $${VALUES_FILE} \
+		--values "$${VALUES_FILE}" \
 		--wait --timeout 2m ; then \
 		echo "" ;\
 		echo "Running helm test..." ;\
-		helm test $${RELEASE_NAME} -n $${NAMESPACE} || TEST_EXIT_CODE=$$? ;\
+		helm test "$${RELEASE_NAME}" -n "$${NAMESPACE}" || TEST_EXIT_CODE=$$? ;\
 	else \
 		echo "ERROR: Chart installation failed" ;\
 		TEST_EXIT_CODE=1 ;\
@@ -350,8 +350,8 @@ run-server-itest-single:
 	if [ $$TEST_EXIT_CODE -eq 0 ]; then \
 		echo "" ;\
 		echo "Cleaning up..." ;\
-		helm uninstall $${RELEASE_NAME} -n $${NAMESPACE} 2>/dev/null || true ;\
-		kubectl delete namespace $${NAMESPACE} --timeout=60s 2>/dev/null || true ;\
+		helm uninstall "$${RELEASE_NAME}" -n "$${NAMESPACE}" 2>/dev/null || true ;\
+		kubectl delete namespace "$${NAMESPACE}" --timeout=60s 2>/dev/null || true ;\
 		${ROOTDIR}/hack/helm-tests-cleanup.sh ;\
 	else \
 		echo "" ;\

@@ -1,7 +1,7 @@
 {{- if not .Values.deployment.remote_cluster_resources_only }}
 {{- if .Values.deployment.hpa.spec }}
 ---
-apiVersion: {{ .Values.deployment.hpa.api_version }}
+apiVersion: {{ .Values.deployment.hpa.api_version | quote }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "kiali-server.fullname" . }}

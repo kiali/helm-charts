@@ -10,5 +10,5 @@ helm_args:
 yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0] | {\"image\": .image, \"imagePullPolicy\": .imagePullPolicy}"
 expected_result: |
   image: "custom.registry.com/kiali/kiali-operator:v1.75.0"
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: "IfNotPresent"
 should_fail: false
