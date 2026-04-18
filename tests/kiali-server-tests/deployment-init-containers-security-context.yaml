@@ -20,4 +20,6 @@ expected_result: |
   privileged: false
   readOnlyRootFilesystem: true
   runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
 should_fail: false

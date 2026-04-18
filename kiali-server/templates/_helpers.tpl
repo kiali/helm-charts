@@ -261,7 +261,7 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 */}}
 {{- define "kiali-server.secureContainers" -}}
 {{- $securedContainers := list }}
-{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
+{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "seccompProfile" (dict "type" "RuntimeDefault") "capabilities" (dict "drop" (list "ALL")) }}
 {{- $secretVolumes := include "kiali-server.secret-volume-names" . | fromJsonArray }}
 {{- /* Validate containers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_containers_yaml }}
@@ -303,7 +303,7 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 */}}
 {{- define "kiali-server.secureInitContainers" -}}
 {{- $securedInitContainers := list }}
-{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "capabilities" (dict "drop" (list "ALL")) }}
+{{- $mandatorySecurityContext := dict "allowPrivilegeEscalation" false "privileged" false "readOnlyRootFilesystem" true "runAsNonRoot" true "seccompProfile" (dict "type" "RuntimeDefault") "capabilities" (dict "drop" (list "ALL")) }}
 {{- $secretVolumes := include "kiali-server.secret-volume-names" . | fromJsonArray }}
 {{- /* Validate initContainers don't mount secret volumes read-write */ -}}
 {{- range .Values.deployment.additional_pod_init_containers_yaml }}
