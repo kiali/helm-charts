@@ -2,8 +2,32 @@ apiVersion: v1
 entries:
   kiali-operator:
   - apiVersion: v2
+    appVersion: v2.25.0
+    created: "2026-04-20T10:27:11.555293037Z"
+    description: Kiali is an open source project for service mesh observability, refer
+      to https://www.kiali.io for details.
+    digest: 861bd97668f5687f41df3d435203dcf7361b7b0a947e7b4c2db0bc35e35e7da5
+    home: https://github.com/kiali/kiali-operator
+    icon: https://raw.githubusercontent.com/kiali/kiali.io/current/assets/icons/logo.svg
+    keywords:
+    - istio
+    - kiali
+    - operator
+    maintainers:
+    - email: kiali-users@googlegroups.com
+      name: Kiali
+      url: https://kiali.io
+    name: kiali-operator
+    sources:
+    - https://github.com/kiali/kiali
+    - https://github.com/kiali/kiali-operator
+    - https://github.com/kiali/helm-charts
+    urls:
+    - https://kiali.org/helm-charts/kiali-operator-2.25.0.tgz
+    version: 2.25.0
+  - apiVersion: v2
     appVersion: v2.24.0
-    created: "2026-03-30T10:06:42.009809319Z"
+    created: "2026-04-20T10:27:11.554241825Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9de2e09c5d34102dbf006feb154ccb57c5e72d3860f563069feb8dc697bdbe71
@@ -27,7 +51,7 @@ entries:
     version: 2.24.0
   - apiVersion: v2
     appVersion: v2.23.0
-    created: "2026-03-30T10:06:42.00869769Z"
+    created: "2026-04-20T10:27:11.553191635Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 951c4b825dcb6aac1f6b257792cdaa8f2fe757b2f69e0b7a563088933cbd1923
@@ -51,7 +75,7 @@ entries:
     version: 2.23.0
   - apiVersion: v2
     appVersion: v2.22.0
-    created: "2026-03-30T10:06:42.007614019Z"
+    created: "2026-04-20T10:27:11.55130878Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6e85820504efcf832e77a293cad5747e66e0ef544460b61c13ed36772ec5895f
@@ -75,7 +99,7 @@ entries:
     version: 2.22.0
   - apiVersion: v2
     appVersion: v2.21.0
-    created: "2026-03-30T10:06:42.006525973Z"
+    created: "2026-04-20T10:27:11.550251446Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9357afcbbbe00c447d2998812dd3791c3fd06f66bed76bc954ff214319e0952f
@@ -99,7 +123,7 @@ entries:
     version: 2.21.0
   - apiVersion: v2
     appVersion: v2.20.0
-    created: "2026-03-30T10:06:42.004939546Z"
+    created: "2026-04-20T10:27:11.549243636Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d302d8ff1dc1a4dd3bdc08c44a53f27c15a0305eb1c431c69543e232ba6482eb
@@ -123,7 +147,7 @@ entries:
     version: 2.20.0
   - apiVersion: v2
     appVersion: v2.19.0
-    created: "2026-03-30T10:06:42.003264668Z"
+    created: "2026-04-20T10:27:11.547808724Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6f645bbfb0185522d932dc41979438d3e5812ff0710f6600ef8dfa93d2b0c671
@@ -147,7 +171,7 @@ entries:
     version: 2.19.0
   - apiVersion: v2
     appVersion: v2.18.0
-    created: "2026-03-30T10:06:42.002194488Z"
+    created: "2026-04-20T10:27:11.546768103Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2a4fa9f5894dee84b27cc406141cb14f11da17a1bba875dfbb3c05932209ff89
@@ -171,7 +195,7 @@ entries:
     version: 2.18.0
   - apiVersion: v2
     appVersion: v2.17.0
-    created: "2026-03-30T10:06:42.001149221Z"
+    created: "2026-04-20T10:27:11.544862202Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a04fefbfb05326142f7cb57511b205fa154769535d4d5d47e2ba001d516e589d
@@ -195,7 +219,7 @@ entries:
     version: 2.17.0
   - apiVersion: v2
     appVersion: v2.16.0
-    created: "2026-03-30T10:06:41.999991086Z"
+    created: "2026-04-20T10:27:11.543889267Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1ee5c54e3d3b8809663355a01df826764bb32a4fd2bbf0882da82c78c939b68d
@@ -219,7 +243,7 @@ entries:
     version: 2.16.0
   - apiVersion: v2
     appVersion: v2.15.0
-    created: "2026-03-30T10:06:41.998226051Z"
+    created: "2026-04-20T10:27:11.54290467Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 720ddaa8be7e4504daabb282f433ac8e34a501cab86555a0b00cdd28af425ff3
@@ -243,7 +267,7 @@ entries:
     version: 2.15.0
   - apiVersion: v2
     appVersion: v2.14.0
-    created: "2026-03-30T10:06:41.997180426Z"
+    created: "2026-04-20T10:27:11.54187Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ebaef7a6d8d893b2d0a224bf776baf1f08662aabb08dc76cf98774daf989eee4
@@ -267,7 +291,7 @@ entries:
     version: 2.14.0
   - apiVersion: v2
     appVersion: v2.13.0
-    created: "2026-03-30T10:06:41.996757005Z"
+    created: "2026-04-20T10:27:11.541335677Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8d2baf9d6a84780c829a68d80b1602a9885a340324277b0dab045ae93ff919aa
@@ -291,7 +315,7 @@ entries:
     version: 2.13.0
   - apiVersion: v2
     appVersion: v2.12.0
-    created: "2026-03-30T10:06:41.996352897Z"
+    created: "2026-04-20T10:27:11.540830269Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d42c93f459acb19fa45449eee12f76eab42b6d5a6ccba49a37d2b79eb3d71c4f
@@ -315,7 +339,7 @@ entries:
     version: 2.12.0
   - apiVersion: v2
     appVersion: v2.11.0
-    created: "2026-03-30T10:06:41.995922944Z"
+    created: "2026-04-20T10:27:11.540245262Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7aeb2994a5a34d778db1effe382e3f8ea009c99391f130963b459fff3538c441
@@ -339,7 +363,7 @@ entries:
     version: 2.11.0
   - apiVersion: v2
     appVersion: v2.10.0
-    created: "2026-03-30T10:06:41.995543963Z"
+    created: "2026-04-20T10:27:11.538979167Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d9d7933747484eaa89c09e742d1937756f2840177503ec4bddff5a686f501d2c
@@ -363,7 +387,7 @@ entries:
     version: 2.10.0
   - apiVersion: v2
     appVersion: v2.9.0
-    created: "2026-03-30T10:06:42.014010556Z"
+    created: "2026-04-20T10:27:11.559439604Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3e69f6fef4ad551bd6737f807126553d9222e6bd5deb0c5ffafced9d7335e064
@@ -387,7 +411,7 @@ entries:
     version: 2.9.0
   - apiVersion: v2
     appVersion: v2.8.0
-    created: "2026-03-30T10:06:42.013609587Z"
+    created: "2026-04-20T10:27:11.55832331Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7871ccc7456649bb416cad26390cfb997a8abf80be6ed17762bbfbb9649eb10d
@@ -411,7 +435,7 @@ entries:
     version: 2.8.0
   - apiVersion: v2
     appVersion: v2.7.1
-    created: "2026-03-30T10:06:42.013188024Z"
+    created: "2026-04-20T10:27:11.557913131Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d5ba90a1dbeada551bf80576282253fc4a4ac36256caf4914883a693bc174e71
@@ -435,7 +459,7 @@ entries:
     version: 2.7.1
   - apiVersion: v2
     appVersion: v2.7.0
-    created: "2026-03-30T10:06:42.012753771Z"
+    created: "2026-04-20T10:27:11.557470982Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 061c70c7648d0854ffc111770ca2b2424c9744b758b2b50acc02df0fa14c952a
@@ -459,7 +483,7 @@ entries:
     version: 2.7.0
   - apiVersion: v2
     appVersion: v2.6.0
-    created: "2026-03-30T10:06:42.012332413Z"
+    created: "2026-04-20T10:27:11.557015257Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7c7c3d547a0ac73549e162553450d03b46783467259d90d1e8ccc811181aa7fb
@@ -483,7 +507,7 @@ entries:
     version: 2.6.0
   - apiVersion: v2
     appVersion: v2.5.0
-    created: "2026-03-30T10:06:42.01158844Z"
+    created: "2026-04-20T10:27:11.556612251Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b2fa76a2dd3f02b294518922a95ee3665fb90cc535a4bd4efe8e4f34d65431e0
@@ -507,7 +531,7 @@ entries:
     version: 2.5.0
   - apiVersion: v2
     appVersion: v2.4.0
-    created: "2026-03-30T10:06:42.010630048Z"
+    created: "2026-04-20T10:27:11.556168158Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 78e3ecb4ead088764a226171e13dad9935fcb5f9d838c405dfc1578c103660a2
@@ -531,7 +555,7 @@ entries:
     version: 2.4.0
   - apiVersion: v2
     appVersion: v2.3.0
-    created: "2026-03-30T10:06:42.010232812Z"
+    created: "2026-04-20T10:27:11.555749242Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a0dc9cb933df657f5d33cb3275f34d3facc89c6a512dbfdf7a088b29a14d610c
@@ -555,7 +579,7 @@ entries:
     version: 2.3.0
   - apiVersion: v2
     appVersion: v2.2.0
-    created: "2026-03-30T10:06:42.003671359Z"
+    created: "2026-04-20T10:27:11.548242588Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7d8045f9f87cdd9b2e6140d11109e809af224a24d3fa0bfe47073e47d4fc7e1f
@@ -579,7 +603,7 @@ entries:
     version: 2.2.0
   - apiVersion: v2
     appVersion: v2.1.0
-    created: "2026-03-30T10:06:41.99515505Z"
+    created: "2026-04-20T10:27:11.537991003Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 92991a53038f24bfff460ec5037a79e9a27d59c02361b842f1026e4bafcdb2b5
@@ -603,7 +627,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: v2.0.0
-    created: "2026-03-30T10:06:41.994751832Z"
+    created: "2026-04-20T10:27:11.537165264Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6951beec4f17886fe9b6b42db76a78bdbee286b4e9adb77763f348f24876a241
@@ -627,7 +651,7 @@ entries:
     version: 2.0.0
   - apiVersion: v2
     appVersion: v1.89.7
-    created: "2026-03-30T10:06:41.99431911Z"
+    created: "2026-04-20T10:27:11.536339716Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0cbe1ec5460e32058ebc89556ce1283ac2eaf8e746261986ab18df675020fec4
@@ -651,7 +675,7 @@ entries:
     version: 1.89.7
   - apiVersion: v2
     appVersion: v1.89.3
-    created: "2026-03-30T10:06:41.993855602Z"
+    created: "2026-04-20T10:27:11.535497547Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5cff055d3e2d071cec4f16a795ab49c1445413df8e7c3ab6db6d4f8ffbf46a97
@@ -675,7 +699,7 @@ entries:
     version: 1.89.3
   - apiVersion: v2
     appVersion: v1.89.0
-    created: "2026-03-30T10:06:41.993048473Z"
+    created: "2026-04-20T10:27:11.534648504Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 65304be5dfa7382e7daeb95567c547ea46d204ab8a0c0488f029b9d2f2bb054b
@@ -699,7 +723,7 @@ entries:
     version: 1.89.0
   - apiVersion: v2
     appVersion: v1.88.0
-    created: "2026-03-30T10:06:41.99216634Z"
+    created: "2026-04-20T10:27:11.533744879Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: bc9e31683f38fffc58de971798178aed5eb9eb4df29fffa41a7fb8d8db64ec4a
@@ -723,7 +747,7 @@ entries:
     version: 1.88.0
   - apiVersion: v2
     appVersion: v1.87.0
-    created: "2026-03-30T10:06:41.991737815Z"
+    created: "2026-04-20T10:27:11.532859248Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 74a7c8eafce0f7137caa724d64117fb1d02f0515b11060ac6d044e56f4db8b9e
@@ -747,7 +771,7 @@ entries:
     version: 1.87.0
   - apiVersion: v2
     appVersion: v1.86.2
-    created: "2026-03-30T10:06:41.991316023Z"
+    created: "2026-04-20T10:27:11.531988986Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 748ef319b48c52468487a6fb105bbde8a9499250e3e9c48f867b7850706a28ed
@@ -771,7 +795,7 @@ entries:
     version: 1.86.2
   - apiVersion: v2
     appVersion: v1.86.1
-    created: "2026-03-30T10:06:41.990887425Z"
+    created: "2026-04-20T10:27:11.53111679Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9687be9548476b953bde77f9a1ea6b06c05e7d92e5ab0ab561036e74b0758874
@@ -795,7 +819,7 @@ entries:
     version: 1.86.1
   - apiVersion: v2
     appVersion: v1.86.0
-    created: "2026-03-30T10:06:41.990477673Z"
+    created: "2026-04-20T10:27:11.530262547Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 813b29861b016673f85efd37687ac957e509633faec7abd6ecd2fadf4cb42ec1
@@ -819,7 +843,7 @@ entries:
     version: 1.86.0
   - apiVersion: v2
     appVersion: v1.85.0
-    created: "2026-03-30T10:06:41.990072284Z"
+    created: "2026-04-20T10:27:11.529434414Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 39accac0b3e57ad360640d4724bd1669b3d09390f6f225a955b83203dd965c0b
@@ -843,7 +867,7 @@ entries:
     version: 1.85.0
   - apiVersion: v2
     appVersion: v1.84.0
-    created: "2026-03-30T10:06:41.989657348Z"
+    created: "2026-04-20T10:27:11.528563731Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 22880f83502536ff4bf285a825b25fc5274eff9b3ba6c8f9d7de3ab2fa7a74c5
@@ -867,7 +891,7 @@ entries:
     version: 1.84.0
   - apiVersion: v2
     appVersion: v1.83.0
-    created: "2026-03-30T10:06:41.989217456Z"
+    created: "2026-04-20T10:27:11.527695833Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: aacc498146c18dcdc8130e4cbe9f59cf7908b6c62b9bae64874954615eba3306
@@ -891,7 +915,7 @@ entries:
     version: 1.83.0
   - apiVersion: v2
     appVersion: v1.82.0
-    created: "2026-03-30T10:06:41.988803511Z"
+    created: "2026-04-20T10:27:11.526828627Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6a7a38776cfdfa281b9365a57418545766d622b541c2a4a603aea997c0c01f9e
@@ -915,7 +939,7 @@ entries:
     version: 1.82.0
   - apiVersion: v2
     appVersion: v1.81.0
-    created: "2026-03-30T10:06:41.988412991Z"
+    created: "2026-04-20T10:27:11.525678526Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3083df5f334ba8a9e0e3f609892217a56ae19845450eb22183b01aacda96c5ca
@@ -939,7 +963,7 @@ entries:
     version: 1.81.0
   - apiVersion: v2
     appVersion: v1.80.0
-    created: "2026-03-30T10:06:41.988017063Z"
+    created: "2026-04-20T10:27:11.524933438Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ee8710057013e53d97a89a3e51a60608bbd0306cb56a0ffab86c155154b6d65a
@@ -963,7 +987,7 @@ entries:
     version: 1.80.0
   - apiVersion: v2
     appVersion: v1.79.0
-    created: "2026-03-30T10:06:41.987580893Z"
+    created: "2026-04-20T10:27:11.524516456Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f69dd23f7a28a3e5b0eaf5b10da17ccb86e661d41d4694a0c0569fde4bd88eac
@@ -987,7 +1011,7 @@ entries:
     version: 1.79.0
   - apiVersion: v2
     appVersion: v1.78.0
-    created: "2026-03-30T10:06:41.987157281Z"
+    created: "2026-04-20T10:27:11.524058247Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a5d29a5959ff16c9c37c320cb547763a39288d072b9cc3b01d7cc9462b489d57
@@ -1011,7 +1035,7 @@ entries:
     version: 1.78.0
   - apiVersion: v2
     appVersion: v1.77.0
-    created: "2026-03-30T10:06:41.986654741Z"
+    created: "2026-04-20T10:27:11.523635003Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d37b7987ab9057c28f08253adb40507051ba03d80253792091fa39af423436ba
@@ -1035,7 +1059,7 @@ entries:
     version: 1.77.0
   - apiVersion: v2
     appVersion: v1.76.0
-    created: "2026-03-30T10:06:41.985620027Z"
+    created: "2026-04-20T10:27:11.523189978Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 469336870d5536cc83edc4b6f3a5b6406a965f7421037039a6b9ab1070843eee
@@ -1059,7 +1083,7 @@ entries:
     version: 1.76.0
   - apiVersion: v2
     appVersion: v1.75.0
-    created: "2026-03-30T10:06:41.985041236Z"
+    created: "2026-04-20T10:27:11.522771734Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2375b37a42f23f9338dda4caf74bfb2e80ad2aaee9857d5e4754ddc5033ed62c
@@ -1083,7 +1107,7 @@ entries:
     version: 1.75.0
   - apiVersion: v2
     appVersion: v1.74.0
-    created: "2026-03-30T10:06:41.984637748Z"
+    created: "2026-04-20T10:27:11.522323653Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5cb85bb0a7993dac0b3d3ff3ea3b1320d3739a40f011dfbeeaa25a30b0595a06
@@ -1107,7 +1131,7 @@ entries:
     version: 1.74.0
   - apiVersion: v2
     appVersion: v1.73.2
-    created: "2026-03-30T10:06:41.984265717Z"
+    created: "2026-04-20T10:27:11.521927811Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9bf23f009e4b0599d0df0b542e4a9e1d17a5dc0ddd013c0c9f033441007069c6
@@ -1131,7 +1155,7 @@ entries:
     version: 1.73.2
   - apiVersion: v2
     appVersion: v1.73.1
-    created: "2026-03-30T10:06:41.983884211Z"
+    created: "2026-04-20T10:27:11.521528732Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ada60c4b0cb2e61e2c38e7401ebeef53050f9f5b36f0318c2cab88d5cae69869
@@ -1155,7 +1179,7 @@ entries:
     version: 1.73.1
   - apiVersion: v2
     appVersion: v1.73.0
-    created: "2026-03-30T10:06:41.983512034Z"
+    created: "2026-04-20T10:27:11.521109746Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fe15a45dc16095b34615ab6895b5099192717995461c69a020b07a841278c3c1
@@ -1179,7 +1203,7 @@ entries:
     version: 1.73.0
   - apiVersion: v2
     appVersion: v1.72.0
-    created: "2026-03-30T10:06:41.983137432Z"
+    created: "2026-04-20T10:27:11.5207014Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f65c498eb2290cc907222ac84dae2754fb8985120963b730d636a937227f8663
@@ -1203,7 +1227,7 @@ entries:
     version: 1.72.0
   - apiVersion: v2
     appVersion: v1.71.0
-    created: "2026-03-30T10:06:41.9827432Z"
+    created: "2026-04-20T10:27:11.520248751Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 99be6b4f3cff3a58ea2b50c5d2f844fed5e134e71aaeef2703dfc197232d5644
@@ -1227,7 +1251,7 @@ entries:
     version: 1.71.0
   - apiVersion: v2
     appVersion: v1.70.0
-    created: "2026-03-30T10:06:41.982373104Z"
+    created: "2026-04-20T10:27:11.519782156Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 603f250879cd86d741178dcf41eacf2b2e7067603baf5871302ae216c11365c0
@@ -1251,7 +1275,7 @@ entries:
     version: 1.70.0
   - apiVersion: v2
     appVersion: v1.69.0
-    created: "2026-03-30T10:06:41.981997422Z"
+    created: "2026-04-20T10:27:11.519290253Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fc7048e83b7b8885041ae00a028b2e4ac7c89061a7993f381323645acecb6ae5
@@ -1275,7 +1299,7 @@ entries:
     version: 1.69.0
   - apiVersion: v2
     appVersion: v1.68.0
-    created: "2026-03-30T10:06:41.981606612Z"
+    created: "2026-04-20T10:27:11.517791196Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b6fc285fba43352095ae4b86a1a7830e74fbb4b291e35210f52c89508da4dfd4
@@ -1299,7 +1323,7 @@ entries:
     version: 1.68.0
   - apiVersion: v2
     appVersion: v1.67.1
-    created: "2026-03-30T10:06:41.981221804Z"
+    created: "2026-04-20T10:27:11.517392488Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c975b62f042e223b0f8860bd55a22d0b4bdeb0aa322ef10e12a3564237f07ff0
@@ -1323,7 +1347,7 @@ entries:
     version: 1.67.1
   - apiVersion: v2
     appVersion: v1.67.0
-    created: "2026-03-30T10:06:41.980812305Z"
+    created: "2026-04-20T10:27:11.516976818Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fd42dc3eb69396b25d01452c1fdc6fb8e77e525073da873c4f9a4bf5f9f0587c
@@ -1347,7 +1371,7 @@ entries:
     version: 1.67.0
   - apiVersion: v2
     appVersion: v1.66.1
-    created: "2026-03-30T10:06:41.980378232Z"
+    created: "2026-04-20T10:27:11.51657774Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c972646cbb621f8f04ca28addf2b102c9fbea6c6c936400235f30928fe44bd7e
@@ -1371,7 +1395,7 @@ entries:
     version: 1.66.1
   - apiVersion: v2
     appVersion: v1.66.0
-    created: "2026-03-30T10:06:41.979879292Z"
+    created: "2026-04-20T10:27:11.516148875Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e2fee79b2d74e269d28bfd9bdfcce93c2a0cafa25dc80146684ca3acb837a6c7
@@ -1395,7 +1419,7 @@ entries:
     version: 1.66.0
   - apiVersion: v2
     appVersion: v1.65.0
-    created: "2026-03-30T10:06:41.978804765Z"
+    created: "2026-04-20T10:27:11.51574101Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 95f0e320976b319ec803c38ab164e8ce26d96976434605abbde7582faef07803
@@ -1419,7 +1443,7 @@ entries:
     version: 1.65.0
   - apiVersion: v2
     appVersion: v1.64.0
-    created: "2026-03-30T10:06:41.978221577Z"
+    created: "2026-04-20T10:27:11.515322205Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9821e153cdb72024224a1b89e1b2df227fa6a4c49a37db6ebfb5b8aa111bb277
@@ -1443,7 +1467,7 @@ entries:
     version: 1.64.0
   - apiVersion: v2
     appVersion: v1.63.2
-    created: "2026-03-30T10:06:41.97781071Z"
+    created: "2026-04-20T10:27:11.514922124Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e9631dd166de5579249e94518979245505a10d5ea050f32995170bd8aa82b3e9
@@ -1467,7 +1491,7 @@ entries:
     version: 1.63.2
   - apiVersion: v2
     appVersion: v1.63.1
-    created: "2026-03-30T10:06:41.977435968Z"
+    created: "2026-04-20T10:27:11.514527574Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5351be9cc6b14f0034d04d85add912c86cc0520c7e0134f8420f7e47a10a23a8
@@ -1491,7 +1515,7 @@ entries:
     version: 1.63.1
   - apiVersion: v2
     appVersion: v1.63.0
-    created: "2026-03-30T10:06:41.977056777Z"
+    created: "2026-04-20T10:27:11.514102166Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 99138b45eff967b31ac265463cc65f8b3835e7cbe152ce72ea9bf05160e2fa48
@@ -1515,7 +1539,7 @@ entries:
     version: 1.63.0
   - apiVersion: v2
     appVersion: v1.62.1
-    created: "2026-03-30T10:06:41.97662833Z"
+    created: "2026-04-20T10:27:11.513695684Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ccba9ad14434e9092d3009fc1d9fcbd971bfd6770b4d6f00eb6e4a08c9a6f958
@@ -1539,7 +1563,7 @@ entries:
     version: 1.62.1
   - apiVersion: v2
     appVersion: v1.62.0
-    created: "2026-03-30T10:06:41.976252259Z"
+    created: "2026-04-20T10:27:11.513264145Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f3293aa79375d1bdcb04db7924cdb06c904bbe8ca505a3e85caccd2be638fb1b
@@ -1563,7 +1587,7 @@ entries:
     version: 1.62.0
   - apiVersion: v2
     appVersion: v1.61.0
-    created: "2026-03-30T10:06:41.975866522Z"
+    created: "2026-04-20T10:27:11.512861329Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 743bade4f81f59f6132dfa3c4d5f0387fcc9c125797bce3ca5d7c01d008d6cd4
@@ -1587,7 +1611,7 @@ entries:
     version: 1.61.0
   - apiVersion: v2
     appVersion: v1.60.0
-    created: "2026-03-30T10:06:41.975478635Z"
+    created: "2026-04-20T10:27:11.512431383Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 49a5da3d6a3dccb827117ee5925b413682e9ca4803ea256dad2fe4e8a104669a
@@ -1611,7 +1635,7 @@ entries:
     version: 1.60.0
   - apiVersion: v2
     appVersion: v1.59.1
-    created: "2026-03-30T10:06:41.975076088Z"
+    created: "2026-04-20T10:27:11.511660185Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 626fcec7422824e1cacf232e6dfbd51aacc54841fecef54f98bb33f1418ce245
@@ -1635,7 +1659,7 @@ entries:
     version: 1.59.1
   - apiVersion: v2
     appVersion: v1.59.0
-    created: "2026-03-30T10:06:41.97468105Z"
+    created: "2026-04-20T10:27:11.510705094Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 31aeb1909544ab35ad54210c144b4825e46d3d36a98a9c55d6ee235516f95787
@@ -1659,7 +1683,7 @@ entries:
     version: 1.59.0
   - apiVersion: v2
     appVersion: v1.58.0
-    created: "2026-03-30T10:06:41.974305588Z"
+    created: "2026-04-20T10:27:11.509739373Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5164c665592ec26064242929241a862698541339795547bfe10fade0e7c74d5f
@@ -1683,7 +1707,7 @@ entries:
     version: 1.58.0
   - apiVersion: v2
     appVersion: v1.57.3
-    created: "2026-03-30T10:06:41.973928473Z"
+    created: "2026-04-20T10:27:11.509189692Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 114e99b01100d24348135bf29fae2ed640bd2c099cc0a0716e3831f6835a3529
@@ -1707,7 +1731,7 @@ entries:
     version: 1.57.3
   - apiVersion: v2
     appVersion: v1.57.2
-    created: "2026-03-30T10:06:41.973565045Z"
+    created: "2026-04-20T10:27:11.508823094Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 52caa89aa9e7e03edda1b00f9cd5e6e2abf45fefe04eabc95480c53d91ec3a33
@@ -1731,7 +1755,7 @@ entries:
     version: 1.57.2
   - apiVersion: v2
     appVersion: v1.57.1
-    created: "2026-03-30T10:06:41.97316212Z"
+    created: "2026-04-20T10:27:11.508449934Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c65abe67d099de4643ddfbbee0a9160a7706bffde1f70d9c6c6b26ad5bd7b18b
@@ -1755,7 +1779,7 @@ entries:
     version: 1.57.1
   - apiVersion: v2
     appVersion: v1.57.0
-    created: "2026-03-30T10:06:41.972490879Z"
+    created: "2026-04-20T10:27:11.508060604Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2fbc91e8bf143822bc72beaed930977ba002b4ff5ddad79457cca8e08f175822
@@ -1779,7 +1803,7 @@ entries:
     version: 1.57.0
   - apiVersion: v2
     appVersion: v1.56.1
-    created: "2026-03-30T10:06:41.971498984Z"
+    created: "2026-04-20T10:27:11.507691782Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e534d7d133c5a1fbfedeef38086e82508cf8c3fe8d59d9cee16045a600138ba5
@@ -1803,7 +1827,7 @@ entries:
     version: 1.56.1
   - apiVersion: v2
     appVersion: v1.56.0
-    created: "2026-03-30T10:06:41.97115644Z"
+    created: "2026-04-20T10:27:11.507308994Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 55aded58f4b23ea167a8a79725fa378cee7e2e538b00cf7a670d602ab0d3eb91
@@ -1827,7 +1851,7 @@ entries:
     version: 1.56.0
   - apiVersion: v2
     appVersion: v1.55.1
-    created: "2026-03-30T10:06:41.970777547Z"
+    created: "2026-04-20T10:27:11.506947697Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4a0735f422cddd206c3e65a3c7c5c2dfa9c94939ef231b3a6bb10af3a0f65263
@@ -1851,7 +1875,7 @@ entries:
     version: 1.55.1
   - apiVersion: v2
     appVersion: v1.55.0
-    created: "2026-03-30T10:06:41.970434836Z"
+    created: "2026-04-20T10:27:11.506578875Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 06cfe5918a67652c983d46ee9a78ac46aab522e2478fa2e9bbb1ff6e8425d94f
@@ -1875,7 +1899,7 @@ entries:
     version: 1.55.0
   - apiVersion: v2
     appVersion: v1.54.0
-    created: "2026-03-30T10:06:41.970097049Z"
+    created: "2026-04-20T10:27:11.506186138Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 393dc7e6b8a055c0be096e5ee8ae80b1d9dc1ed2e2693cc263848cbe7fc80b0a
@@ -1899,7 +1923,7 @@ entries:
     version: 1.54.0
   - apiVersion: v2
     appVersion: v1.53.0
-    created: "2026-03-30T10:06:41.969748117Z"
+    created: "2026-04-20T10:27:11.505802709Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1a40df13f0e6b770f33bad425ad4cd4705faa2c5d11c09db41d9b6f88e0e1320
@@ -1923,7 +1947,7 @@ entries:
     version: 1.53.0
   - apiVersion: v2
     appVersion: v1.52.0
-    created: "2026-03-30T10:06:41.969420035Z"
+    created: "2026-04-20T10:27:11.50540333Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 16cd4192724c7ad5b95a5fd3a9601026fc919448125e589273e05a32fc409f99
@@ -1947,7 +1971,7 @@ entries:
     version: 1.52.0
   - apiVersion: v2
     appVersion: v1.51.1
-    created: "2026-03-30T10:06:41.9690836Z"
+    created: "2026-04-20T10:27:11.504977651Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a10063fefba1483f5fb4b2d8833a4453f97df1f5bf4285c15845691887896dcc
@@ -1971,7 +1995,7 @@ entries:
     version: 1.51.1
   - apiVersion: v2
     appVersion: v1.51.0
-    created: "2026-03-30T10:06:41.968736234Z"
+    created: "2026-04-20T10:27:11.503886786Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4b7a41418e1938dcdaf6c92d301d5c5a05dd0c89b37e2a00b532bf5bf238d691
@@ -1995,7 +2019,7 @@ entries:
     version: 1.51.0
   - apiVersion: v2
     appVersion: v1.50.1
-    created: "2026-03-30T10:06:41.968402597Z"
+    created: "2026-04-20T10:27:11.503522844Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 745f918b754280d5f926067e68eb7718d02b5de03047c0cdab6e9203b3c9fc43
@@ -2020,7 +2044,7 @@ entries:
     version: 1.50.1
   - apiVersion: v2
     appVersion: v1.50.0
-    created: "2026-03-30T10:06:41.968040288Z"
+    created: "2026-04-20T10:27:11.50312618Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d2f8f70209bb285035ca2851ef17b0f0745158513e646a6971a9ba00a72b7161
@@ -2045,7 +2069,7 @@ entries:
     version: 1.50.0
   - apiVersion: v2
     appVersion: v1.49.0
-    created: "2026-03-30T10:06:41.967678882Z"
+    created: "2026-04-20T10:27:11.502749483Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 36648cd490749f6c416e9d94e39301eb5de421a11ef9a980e47221265f79db8d
@@ -2070,7 +2094,7 @@ entries:
     version: 1.49.0
   - apiVersion: v2
     appVersion: v1.48.0
-    created: "2026-03-30T10:06:41.967311764Z"
+    created: "2026-04-20T10:27:11.502376804Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 106e2d4550951a94f6fd25e57385dbc7f061963d7716cdcb7844b14cf7b3bcf1
@@ -2095,7 +2119,7 @@ entries:
     version: 1.48.0
   - apiVersion: v2
     appVersion: v1.47.0
-    created: "2026-03-30T10:06:41.966898231Z"
+    created: "2026-04-20T10:27:11.501943191Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8f37a4009f66bc1a431a439fdf0b0978fcfd6213b452e00b1bab8b9845042c2c
@@ -2120,7 +2144,7 @@ entries:
     version: 1.47.0
   - apiVersion: v2
     appVersion: v1.46.0
-    created: "2026-03-30T10:06:41.965925727Z"
+    created: "2026-04-20T10:27:11.50158023Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: bf323d71860ed7be4a26d33bed3cf1ffcdeefd86411339e7c02b56fc5bfe9bfb
@@ -2145,7 +2169,7 @@ entries:
     version: 1.46.0
   - apiVersion: v2
     appVersion: v1.45.1
-    created: "2026-03-30T10:06:41.965345815Z"
+    created: "2026-04-20T10:27:11.5011429Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7c20d051925da6676e25be63517dc3b32c60bb434192571894f1f3903e0e8b91
@@ -2170,7 +2194,7 @@ entries:
     version: 1.45.1
   - apiVersion: v2
     appVersion: v1.45.0
-    created: "2026-03-30T10:06:41.964980798Z"
+    created: "2026-04-20T10:27:11.500758549Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9f57ebe04e4a01344057e00b6f36747fe036c4735b99c6a2aa9493c51453f91a
@@ -2195,7 +2219,7 @@ entries:
     version: 1.45.0
   - apiVersion: v2
     appVersion: v1.44.0
-    created: "2026-03-30T10:06:41.964628898Z"
+    created: "2026-04-20T10:27:11.500378306Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 272ea66058146928984725bd57ce62cc6d64aa19cd953f7b6bf3e9b9555cd089
@@ -2220,7 +2244,7 @@ entries:
     version: 1.44.0
   - apiVersion: v2
     appVersion: v1.43.0
-    created: "2026-03-30T10:06:41.964286568Z"
+    created: "2026-04-20T10:27:11.499983385Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ef15e63bba9d2c5139811126d7c90b1edeabd80130ab3644cfe70c7662ef9903
@@ -2245,7 +2269,7 @@ entries:
     version: 1.43.0
   - apiVersion: v2
     appVersion: v1.42.0
-    created: "2026-03-30T10:06:41.963928234Z"
+    created: "2026-04-20T10:27:11.499585659Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6a80b55ccdb849219c1c1612145b79f150988e4c21bce4fe371ed29482a4708d
@@ -2270,7 +2294,7 @@ entries:
     version: 1.42.0
   - apiVersion: v2
     appVersion: v1.41.0
-    created: "2026-03-30T10:06:41.963562573Z"
+    created: "2026-04-20T10:27:11.499147517Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a3e758cee7c6e64dc2592d1bb6731725407a92a1c9a5600709743d1c7c650738
@@ -2295,7 +2319,7 @@ entries:
     version: 1.41.0
   - apiVersion: v2
     appVersion: v1.40.1
-    created: "2026-03-30T10:06:41.963232237Z"
+    created: "2026-04-20T10:27:11.498724203Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4823661991a610031e709e324974eefd7413335713c1336b70a6fab0fffff7b3
@@ -2320,7 +2344,7 @@ entries:
     version: 1.40.1
   - apiVersion: v2
     appVersion: v1.40.0
-    created: "2026-03-30T10:06:41.962884416Z"
+    created: "2026-04-20T10:27:11.498130209Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: cd1246c33a81538ba2c37de8f96dbf1d6dcf03141eec906d09c0243372b70c2c
@@ -2345,7 +2369,7 @@ entries:
     version: 1.40.0
   - apiVersion: v2
     appVersion: v1.39.0
-    created: "2026-03-30T10:06:41.962505108Z"
+    created: "2026-04-20T10:27:11.497127233Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 427e2e4210ed93a1932189d6bfbaa788957566a8c687d75715bc0b65355f2c3a
@@ -2370,7 +2394,7 @@ entries:
     version: 1.39.0
   - apiVersion: v2
     appVersion: v1.38.1
-    created: "2026-03-30T10:06:41.962192033Z"
+    created: "2026-04-20T10:27:11.496796553Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0aaba94a8a8defbf387e3f6fb082e7b60ae89cc11c5a6c7c614d55d83a910e02
@@ -2395,7 +2419,7 @@ entries:
     version: 1.38.1
   - apiVersion: v2
     appVersion: v1.38.0
-    created: "2026-03-30T10:06:41.961828502Z"
+    created: "2026-04-20T10:27:11.496433993Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6b7a7e3a1a5f2456bda0c5bcc436a28aa3c1cf85cb7fec9dfab2940a7031048f
@@ -2420,7 +2444,7 @@ entries:
     version: 1.38.0
   - apiVersion: v2
     appVersion: v1.37.0
-    created: "2026-03-30T10:06:41.961501963Z"
+    created: "2026-04-20T10:27:11.496074819Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6b81aa4c4f5f74aa99aa120077853ccbd2f17be962bfa62e368a174d6f7776e7
@@ -2445,7 +2469,7 @@ entries:
     version: 1.37.0
   - apiVersion: v2
     appVersion: v1.36.5
-    created: "2026-03-30T10:06:41.961154772Z"
+    created: "2026-04-20T10:27:11.495740983Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 60d77a715f5de64cbd77d393ed6dd3183d38337cae096b75540f70e718a8c610
@@ -2470,7 +2494,7 @@ entries:
     version: 1.36.5
   - apiVersion: v2
     appVersion: v1.36.4
-    created: "2026-03-30T10:06:41.960494475Z"
+    created: "2026-04-20T10:27:11.495397669Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5459736b44007945844fa49e2343bb47b29f95227f5be7a0639c7d505855abd4
@@ -2495,7 +2519,7 @@ entries:
     version: 1.36.4
   - apiVersion: v2
     appVersion: v1.36.2
-    created: "2026-03-30T10:06:41.959509851Z"
+    created: "2026-04-20T10:27:11.495040359Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: bd7c05b2b3342abcdedf87f1a97670dd38a286fff687746720d63d886e0aaec1
@@ -2520,7 +2544,7 @@ entries:
     version: 1.36.2
   - apiVersion: v2
     appVersion: v1.36.1
-    created: "2026-03-30T10:06:41.959179508Z"
+    created: "2026-04-20T10:27:11.494673781Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: dce60d39298cb9920fb5b201f8b100f87869fac476c723e9815ef6697439d228
@@ -2545,7 +2569,7 @@ entries:
     version: 1.36.1
   - apiVersion: v2
     appVersion: v1.36.0
-    created: "2026-03-30T10:06:41.958827593Z"
+    created: "2026-04-20T10:27:11.494305811Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fc7cc09bb48ea37d61882f4e362e1e616e706437007c677d60694a2f6cb1bd24
@@ -2570,7 +2594,7 @@ entries:
     version: 1.36.0
   - apiVersion: v2
     appVersion: v1.35.0
-    created: "2026-03-30T10:06:41.958492478Z"
+    created: "2026-04-20T10:27:11.493971614Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6b1812c2efe61e8e39bb498fe30bef13532677c038cc093caf5084dd7a9b718e
@@ -2595,7 +2619,7 @@ entries:
     version: 1.35.0
   - apiVersion: v2
     appVersion: v1.34.1
-    created: "2026-03-30T10:06:41.958147695Z"
+    created: "2026-04-20T10:27:11.493634311Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: daedc0787f53c83a5b969e45ba05a934183501a6526bc8e794ff5aeae1cf6b9f
@@ -2620,7 +2644,7 @@ entries:
     version: 1.34.1
   - apiVersion: v2
     appVersion: v1.34.0
-    created: "2026-03-30T10:06:41.957800337Z"
+    created: "2026-04-20T10:27:11.493252585Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a7184e666d5ce0850ec337af1501ce69fa769212889dbda4a796a289e2d336bc
@@ -2645,7 +2669,7 @@ entries:
     version: 1.34.0
   - apiVersion: v2
     appVersion: v1.33.1
-    created: "2026-03-30T10:06:41.957464516Z"
+    created: "2026-04-20T10:27:11.492905735Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a6bcd0a19425f69ac77f3dcb67a7a5b3ad5044a8cb06a8b807740473f169c43b
@@ -2670,7 +2694,7 @@ entries:
     version: 1.33.1
   - apiVersion: v2
     appVersion: v1.33.0
-    created: "2026-03-30T10:06:41.957147013Z"
+    created: "2026-04-20T10:27:11.49253569Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f2860c3881ace6558586475cc3778589126809dfd07157c24a844f8c80617122
@@ -2695,7 +2719,7 @@ entries:
     version: 1.33.0
   - apiVersion: v2
     appVersion: v1.32.0
-    created: "2026-03-30T10:06:41.956789542Z"
+    created: "2026-04-20T10:27:11.491452819Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 208145d61ba42ffd46e511d8f29e9bac625f1cc6b3094b988589911788a18703
@@ -2720,7 +2744,7 @@ entries:
     version: 1.32.0
   - apiVersion: v2
     appVersion: v1.31.0
-    created: "2026-03-30T10:06:41.956498516Z"
+    created: "2026-04-20T10:27:11.49106364Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0195b6f61655fb0476f5fe38f6acd913af21137bf98cad474d342dc1a2c22cca
@@ -2745,7 +2769,7 @@ entries:
     version: 1.31.0
   - apiVersion: v2
     appVersion: v1.30.0
-    created: "2026-03-30T10:06:41.956198313Z"
+    created: "2026-04-20T10:27:11.490700027Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 79819f716b086d20a11ce28628991d456dd70be66b53c2abdde1de30d19962a0
@@ -2770,7 +2794,7 @@ entries:
     version: 1.30.0
   - apiVersion: v2
     appVersion: v1.29.2
-    created: "2026-03-30T10:06:41.955868882Z"
+    created: "2026-04-20T10:27:11.490373014Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0a627271afd9cc4931c9f0568cd2e39578e94c85c7734a5ba454cc4180b07195
@@ -2795,7 +2819,7 @@ entries:
     version: 1.29.2
   - apiVersion: v2
     appVersion: v1.29.1
-    created: "2026-03-30T10:06:41.95547633Z"
+    created: "2026-04-20T10:27:11.490007308Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 293b6a922af72effe41c6bad2aa1823118ae73b5854c0c475e98fcf6f8099fec
@@ -2820,7 +2844,7 @@ entries:
     version: 1.29.1
   - apiVersion: v2
     appVersion: v1.29.0
-    created: "2026-03-30T10:06:41.955071027Z"
+    created: "2026-04-20T10:27:11.489639569Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: adafd8051d8279cd6f4f98ec9e4af05902cd8dba924ca75f6b551fedf5c12cb3
@@ -2845,7 +2869,7 @@ entries:
     version: 1.29.0
   - apiVersion: v2
     appVersion: v1.28.1
-    created: "2026-03-30T10:06:41.953911211Z"
+    created: "2026-04-20T10:27:11.489268242Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 46c649521de3b90f648e6e89a5fa6aed89331e4fd4514d79910c8fed73a30952
@@ -2870,7 +2894,7 @@ entries:
     version: 1.28.1
   - apiVersion: v2
     appVersion: v1.28.0
-    created: "2026-03-30T10:06:41.953612831Z"
+    created: "2026-04-20T10:27:11.488930729Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 98a171b97cd6971c64077e406e1d258941651a7f7b5a5e8d91b0db2c01cbf0d3
@@ -2895,7 +2919,7 @@ entries:
     version: 1.28.0
   - apiVersion: v2
     appVersion: v1.27.0
-    created: "2026-03-30T10:06:41.953274431Z"
+    created: "2026-04-20T10:27:11.488587315Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c234512e5cd6dc7dec7c179c7c536ea6969ac2555e7cb014bf65073f90beea59
@@ -2920,7 +2944,7 @@ entries:
     version: 1.27.0
   - apiVersion: v2
     appVersion: v1.26.3
-    created: "2026-03-30T10:06:41.952921721Z"
+    created: "2026-04-20T10:27:11.488224945Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 31a37f4cc1a8fed75828317d059e6f1991a9f3e3ed8cb0db3aaff478c1bccca8
@@ -2945,7 +2969,7 @@ entries:
     version: 1.26.3
   - apiVersion: v2
     appVersion: v1.26.2
-    created: "2026-03-30T10:06:41.952611659Z"
+    created: "2026-04-20T10:27:11.487880198Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 989935227ad36a29f7b24078041c99ad88df4741b013175c129d57b81ef171f3
@@ -2970,7 +2994,7 @@ entries:
     version: 1.26.2
   - apiVersion: v2
     appVersion: v1.26.1
-    created: "2026-03-30T10:06:41.952299048Z"
+    created: "2026-04-20T10:27:11.487530082Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 430cf10b6abd86f080fed90ce10692ca58d48831e974176f210ba140da3936e0
@@ -2995,7 +3019,7 @@ entries:
     version: 1.26.1
   - apiVersion: v2
     appVersion: v1.26.0
-    created: "2026-03-30T10:06:41.951982509Z"
+    created: "2026-04-20T10:27:11.487124511Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0cc392206e8ce6ab6c048a39547a5bdc6bf9556a4d6fad093d12fa3d35ee1c25
@@ -3020,7 +3044,7 @@ entries:
     version: 1.26.0
   - apiVersion: v2
     appVersion: v1.25.0
-    created: "2026-03-30T10:06:41.951663266Z"
+    created: "2026-04-20T10:27:11.486748786Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 99f71e47bafe0f1a6ce3aef60035bd430053f35a4ef0ade356f019a9f0664ccb
@@ -3045,7 +3069,7 @@ entries:
     version: 1.25.0
   - apiVersion: v2
     appVersion: v1.24.0
-    created: "2026-03-30T10:06:41.951350841Z"
+    created: "2026-04-20T10:27:11.486343246Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b4dc719fc0bd92061db1df00a21cbe1b000f8572cdcf9064044864170210cae2
@@ -3070,7 +3094,7 @@ entries:
     version: 1.24.0
   - apiVersion: v2
     appVersion: v1.23.0
-    created: "2026-03-30T10:06:41.951027181Z"
+    created: "2026-04-20T10:27:11.485481063Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b35680e1bd9f3b0541efbd51213c95266490252b1de1819a7fba35bd6e26d2cd
@@ -3095,7 +3119,7 @@ entries:
     version: 1.23.0
   - apiVersion: v2
     appVersion: v1.22.1
-    created: "2026-03-30T10:06:41.950670655Z"
+    created: "2026-04-20T10:27:11.484836414Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2f2d9fd6b0d6d759c2ffb98bf5c05afc123fed644b1798a1861026d47b68e883
@@ -3120,7 +3144,7 @@ entries:
     version: 1.22.1
   - apiVersion: v2
     appVersion: v1.22.0
-    created: "2026-03-30T10:06:41.950335584Z"
+    created: "2026-04-20T10:27:11.484474515Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b46f2fe9b5441b5e119507461d97bca617dbef265ed107bd6e203003e41cf88c
@@ -3145,8 +3169,31 @@ entries:
     version: 1.22.0
   kiali-server:
   - apiVersion: v2
+    appVersion: v2.25.0
+    created: "2026-04-20T10:27:11.649880632Z"
+    description: Kiali is an open source project for service mesh observability, refer
+      to https://www.kiali.io for details.
+    digest: 1070f2094a0652375b104ca4fdd1a470d8ba131961ff099c0cde854e2f58d6e8
+    home: https://github.com/kiali/kiali
+    icon: https://raw.githubusercontent.com/kiali/kiali.io/current/assets/icons/logo.svg
+    keywords:
+    - istio
+    - kiali
+    maintainers:
+    - email: kiali-users@googlegroups.com
+      name: Kiali
+      url: https://kiali.io
+    name: kiali-server
+    sources:
+    - https://github.com/kiali/kiali
+    - https://github.com/kiali/kiali-operator
+    - https://github.com/kiali/helm-charts
+    urls:
+    - https://kiali.org/helm-charts/kiali-server-2.25.0.tgz
+    version: 2.25.0
+  - apiVersion: v2
     appVersion: v2.24.0
-    created: "2026-03-30T10:06:42.087813656Z"
+    created: "2026-04-20T10:27:11.649054543Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9ccb6e43310de2964d573210d5759eba8e9db7a9602391ac6571a0920992bc92
@@ -3169,7 +3216,7 @@ entries:
     version: 2.24.0
   - apiVersion: v2
     appVersion: v2.23.0
-    created: "2026-03-30T10:06:42.086301668Z"
+    created: "2026-04-20T10:27:11.648158482Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6773a0044107a146d09e5c54081b1f365e504dec9f014df538d470cc79d0f3e8
@@ -3192,7 +3239,7 @@ entries:
     version: 2.23.0
   - apiVersion: v2
     appVersion: v2.22.0
-    created: "2026-03-30T10:06:42.085490412Z"
+    created: "2026-04-20T10:27:11.647245319Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1cc34058ed503f9190325ca7ce6b3f81724c35740ff56148b84fe7df0a897f65
@@ -3215,7 +3262,7 @@ entries:
     version: 2.22.0
   - apiVersion: v2
     appVersion: v2.21.0
-    created: "2026-03-30T10:06:42.084682256Z"
+    created: "2026-04-20T10:27:11.64585467Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 58544f224923868c5dd02bc8512438159a58888d2bda43b73b5302f4325033b9
@@ -3238,7 +3285,7 @@ entries:
     version: 2.21.0
   - apiVersion: v2
     appVersion: v2.20.0
-    created: "2026-03-30T10:06:42.083899143Z"
+    created: "2026-04-20T10:27:11.644886804Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d33ecd833e13bf3d0511b0e2d6ced7e06aac1064f842032ba9eb3dfc0bc9e33e
@@ -3261,7 +3308,7 @@ entries:
     version: 2.20.0
   - apiVersion: v2
     appVersion: v2.19.0
-    created: "2026-03-30T10:06:42.082648512Z"
+    created: "2026-04-20T10:27:11.643552431Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: aa9e0893054377229922b379c9892b25f03a204ec9d4143d8ccc75ff4d69ce7a
@@ -3284,7 +3331,7 @@ entries:
     version: 2.19.0
   - apiVersion: v2
     appVersion: v2.18.0
-    created: "2026-03-30T10:06:42.081909665Z"
+    created: "2026-04-20T10:27:11.642839554Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 93cdee27134c9f49405bbebb81f462e0bcda3782b3464d8716faa5af70379653
@@ -3307,7 +3354,7 @@ entries:
     version: 2.18.0
   - apiVersion: v2
     appVersion: v2.17.0
-    created: "2026-03-30T10:06:42.081272786Z"
+    created: "2026-04-20T10:27:11.642236904Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5d520dbbeecf0ebd6db9f76d12c57c2eb1d4c21a54e4143992b049490181db77
@@ -3330,7 +3377,7 @@ entries:
     version: 2.17.0
   - apiVersion: v2
     appVersion: v2.16.0
-    created: "2026-03-30T10:06:42.080321147Z"
+    created: "2026-04-20T10:27:11.641647348Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2b0dc102e1cb147972cb7de0239d6726c6365d77407bcd84f5613000dc487a8d
@@ -3353,7 +3400,7 @@ entries:
     version: 2.16.0
   - apiVersion: v2
     appVersion: v2.15.0
-    created: "2026-03-30T10:06:42.07927011Z"
+    created: "2026-04-20T10:27:11.64103508Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ca7b66f5466f43763e0e33ef6bc138a5dc69cd858917b5999d25d7454a6591c2
@@ -3376,7 +3423,7 @@ entries:
     version: 2.15.0
   - apiVersion: v2
     appVersion: v2.14.0
-    created: "2026-03-30T10:06:42.078687302Z"
+    created: "2026-04-20T10:27:11.640435986Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: cf24b452bc7c9abf4fac8f9aed5d12fcf78e2f8ee168bc8d14c872136fa9eb19
@@ -3399,7 +3446,7 @@ entries:
     version: 2.14.0
   - apiVersion: v2
     appVersion: v2.13.0
-    created: "2026-03-30T10:06:42.078126001Z"
+    created: "2026-04-20T10:27:11.639249571Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e6307c384bf6d1ed0710f0f583c2fb69c602f243c459a3255913e8308f494bc3
@@ -3422,7 +3469,7 @@ entries:
     version: 2.13.0
   - apiVersion: v2
     appVersion: v2.12.0
-    created: "2026-03-30T10:06:42.077558129Z"
+    created: "2026-04-20T10:27:11.638343932Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e4b5a1b8f4e5a109d908c5a0af3cafd8fec91b6afe35a0ebdcadb4ea8b20fce9
@@ -3445,7 +3492,7 @@ entries:
     version: 2.12.0
   - apiVersion: v2
     appVersion: v2.11.0
-    created: "2026-03-30T10:06:42.076987668Z"
+    created: "2026-04-20T10:27:11.637769024Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8f5f37b2ff9671650819481926e7ec8cdc24fdf314c52d700bb09ad431ac9e0a
@@ -3468,7 +3515,7 @@ entries:
     version: 2.11.0
   - apiVersion: v2
     appVersion: v2.10.0
-    created: "2026-03-30T10:06:42.076389146Z"
+    created: "2026-04-20T10:27:11.637179248Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 05d2534f85fb0d0ca08ed3be21e7d2c9456efad03263bf9696dff2d263b7f931
@@ -3491,7 +3538,7 @@ entries:
     version: 2.10.0
   - apiVersion: v2
     appVersion: v2.9.0
-    created: "2026-03-30T10:06:42.092489383Z"
+    created: "2026-04-20T10:27:11.655377167Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 48e45f2d52618e3fd8c2bcbf49ff2b758b4f3bbb11aacc364f61977bd3163ef6
@@ -3514,7 +3561,7 @@ entries:
     version: 2.9.0
   - apiVersion: v2
     appVersion: v2.8.0
-    created: "2026-03-30T10:06:42.091928902Z"
+    created: "2026-04-20T10:27:11.654787Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c4f1aa6530b75a3fed5950e1c8ab6a5c92733720a58dcdc123462401e468251b
@@ -3537,7 +3584,7 @@ entries:
     version: 2.8.0
   - apiVersion: v2
     appVersion: v2.7.1
-    created: "2026-03-30T10:06:42.091386043Z"
+    created: "2026-04-20T10:27:11.654161878Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 69947faef3e312023dfb23f9f200ff2efcabaea57cdf6c170403c8c8ac3ad6bb
@@ -3560,7 +3607,7 @@ entries:
     version: 2.7.1
   - apiVersion: v2
     appVersion: v2.7.0
-    created: "2026-03-30T10:06:42.090830566Z"
+    created: "2026-04-20T10:27:11.652862956Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6509678c031800b8ff95d647833e504514b9719a61913061a1e5b495f6b7d122
@@ -3583,7 +3630,7 @@ entries:
     version: 2.7.0
   - apiVersion: v2
     appVersion: v2.6.0
-    created: "2026-03-30T10:06:42.090297088Z"
+    created: "2026-04-20T10:27:11.652128047Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 61cc2bae6277e2eb848e0b8962495caa7c1dcf1c25fbd0dda53403421897bad7
@@ -3606,7 +3653,7 @@ entries:
     version: 2.6.0
   - apiVersion: v2
     appVersion: v2.5.0
-    created: "2026-03-30T10:06:42.089716475Z"
+    created: "2026-04-20T10:27:11.651545976Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 11d757703f6fcba534fdfa23dd48dd1346af161f2330dae45655aa609a4edf40
@@ -3629,7 +3676,7 @@ entries:
     version: 2.5.0
   - apiVersion: v2
     appVersion: v2.4.0
-    created: "2026-03-30T10:06:42.089184055Z"
+    created: "2026-04-20T10:27:11.650989061Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3824515345e10f1ad84ea87269e1bbb9fffa9db0501ffb3565f6577481e7ae2d
@@ -3652,7 +3699,7 @@ entries:
     version: 2.4.0
   - apiVersion: v2
     appVersion: v2.3.0
-    created: "2026-03-30T10:06:42.088611064Z"
+    created: "2026-04-20T10:27:11.650448888Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9973f86f1b3c312ecb6ccd6ef74376a6b575d3e6ea0fdad2f5a21b5b68e00866
@@ -3675,7 +3722,7 @@ entries:
     version: 2.3.0
   - apiVersion: v2
     appVersion: v2.2.0
-    created: "2026-03-30T10:06:42.083191744Z"
+    created: "2026-04-20T10:27:11.644154461Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a5a02ac2d55c972292b3b1f0aa02e3087592baba31d1a9e5c98e7e36b60a3fce
@@ -3698,7 +3745,7 @@ entries:
     version: 2.2.0
   - apiVersion: v2
     appVersion: v2.1.0
-    created: "2026-03-30T10:06:42.075816148Z"
+    created: "2026-04-20T10:27:11.63662592Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5bcdc5a0da38fe1526a6a9d3d91bfe9f8333c0aee95941a2eda89f0709072fa0
@@ -3721,7 +3768,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: v2.0.0
-    created: "2026-03-30T10:06:42.075240754Z"
+    created: "2026-04-20T10:27:11.636085486Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d3652b0b4f80bd417c9da30d0e10690f5185fe9146fd8c481ef13a327c1b0f26
@@ -3744,7 +3791,7 @@ entries:
     version: 2.0.0
   - apiVersion: v2
     appVersion: v1.89.7
-    created: "2026-03-30T10:06:42.074637451Z"
+    created: "2026-04-20T10:27:11.635568136Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ddc612ef3e182f172908cc9a38ccaf8d98b4ab7a6660dce2020e2652bbeb8466
@@ -3767,7 +3814,7 @@ entries:
     version: 1.89.7
   - apiVersion: v2
     appVersion: v1.89.3
-    created: "2026-03-30T10:06:42.074048314Z"
+    created: "2026-04-20T10:27:11.635010169Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4c8274da403035fbb3c7cddc6f295a0a0fbc3b6a4243ce60e817f1232630f083
@@ -3790,7 +3837,7 @@ entries:
     version: 1.89.3
   - apiVersion: v2
     appVersion: v1.89.0
-    created: "2026-03-30T10:06:42.072515Z"
+    created: "2026-04-20T10:27:11.634465818Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0c4b2013d097d1867e7f9746e92fd30702b457682a77039b4852a2a4338bf6a7
@@ -3813,7 +3860,7 @@ entries:
     version: 1.89.0
   - apiVersion: v2
     appVersion: v1.88.0
-    created: "2026-03-30T10:06:42.071999621Z"
+    created: "2026-04-20T10:27:11.633825116Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1f40fe68114d5f2d3f21e1bb3e176331f53ba5807f57593005a5d41bfaae4c07
@@ -3836,7 +3883,7 @@ entries:
     version: 1.88.0
   - apiVersion: v2
     appVersion: v1.87.0
-    created: "2026-03-30T10:06:42.071453767Z"
+    created: "2026-04-20T10:27:11.632287859Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8ac94f681ca629558426c4923d17ba618f820c8fdab6891132c3091a599000bb
@@ -3859,7 +3906,7 @@ entries:
     version: 1.87.0
   - apiVersion: v2
     appVersion: v1.86.2
-    created: "2026-03-30T10:06:42.070919966Z"
+    created: "2026-04-20T10:27:11.631759458Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 71ce7838f6977b86deae736eb8732755d22fe5155815ba3305a234d602e7213f
@@ -3882,7 +3929,7 @@ entries:
     version: 1.86.2
   - apiVersion: v2
     appVersion: v1.86.1
-    created: "2026-03-30T10:06:42.070413435Z"
+    created: "2026-04-20T10:27:11.631209557Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7f0a2a2b6cec9b83d28f713e9d7972bf178c9f08960a1e12740a9dd2b2ac8dca
@@ -3905,7 +3952,7 @@ entries:
     version: 1.86.1
   - apiVersion: v2
     appVersion: v1.86.0
-    created: "2026-03-30T10:06:42.069863772Z"
+    created: "2026-04-20T10:27:11.630684812Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 47926ad7c0cfbe8db590c2c6f526a5ee488756b9567054bc4504aaa19eb9ee0d
@@ -3928,7 +3975,7 @@ entries:
     version: 1.86.0
   - apiVersion: v2
     appVersion: v1.85.0
-    created: "2026-03-30T10:06:42.069365624Z"
+    created: "2026-04-20T10:27:11.630132206Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 540a02367ade83773689eaa6f734aeb20acf9ee7caa8e5deb2275ab967ccbfed
@@ -3951,7 +3998,7 @@ entries:
     version: 1.85.0
   - apiVersion: v2
     appVersion: v1.84.0
-    created: "2026-03-30T10:06:42.068829989Z"
+    created: "2026-04-20T10:27:11.629576053Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7a130fb55e73c680d18e35b2b34b855d817a56c6007bf793662e12c5c3cec155
@@ -3974,7 +4021,7 @@ entries:
     version: 1.84.0
   - apiVersion: v2
     appVersion: v1.83.0
-    created: "2026-03-30T10:06:42.068333652Z"
+    created: "2026-04-20T10:27:11.629027734Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 64629e82300c601c8162f657f3d9e03ec37e542624d80a2b8d97b14b1e7bb524
@@ -3997,7 +4044,7 @@ entries:
     version: 1.83.0
   - apiVersion: v2
     appVersion: v1.82.0
-    created: "2026-03-30T10:06:42.067820177Z"
+    created: "2026-04-20T10:27:11.628500435Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c4d5f644218d7ecd7c74f26dde8618c5fa33e943e60a34b8aece02e5c38c6c77
@@ -4020,7 +4067,7 @@ entries:
     version: 1.82.0
   - apiVersion: v2
     appVersion: v1.81.0
-    created: "2026-03-30T10:06:42.067299827Z"
+    created: "2026-04-20T10:27:11.627947969Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8d4b2eb142cb2019f3ded8b6e4fc681d3c127b995cecac38433d942fb5cf2718
@@ -4043,7 +4090,7 @@ entries:
     version: 1.81.0
   - apiVersion: v2
     appVersion: v1.80.0
-    created: "2026-03-30T10:06:42.066501377Z"
+    created: "2026-04-20T10:27:11.627398649Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ad0f3b3ac8f9926fadddf50feb47bce42763590bf8aab61f738a66df9d04a5b7
@@ -4066,7 +4113,7 @@ entries:
     version: 1.80.0
   - apiVersion: v2
     appVersion: v1.79.0
-    created: "2026-03-30T10:06:42.065198875Z"
+    created: "2026-04-20T10:27:11.626483602Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 05f0de51e3a24962976f5c5339c980c4de5586a55987e3240e22c41548eadefd
@@ -4089,7 +4136,7 @@ entries:
     version: 1.79.0
   - apiVersion: v2
     appVersion: v1.78.0
-    created: "2026-03-30T10:06:42.064688486Z"
+    created: "2026-04-20T10:27:11.625424316Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6e7551866bd2b08007dc131f726ac50be8cd9178cfeb8a0e1500b4d75ef29bc8
@@ -4112,7 +4159,7 @@ entries:
     version: 1.78.0
   - apiVersion: v2
     appVersion: v1.77.0
-    created: "2026-03-30T10:06:42.064170879Z"
+    created: "2026-04-20T10:27:11.624874775Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 884dc4d6f046a4958dead8e71ab4a9a8bf53666d663aaf2b104d9e4b64872e13
@@ -4135,7 +4182,7 @@ entries:
     version: 1.77.0
   - apiVersion: v2
     appVersion: v1.76.0
-    created: "2026-03-30T10:06:42.06367128Z"
+    created: "2026-04-20T10:27:11.624320686Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7352232b367431b38a1053cb6a9fea061157784ac9db28d2d1b15150665925e0
@@ -4158,7 +4205,7 @@ entries:
     version: 1.76.0
   - apiVersion: v2
     appVersion: v1.75.0
-    created: "2026-03-30T10:06:42.063168729Z"
+    created: "2026-04-20T10:27:11.623780092Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4c6b0077133490b4b4386742caecc404a7542d5e053d29fdc7446c92d755fbf7
@@ -4181,7 +4228,7 @@ entries:
     version: 1.75.0
   - apiVersion: v2
     appVersion: v1.74.0
-    created: "2026-03-30T10:06:42.06261997Z"
+    created: "2026-04-20T10:27:11.623173534Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 519998cd7e572bc0cf684b1db84a5fe2442893c76f477417defbd636e8ad0587
@@ -4204,7 +4251,7 @@ entries:
     version: 1.74.0
   - apiVersion: v2
     appVersion: v1.73.2
-    created: "2026-03-30T10:06:42.062143366Z"
+    created: "2026-04-20T10:27:11.622661664Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5b4140979e093401b14fa5c0a2870a66706fc8de7614e17a669bd2306eb50221
@@ -4227,7 +4274,7 @@ entries:
     version: 1.73.2
   - apiVersion: v2
     appVersion: v1.73.1
-    created: "2026-03-30T10:06:42.061653882Z"
+    created: "2026-04-20T10:27:11.622110179Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e0a45db354e0987c2e168da5efc2e4c036773eebedf93f0d79909ddd69f9fac0
@@ -4250,7 +4297,7 @@ entries:
     version: 1.73.1
   - apiVersion: v2
     appVersion: v1.73.0
-    created: "2026-03-30T10:06:42.061145995Z"
+    created: "2026-04-20T10:27:11.621596365Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 51384d451164dc4fe03eb03ad59b2d538db5a023f8d7e1900699a7675eba1d32
@@ -4273,7 +4320,7 @@ entries:
     version: 1.73.0
   - apiVersion: v2
     appVersion: v1.72.0
-    created: "2026-03-30T10:06:42.060560216Z"
+    created: "2026-04-20T10:27:11.621068135Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e1fa55dd6059b4b05000596a26717bf4d7b0b6d092ce0160194b052a530bf407
@@ -4296,7 +4343,7 @@ entries:
     version: 1.72.0
   - apiVersion: v2
     appVersion: v1.71.0
-    created: "2026-03-30T10:06:42.060022784Z"
+    created: "2026-04-20T10:27:11.620558509Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 522efda0c18cb1e67e41ee8796e59291a375d0161e3df9608794ffd70023ce65
@@ -4319,7 +4366,7 @@ entries:
     version: 1.71.0
   - apiVersion: v2
     appVersion: v1.70.0
-    created: "2026-03-30T10:06:42.05946139Z"
+    created: "2026-04-20T10:27:11.619957371Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4fb1d0fe0a9c4e89cb5832171a2e00ce76e4ef6e81fb5e1d638cacbf3560cf33
@@ -4342,7 +4389,7 @@ entries:
     version: 1.70.0
   - apiVersion: v2
     appVersion: v1.69.0
-    created: "2026-03-30T10:06:42.058236256Z"
+    created: "2026-04-20T10:27:11.619239655Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d4437661ecdd1282e09039603f4e63e100744b6dfffa281762b2fe19a4cea15b
@@ -4365,7 +4412,7 @@ entries:
     version: 1.69.0
   - apiVersion: v2
     appVersion: v1.68.0
-    created: "2026-03-30T10:06:42.057565647Z"
+    created: "2026-04-20T10:27:11.618665749Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 197b53fc8108f2c975f2e2f4221493ee5fb8b9745d852d7b56fc86d653ea794f
@@ -4388,7 +4435,7 @@ entries:
     version: 1.68.0
   - apiVersion: v2
     appVersion: v1.67.1
-    created: "2026-03-30T10:06:42.057053273Z"
+    created: "2026-04-20T10:27:11.617443436Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f8b1e6456ddc8cfe6bf2730581c7867ac96bd42165b1e5e374b00d3a9cd4889e
@@ -4411,7 +4458,7 @@ entries:
     version: 1.67.1
   - apiVersion: v2
     appVersion: v1.67.0
-    created: "2026-03-30T10:06:42.056556038Z"
+    created: "2026-04-20T10:27:11.616706985Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 14a09ac7ca2354e61b3c3acadb243249024502f78f531d08f3813c556130f41c
@@ -4434,7 +4481,7 @@ entries:
     version: 1.67.0
   - apiVersion: v2
     appVersion: v1.66.1
-    created: "2026-03-30T10:06:42.05605421Z"
+    created: "2026-04-20T10:27:11.615964943Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: bfe99dbc77528623822756a20d1a888a22c277e661fa67e0718b07d276d8a29b
@@ -4457,7 +4504,7 @@ entries:
     version: 1.66.1
   - apiVersion: v2
     appVersion: v1.66.0
-    created: "2026-03-30T10:06:42.055559863Z"
+    created: "2026-04-20T10:27:11.615260441Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a453ef4026b32e8ffa1c0b0827ab50afa91f4219af5bd69251148713ece4af5f
@@ -4480,7 +4527,7 @@ entries:
     version: 1.66.0
   - apiVersion: v2
     appVersion: v1.65.0
-    created: "2026-03-30T10:06:42.05503365Z"
+    created: "2026-04-20T10:27:11.613693667Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 86fd259b2ee1c6a8ac9361ece769ba52480981efd43b773ad9d3debba7ef28b1
@@ -4503,7 +4550,7 @@ entries:
     version: 1.65.0
   - apiVersion: v2
     appVersion: v1.64.0
-    created: "2026-03-30T10:06:42.054548924Z"
+    created: "2026-04-20T10:27:11.613144848Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 61b992de6ef0161172c7691c68cab4729898e6613eb9f6d5d54259012d7b0b24
@@ -4526,7 +4573,7 @@ entries:
     version: 1.64.0
   - apiVersion: v2
     appVersion: v1.63.2
-    created: "2026-03-30T10:06:42.054074167Z"
+    created: "2026-04-20T10:27:11.61263456Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4dddfa385d976cc87ceb20aeccdc71a9d2cd48b4a4e615067a06cd1194df1ac9
@@ -4549,7 +4596,7 @@ entries:
     version: 1.63.2
   - apiVersion: v2
     appVersion: v1.63.1
-    created: "2026-03-30T10:06:42.053569139Z"
+    created: "2026-04-20T10:27:11.612107231Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9cf808eb5436767fbfef1770c9640f7c4066b1a429ae6a54676fd7e145133c34
@@ -4572,7 +4619,7 @@ entries:
     version: 1.63.1
   - apiVersion: v2
     appVersion: v1.63.0
-    created: "2026-03-30T10:06:42.053037772Z"
+    created: "2026-04-20T10:27:11.611588929Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1d30a71e486f46e1f952c1adb52ea494186221cb54118c7eab4a24b9fa3501c3
@@ -4595,7 +4642,7 @@ entries:
     version: 1.63.0
   - apiVersion: v2
     appVersion: v1.62.1
-    created: "2026-03-30T10:06:42.052479629Z"
+    created: "2026-04-20T10:27:11.611019751Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c9c194b32567a2fcd0668ea0114b0a26d94c7d463b8cc3839e84b253f8c608fb
@@ -4618,7 +4665,7 @@ entries:
     version: 1.62.1
   - apiVersion: v2
     appVersion: v1.62.0
-    created: "2026-03-30T10:06:42.051608768Z"
+    created: "2026-04-20T10:27:11.61053389Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: beff68f782501b1b974a5e211e98e5e7d76b7d329c955b05acb89dc734b24b3f
@@ -4641,7 +4688,7 @@ entries:
     version: 1.62.0
   - apiVersion: v2
     appVersion: v1.61.0
-    created: "2026-03-30T10:06:42.050687322Z"
+    created: "2026-04-20T10:27:11.609980372Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 05172b4e98706510e9bceefaef438197155a69d939226149322d8a5085287d16
@@ -4664,7 +4711,7 @@ entries:
     version: 1.61.0
   - apiVersion: v2
     appVersion: v1.60.0
-    created: "2026-03-30T10:06:42.050218236Z"
+    created: "2026-04-20T10:27:11.609483099Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 270b9d100bbb85f6055c429a5ce413e20917caec6ed6d574cd57c2b3490f4027
@@ -4687,7 +4734,7 @@ entries:
     version: 1.60.0
   - apiVersion: v2
     appVersion: v1.59.1
-    created: "2026-03-30T10:06:42.04974141Z"
+    created: "2026-04-20T10:27:11.608971159Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fb322a233f65cc41842104c99efb6afc4576c288af32f8e5ed26836c55290380
@@ -4710,7 +4757,7 @@ entries:
     version: 1.59.1
   - apiVersion: v2
     appVersion: v1.59.0
-    created: "2026-03-30T10:06:42.049283469Z"
+    created: "2026-04-20T10:27:11.608469668Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 278785d92c7b8b6ec5c7b0dc67b754fba7064619ede56a9a895b9f5ceeeffe00
@@ -4733,7 +4780,7 @@ entries:
     version: 1.59.0
   - apiVersion: v2
     appVersion: v1.58.0
-    created: "2026-03-30T10:06:42.04882089Z"
+    created: "2026-04-20T10:27:11.607903085Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7d28cbb47a0d3a5490e631897405a9945ffec6c402a1d3d179c5e432fb607c88
@@ -4756,7 +4803,7 @@ entries:
     version: 1.58.0
   - apiVersion: v2
     appVersion: v1.57.3
-    created: "2026-03-30T10:06:42.048362996Z"
+    created: "2026-04-20T10:27:11.606877161Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: eb4bace25860c2df93ae85233468e9d1f7a3228354402ff21fea692794696f4b
@@ -4779,7 +4826,7 @@ entries:
     version: 1.57.3
   - apiVersion: v2
     appVersion: v1.57.2
-    created: "2026-03-30T10:06:42.047880272Z"
+    created: "2026-04-20T10:27:11.605497353Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a885b78a7e6cac992d769946caf4e1ca7a7caf0d1729cd7dd6f94784aad29d72
@@ -4802,7 +4849,7 @@ entries:
     version: 1.57.2
   - apiVersion: v2
     appVersion: v1.57.1
-    created: "2026-03-30T10:06:42.047415272Z"
+    created: "2026-04-20T10:27:11.604458494Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 761909eee4282cdc6fcb47c2496d480972ac4825e419e94e58f0ba9e656b0b98
@@ -4825,7 +4872,7 @@ entries:
     version: 1.57.1
   - apiVersion: v2
     appVersion: v1.57.0
-    created: "2026-03-30T10:06:42.046936535Z"
+    created: "2026-04-20T10:27:11.603495698Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 575dfe444e30dec41585c2def6bed873b2ef2b409666a14ce58ab73877d492f1
@@ -4848,7 +4895,7 @@ entries:
     version: 1.57.0
   - apiVersion: v2
     appVersion: v1.56.1
-    created: "2026-03-30T10:06:42.04645994Z"
+    created: "2026-04-20T10:27:11.602555525Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: b9c5888c5e73c61f6c3b6dd2cded76a901986f7d986fc69744c8a10e0a4980f7
@@ -4871,7 +4918,7 @@ entries:
     version: 1.56.1
   - apiVersion: v2
     appVersion: v1.56.0
-    created: "2026-03-30T10:06:42.045923538Z"
+    created: "2026-04-20T10:27:11.601567312Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 2830875fbda8054e03b2190caf8db84f829e8fbc0183d9a18dccd1bb71e9b8ab
@@ -4894,7 +4941,7 @@ entries:
     version: 1.56.0
   - apiVersion: v2
     appVersion: v1.55.1
-    created: "2026-03-30T10:06:42.045405078Z"
+    created: "2026-04-20T10:27:11.600621768Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e376d3e51885cb658b7f9b25eaae4ebb574013ac81e5a3b5872847e75934a38e
@@ -4917,7 +4964,7 @@ entries:
     version: 1.55.1
   - apiVersion: v2
     appVersion: v1.55.0
-    created: "2026-03-30T10:06:42.044181212Z"
+    created: "2026-04-20T10:27:11.599666626Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 92ff0525faeae587dce134f4647ede9a94201336853a2e6f013cf5586d00059c
@@ -4940,7 +4987,7 @@ entries:
     version: 1.55.0
   - apiVersion: v2
     appVersion: v1.54.0
-    created: "2026-03-30T10:06:42.043485181Z"
+    created: "2026-04-20T10:27:11.598763452Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e6ec26a3e4aee37df9c10a0fb6d677d01dd26a50adf68e10536695d3b72f5bb6
@@ -4963,7 +5010,7 @@ entries:
     version: 1.54.0
   - apiVersion: v2
     appVersion: v1.53.0
-    created: "2026-03-30T10:06:42.043024784Z"
+    created: "2026-04-20T10:27:11.597790948Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d34537d2a2025440f4c861fc8eec7ffd751fbf001936977618f544074e8da3b7
@@ -4986,7 +5033,7 @@ entries:
     version: 1.53.0
   - apiVersion: v2
     appVersion: v1.52.0
-    created: "2026-03-30T10:06:42.042546121Z"
+    created: "2026-04-20T10:27:11.596798276Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0e651e0f5e35095ce2297b29d25a98d32479648cf37a90337b70f9813ac37b9b
@@ -5009,7 +5056,7 @@ entries:
     version: 1.52.0
   - apiVersion: v2
     appVersion: v1.51.1
-    created: "2026-03-30T10:06:42.042069631Z"
+    created: "2026-04-20T10:27:11.595798671Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 780e6fe77905fc525f5dab8e0b68008abc25d5ebf961c0438b45878ddfbde575
@@ -5032,7 +5079,7 @@ entries:
     version: 1.51.1
   - apiVersion: v2
     appVersion: v1.51.0
-    created: "2026-03-30T10:06:42.04156214Z"
+    created: "2026-04-20T10:27:11.594850603Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3336eb02c0f1c88c3cc1921369d8993f802bd1dab0e507af43891f49d13afaa7
@@ -5055,7 +5102,7 @@ entries:
     version: 1.51.0
   - apiVersion: v2
     appVersion: v1.50.1
-    created: "2026-03-30T10:06:42.041109754Z"
+    created: "2026-04-20T10:27:11.593632959Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 873ce7dde035de2fa4d02e939e7f027163113ab85b197d3aadb41eb0b2ab6d70
@@ -5079,7 +5126,7 @@ entries:
     version: 1.50.1
   - apiVersion: v2
     appVersion: v1.50.0
-    created: "2026-03-30T10:06:42.040624692Z"
+    created: "2026-04-20T10:27:11.592281765Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 855d0d083cdc555ec0f81851345195c413468aaa826f565859d4768beef989a8
@@ -5103,7 +5150,7 @@ entries:
     version: 1.50.0
   - apiVersion: v2
     appVersion: v1.49.0
-    created: "2026-03-30T10:06:42.040152556Z"
+    created: "2026-04-20T10:27:11.591781326Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4d8f4dc10a01c68d986b1194bba2352daecc226e389e28e3fdeb616476f9d7f7
@@ -5127,7 +5174,7 @@ entries:
     version: 1.49.0
   - apiVersion: v2
     appVersion: v1.48.0
-    created: "2026-03-30T10:06:42.039651628Z"
+    created: "2026-04-20T10:27:11.591262764Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: f35f622a89ae2008eb4c7663f1bacc1aedfafbcdfdf3a0cac0f6564b3dae4a4f
@@ -5151,7 +5198,7 @@ entries:
     version: 1.48.0
   - apiVersion: v2
     appVersion: v1.47.0
-    created: "2026-03-30T10:06:42.039171615Z"
+    created: "2026-04-20T10:27:11.590778005Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 340945a9c65d9e08f3edfa12db5dadbef11ee92ce8969173b9f1a51c98f0e025
@@ -5175,7 +5222,7 @@ entries:
     version: 1.47.0
   - apiVersion: v2
     appVersion: v1.46.0
-    created: "2026-03-30T10:06:42.038660737Z"
+    created: "2026-04-20T10:27:11.590253821Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7eb0c187ab9167561c733540f443f7381008ffa3a345e6f5f028640c13274a4f
@@ -5199,7 +5246,7 @@ entries:
     version: 1.46.0
   - apiVersion: v2
     appVersion: v1.45.1
-    created: "2026-03-30T10:06:42.037823773Z"
+    created: "2026-04-20T10:27:11.589781495Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: a78b24ea9f5a5e24f255be5fbe208895ab0b02325bc9a5e0e162ed1122a79909
@@ -5223,7 +5270,7 @@ entries:
     version: 1.45.1
   - apiVersion: v2
     appVersion: v1.45.0
-    created: "2026-03-30T10:06:42.036817459Z"
+    created: "2026-04-20T10:27:11.589274685Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c58a4914c8fc5beeffc15fd33bc55988a9b1904841d938504accf0795dfb36d4
@@ -5247,7 +5294,7 @@ entries:
     version: 1.45.0
   - apiVersion: v2
     appVersion: v1.44.0
-    created: "2026-03-30T10:06:42.036326029Z"
+    created: "2026-04-20T10:27:11.588797239Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 286f9bf5f5ecf8a3b38c06516d60765bdedc9511f30b4a0c775d7acf1eac67eb
@@ -5271,7 +5318,7 @@ entries:
     version: 1.44.0
   - apiVersion: v2
     appVersion: v1.43.0
-    created: "2026-03-30T10:06:42.035841431Z"
+    created: "2026-04-20T10:27:11.588283005Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: dcf1833868c28ac14a15d4808c37ead813e68d21c5e6f12675a6dc9c98271a79
@@ -5295,7 +5342,7 @@ entries:
     version: 1.43.0
   - apiVersion: v2
     appVersion: v1.42.0
-    created: "2026-03-30T10:06:42.035385527Z"
+    created: "2026-04-20T10:27:11.587794509Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ea5d467375f97ed80164b5d4f5b18770ed5823cbfce787d8edca2573d54a9927
@@ -5319,7 +5366,7 @@ entries:
     version: 1.42.0
   - apiVersion: v2
     appVersion: v1.41.0
-    created: "2026-03-30T10:06:42.034937714Z"
+    created: "2026-04-20T10:27:11.587295984Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d2f83b98e701bae263cf2988df35fcd8cb0cde04dfb072fe998decd28484ff21
@@ -5343,7 +5390,7 @@ entries:
     version: 1.41.0
   - apiVersion: v2
     appVersion: v1.40.1
-    created: "2026-03-30T10:06:42.034522202Z"
+    created: "2026-04-20T10:27:11.586780116Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 70335ebbae2d8dded952e469e95d8ef3017ab400416bae9c6d4cdc9b972c7502
@@ -5367,7 +5414,7 @@ entries:
     version: 1.40.1
   - apiVersion: v2
     appVersion: v1.40.0
-    created: "2026-03-30T10:06:42.034114536Z"
+    created: "2026-04-20T10:27:11.585607993Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ba4edb75f18ef7dfe4543921f40c68181575492a3552d901b0acb30178989b1e
@@ -5391,7 +5438,7 @@ entries:
     version: 1.40.0
   - apiVersion: v2
     appVersion: v1.39.0
-    created: "2026-03-30T10:06:42.0336892Z"
+    created: "2026-04-20T10:27:11.584847136Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 5259e2deaa46ba5a98447242a95ad468e60c48c0870ea567dc748407d68c78a7
@@ -5415,7 +5462,7 @@ entries:
     version: 1.39.0
   - apiVersion: v2
     appVersion: v1.38.1
-    created: "2026-03-30T10:06:42.033289681Z"
+    created: "2026-04-20T10:27:11.584410307Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: fe33791a6af516eef8267120897e070c3438480ddf202958ea07effc1e2e8278
@@ -5439,7 +5486,7 @@ entries:
     version: 1.38.1
   - apiVersion: v2
     appVersion: v1.38.0
-    created: "2026-03-30T10:06:42.032867679Z"
+    created: "2026-04-20T10:27:11.583962106Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8bfd40bb84d1acbb4d1ce604c8fb1dc04f3c56063c407a6c0283b28acdfd33fe
@@ -5463,7 +5510,7 @@ entries:
     version: 1.38.0
   - apiVersion: v2
     appVersion: v1.37.0
-    created: "2026-03-30T10:06:42.032427823Z"
+    created: "2026-04-20T10:27:11.58352134Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: eecb8623b36589533f3080ec2f90f628882499573762b6bfe3817f35ec71b66e
@@ -5487,7 +5534,7 @@ entries:
     version: 1.37.0
   - apiVersion: v2
     appVersion: v1.36.5
-    created: "2026-03-30T10:06:42.031988103Z"
+    created: "2026-04-20T10:27:11.583059283Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 51fde6e9d229f813201b6f0e22c8742e4a2f2e472f700e2c5db22b4a9e1f28b6
@@ -5511,7 +5558,7 @@ entries:
     version: 1.36.5
   - apiVersion: v2
     appVersion: v1.36.4
-    created: "2026-03-30T10:06:42.030988521Z"
+    created: "2026-04-20T10:27:11.582596705Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: ea4b4e55bfd56ffc143743b71f5b882bb5465dd6c0b8a2b1999897d177c352a3
@@ -5535,7 +5582,7 @@ entries:
     version: 1.36.4
   - apiVersion: v2
     appVersion: v1.36.2
-    created: "2026-03-30T10:06:42.030259101Z"
+    created: "2026-04-20T10:27:11.582139257Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c68ccc86375f541c0c112c35611a7a5b9b163eb924b0a91504973798eb562686
@@ -5559,7 +5606,7 @@ entries:
     version: 1.36.2
   - apiVersion: v2
     appVersion: v1.36.1
-    created: "2026-03-30T10:06:42.029843499Z"
+    created: "2026-04-20T10:27:11.581698681Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 1b28951e780d172bbff468eb797bce03fa5f4c68efcef280062d1ce832adbc1a
@@ -5583,7 +5630,7 @@ entries:
     version: 1.36.1
   - apiVersion: v2
     appVersion: v1.36.0
-    created: "2026-03-30T10:06:42.029429739Z"
+    created: "2026-04-20T10:27:11.581213982Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 164f5b5cbdf94a123ca2c9839460f18f185c61d5efeca86d792ea34a3bebbbdd
@@ -5607,7 +5654,7 @@ entries:
     version: 1.36.0
   - apiVersion: v2
     appVersion: v1.35.0
-    created: "2026-03-30T10:06:42.028977344Z"
+    created: "2026-04-20T10:27:11.580759449Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 88a403bb93368504baf0dec1422966f3a0bb87a9d7ef659a0cb98f10016df2be
@@ -5631,7 +5678,7 @@ entries:
     version: 1.35.0
   - apiVersion: v2
     appVersion: v1.34.1
-    created: "2026-03-30T10:06:42.028406989Z"
+    created: "2026-04-20T10:27:11.580076598Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 0cc28c92f59f45fcbea9972eb476194972f3f92e9bc6942b21487e1b237e4751
@@ -5655,7 +5702,7 @@ entries:
     version: 1.34.1
   - apiVersion: v2
     appVersion: v1.34.0
-    created: "2026-03-30T10:06:42.027838454Z"
+    created: "2026-04-20T10:27:11.579459842Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d43d35b77c8d28981617acf87a1faf1d956135e9f9c49ef6ab07dbb09a843b8b
@@ -5679,7 +5726,7 @@ entries:
     version: 1.34.0
   - apiVersion: v2
     appVersion: v1.33.1
-    created: "2026-03-30T10:06:42.027305667Z"
+    created: "2026-04-20T10:27:11.578089836Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e8fb3914adf5688d7da31b635bdb9aa290a8609fd10257af8f49228b99e4b2d8
@@ -5703,7 +5750,7 @@ entries:
     version: 1.33.1
   - apiVersion: v2
     appVersion: v1.33.0
-    created: "2026-03-30T10:06:42.026735526Z"
+    created: "2026-04-20T10:27:11.577204886Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6fc5298adbfb74729b168ee6b98f1b5866b8f4d1ede209327f2392ecf06b7eb0
@@ -5727,7 +5774,7 @@ entries:
     version: 1.33.0
   - apiVersion: v2
     appVersion: v1.32.0
-    created: "2026-03-30T10:06:42.026160673Z"
+    created: "2026-04-20T10:27:11.576625229Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4de7609062da0f346b02426377a1b655ec6076091dfdb506903879882222a697
@@ -5751,7 +5798,7 @@ entries:
     version: 1.32.0
   - apiVersion: v2
     appVersion: v1.31.0
-    created: "2026-03-30T10:06:42.025496412Z"
+    created: "2026-04-20T10:27:11.576013832Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 83a0dd19b269d726ef6683ae2f1ee90808c285fb37ef1d8ac73cb3b97f9ab65f
@@ -5775,7 +5822,7 @@ entries:
     version: 1.31.0
   - apiVersion: v2
     appVersion: v1.30.0
-    created: "2026-03-30T10:06:42.023993657Z"
+    created: "2026-04-20T10:27:11.575438142Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9c6573c90b6de892f372fa26181c6c895ad9e13810fe887c8d43eebd517dc1fc
@@ -5799,7 +5846,7 @@ entries:
     version: 1.30.0
   - apiVersion: v2
     appVersion: v1.29.2
-    created: "2026-03-30T10:06:42.023448338Z"
+    created: "2026-04-20T10:27:11.574847434Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 51807e1ef8fa70fc708c71a2848ca5ce518fc4310b45a98b069aa16d0c7ebf54
@@ -5823,7 +5870,7 @@ entries:
     version: 1.29.2
   - apiVersion: v2
     appVersion: v1.29.1
-    created: "2026-03-30T10:06:42.022890196Z"
+    created: "2026-04-20T10:27:11.574250495Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 7cbffe3ff13d099d4387456f5f944f19453638ac68f3f10da3bb21debe17b1bb
@@ -5847,7 +5894,7 @@ entries:
     version: 1.29.1
   - apiVersion: v2
     appVersion: v1.29.0
-    created: "2026-03-30T10:06:42.022340433Z"
+    created: "2026-04-20T10:27:11.573653395Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 6768ed29a973bb3d12d0552009213b24078eac6fc5ae58563622c030da4ac3aa
@@ -5871,7 +5918,7 @@ entries:
     version: 1.29.0
   - apiVersion: v2
     appVersion: v1.28.1
-    created: "2026-03-30T10:06:42.021762716Z"
+    created: "2026-04-20T10:27:11.573014646Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: d32b8c3f2ae6cc933f4f5774578e641564822a6a1d0c26a37f9a7696d9c9f602
@@ -5895,7 +5942,7 @@ entries:
     version: 1.28.1
   - apiVersion: v2
     appVersion: v1.28.0
-    created: "2026-03-30T10:06:42.021249839Z"
+    created: "2026-04-20T10:27:11.572342706Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 8988fcb558cdba62b08b32beeacfd96fc9e530e630a7431f6ba7fe9824f2df35
@@ -5919,7 +5966,7 @@ entries:
     version: 1.28.0
   - apiVersion: v2
     appVersion: v1.27.0
-    created: "2026-03-30T10:06:42.02070269Z"
+    created: "2026-04-20T10:27:11.571638135Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3f95f781ac9c548862dc539e5006d6db90b8d16c8f1df284d76090e66da81b40
@@ -5943,7 +5990,7 @@ entries:
     version: 1.27.0
   - apiVersion: v2
     appVersion: v1.26.3
-    created: "2026-03-30T10:06:42.020170445Z"
+    created: "2026-04-20T10:27:11.570000142Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 3500c7286a11cd776dd62f7985a3d7f56674e44dedb9e3c6e13119ec39775032
@@ -5967,7 +6014,7 @@ entries:
     version: 1.26.3
   - apiVersion: v2
     appVersion: v1.26.2
-    created: "2026-03-30T10:06:42.019571341Z"
+    created: "2026-04-20T10:27:11.568900429Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: e9b108c952fb9f2861c2975c2c0ad46232c5daf0df563a1ab801db439b3cfa70
@@ -5991,7 +6038,7 @@ entries:
     version: 1.26.2
   - apiVersion: v2
     appVersion: v1.26.1
-    created: "2026-03-30T10:06:42.018992659Z"
+    created: "2026-04-20T10:27:11.567831254Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c7b0332ba20e50cf315a53722d380b9363f8437869c4d285c893f8118a0d9ce6
@@ -6015,7 +6062,7 @@ entries:
     version: 1.26.1
   - apiVersion: v2
     appVersion: v1.26.0
-    created: "2026-03-30T10:06:42.017584086Z"
+    created: "2026-04-20T10:27:11.566678381Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4a2b14da2d181d6410036d9c6dd856a3e04db214874a6e8c1734afc589df8fc6
@@ -6039,7 +6086,7 @@ entries:
     version: 1.26.0
   - apiVersion: v2
     appVersion: v1.25.0
-    created: "2026-03-30T10:06:42.017058381Z"
+    created: "2026-04-20T10:27:11.565663267Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: c1501fb2b25ee9ec83fc4a29d643abc03f989874ad92f2cd17f0bce0931c3ffc
@@ -6063,7 +6110,7 @@ entries:
     version: 1.25.0
   - apiVersion: v2
     appVersion: v1.24.0
-    created: "2026-03-30T10:06:42.016504407Z"
+    created: "2026-04-20T10:27:11.564638746Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 42b1f155c937ca909cd636b99ff98c9115eef8b8705326b0ac2afe236a1bab7f
@@ -6087,7 +6134,7 @@ entries:
     version: 1.24.0
   - apiVersion: v2
     appVersion: v1.23.0
-    created: "2026-03-30T10:06:42.015870198Z"
+    created: "2026-04-20T10:27:11.56357498Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 9b33f5756761226403348219be4d92ceb157972e95ee1d8d8779f3e65e506d19
@@ -6111,7 +6158,7 @@ entries:
     version: 1.23.0
   - apiVersion: v2
     appVersion: v1.22.1
-    created: "2026-03-30T10:06:42.015330828Z"
+    created: "2026-04-20T10:27:11.562331388Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 07af09ec60220da7f8115708b2c61527713706663c44fdebfa3e8ec1b766ccf1
@@ -6135,7 +6182,7 @@ entries:
     version: 1.22.1
   - apiVersion: v2
     appVersion: v1.22.0
-    created: "2026-03-30T10:06:42.014791673Z"
+    created: "2026-04-20T10:27:11.561260129Z"
     description: Kiali is an open source project for service mesh observability, refer
       to https://www.kiali.io for details.
     digest: 4736fb9919cef8f30030ea6cf6473b15bf7f3ae2cac337059826d19843bb311c
@@ -6157,4 +6204,4 @@ entries:
     urls:
     - https://kiali.org/helm-charts/kiali-server-1.22.0.tgz
     version: 1.22.0
-generated: "2026-03-30T10:06:41.949777846Z"
+generated: "2026-04-20T10:27:11.483949711Z"
