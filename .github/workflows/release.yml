@@ -2,7 +2,7 @@ name: Release
 
 on:
   schedule:
-  # Every Monday at 09:00 (UTC) - try to make sure it happens after all Kiali-related images are released
+  # Every Monday at 09:14 (UTC) - intentionally tries to be after all Kiali-related images are released, and avoids potential peak time of 9:00
   - cron: '14 9 * * MON'
   workflow_dispatch:
     inputs:
