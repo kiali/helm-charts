@@ -21,6 +21,8 @@ GIT_REMOTE_NAME="origin"
 GIT_LOCAL_DIR="${SCRIPT_DIR}/.."
 HELM_EXE="$(which helm)"
 KIND_EXE="$(which kind)"
+IMAGE_POLL_INTERVAL="60"
+IMAGE_WAIT_TIMEOUT="5400"
 RELEASE_BRANCH=""
 RELEASE_BRANCH_PATTERN="helm-charts-release-*"
 
@@ -83,6 +85,13 @@ Options:
 -c|--client
     The client executable to use to access the Kubernetes cluster.
     Default: "${CLIENT_EXE}"
+-ipi|--image-poll-interval
+    How often (in seconds) to poll quay.io when waiting for images to become available.
+    Default: "${IMAGE_POLL_INTERVAL}"
+-iwt|--image-wait-timeout
+    Max time (in seconds) to wait for both operator and server images to appear on quay.io
+    before starting the smoke test. Set to 0 to skip the wait entirely.
+    Default: "${IMAGE_WAIT_TIMEOUT}"
 -gld|--git-local-dir
     The root directory where the local helm charts repo is found.
     Default: "${GIT_LOCAL_DIR}"
@@ -115,6 +124,8 @@ while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
     -c|--client)                     CLIENT_EXE="$2";               shift;shift; ;;
+    -ipi|--image-poll-interval)      IMAGE_POLL_INTERVAL="$2";      shift;shift; ;;
+    -iwt|--image-wait-timeout)       IMAGE_WAIT_TIMEOUT="$2";       shift;shift; ;;
     -gld|--git-local-dir)            GIT_LOCAL_DIR="$2";            shift;shift; ;;
     -grn|--git-remote-name)          GIT_REMOTE_NAME="$2";          shift;shift; ;;
     -helm|--helm)                    HELM_EXE="$2";                 shift;shift; ;;
@@ -131,6 +142,8 @@ CLIENT_EXE=$CLIENT_EXE
 GIT_LOCAL_DIR=$GIT_LOCAL_DIR
 GIT_REMOTE_NAME=$GIT_REMOTE_NAME
 HELM_EXE=$HELM_EXE
+IMAGE_POLL_INTERVAL=$IMAGE_POLL_INTERVAL
+IMAGE_WAIT_TIMEOUT=$IMAGE_WAIT_TIMEOUT
 KIND_EXE=$KIND_EXE
 RELEASE_BRANCH=$RELEASE_BRANCH
 RELEASE_BRANCH_PATTERN=$RELEASE_BRANCH_PATTERN"
@@ -179,6 +192,60 @@ SERVER_VERSION="$(ls -1 docs/kiali-server-*.tgz | sort -V | tail -n1 | grep -Eo 
 
 if [ "${OPERATOR_VERSION}" != "${SERVER_VERSION}" ]; then
   abort_now "The latest helm chart versions for operator [${OPERATOR_VERSION}] and server [${SERVER_VERSION}] do not match. Aborting the test."
+fi
+
+# The release workflows for kiali/kiali and kiali/kiali-operator push images to quay.io on
+# independent schedules. This smoke test may run before those workflows finish, so we poll
+# quay.io and wait for both images to appear before proceeding.
+if [ "${IMAGE_WAIT_TIMEOUT}" -gt 0 ] 2>/dev/null; then
+  EXPECTED_OPERATOR_TAG="v${OPERATOR_VERSION}"
+  EXPECTED_SERVER_TAG="v${SERVER_VERSION}"
+  QUAY_OPERATOR_URL="https://quay.io/api/v1/repository/kiali/kiali-operator/tag/?specificTag=${EXPECTED_OPERATOR_TAG}&onlyActiveTags=true"
+  QUAY_SERVER_URL="https://quay.io/api/v1/repository/kiali/kiali/tag/?specificTag=${EXPECTED_SERVER_TAG}&onlyActiveTags=true"
+  DEADLINE=$(( $(date +%s) + IMAGE_WAIT_TIMEOUT ))
+
+  infomsg "Waiting for images on quay.io (timeout=${IMAGE_WAIT_TIMEOUT}s, poll interval=${IMAGE_POLL_INTERVAL}s):"
+  infomsg "  Operator: quay.io/kiali/kiali-operator:${EXPECTED_OPERATOR_TAG}"
+  infomsg "  Server:   quay.io/kiali/kiali:${EXPECTED_SERVER_TAG}"
+
+  OPERATOR_READY="false"
+  SERVER_READY="false"
+
+  while true; do
+    if [ "${OPERATOR_READY}" != "true" ]; then
+      if curl -sf "${QUAY_OPERATOR_URL}" 2>/dev/null | grep -q "\"${EXPECTED_OPERATOR_TAG}\""; then
+        OPERATOR_READY="true"
+        infomsg "Operator image is available on quay.io"
+      fi
+    fi
+
+    if [ "${SERVER_READY}" != "true" ]; then
+      if curl -sf "${QUAY_SERVER_URL}" 2>/dev/null | grep -q "\"${EXPECTED_SERVER_TAG}\""; then
+        SERVER_READY="true"
+        infomsg "Server image is available on quay.io"
+      fi
+    fi
+
+    if [ "${OPERATOR_READY}" == "true" ] && [ "${SERVER_READY}" == "true" ]; then
+      infomsg "Both images are available on quay.io - proceeding with smoke test"
+      break
+    fi
+
+    if [ "$(date +%s)" -ge "${DEADLINE}" ]; then
+      MISSING=""
+      if [ "${OPERATOR_READY}" != "true" ]; then MISSING="quay.io/kiali/kiali-operator:${EXPECTED_OPERATOR_TAG}"; fi
+      if [ "${SERVER_READY}" != "true" ]; then
+        if [ -n "${MISSING}" ]; then MISSING="${MISSING}, "; fi
+        MISSING="${MISSING}quay.io/kiali/kiali:${EXPECTED_SERVER_TAG}"
+      fi
+      abort_now "Timed out after ${IMAGE_WAIT_TIMEOUT}s waiting for images on quay.io. Still missing: ${MISSING}"
+    fi
+
+    infomsg "Images not yet available, waiting ${IMAGE_POLL_INTERVAL}s before checking again..."
+    sleep "${IMAGE_POLL_INTERVAL}"
+  done
+else
+  infomsg "Skipping quay.io image availability check (IMAGE_WAIT_TIMEOUT is 0)"
 fi
 
 # Make sure we have access to a running k8s cluster. If there is none, try to start KinD.
