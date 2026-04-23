@@ -6,6 +6,8 @@ helm_args:
   - "--set"
   - "deployment.hpa.spec.maxReplicas=5"
   - "--set"
+  - "deployment.pod_disruption_budget.spec.minAvailable=1"
+  - "--set"
   - "deployment.ingress.enabled=true"
 yq_query: ".kind"
 expected_result: |
