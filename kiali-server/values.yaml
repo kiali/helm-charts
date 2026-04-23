@@ -92,6 +92,9 @@ deployment:
   hpa:
     api_version: "autoscaling/v2"
     spec: {}
+  pod_disruption_budget:
+    api_version: "policy/v1"
+    spec: {}
   image_digest: "" # use "sha256" if image_version is a sha256 hash (do NOT prefix this value with a "@")
   image_name: quay.io/kiali/kiali
   image_pull_policy: "Always"

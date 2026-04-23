@@ -1,0 +1,9 @@
+name: "pdb_no_spec"
+description: "Verify PDB is not created when spec is empty"
+# Non-empty helm_args avoids unbound helm_args[@] in run-helm-chart-tests.sh (set -u).
+helm_args:
+  - "--set"
+  - "deployment.replicas=1"
+yq_query: "select(.kind == \"PodDisruptionBudget\")"
+expected_result: ""
+should_fail: false
