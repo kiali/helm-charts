@@ -1,7 +1,7 @@
 {{- if not .Values.deployment.remote_cluster_resources_only }}
 {{- if .Values.deployment.pod_disruption_budget.spec }}
 ---
-apiVersion: {{ .Values.deployment.pod_disruption_budget.api_version }}
+apiVersion: {{ .Values.deployment.pod_disruption_budget.api_version | quote }}
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "kiali-server.fullname" . }}

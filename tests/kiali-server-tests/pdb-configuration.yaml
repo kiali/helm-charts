@@ -7,7 +7,7 @@ helm_args:
   - "deployment.pod_disruption_budget.spec.minAvailable=1"
 yq_query: "select(.kind == \"PodDisruptionBudget\") | {\"apiVersion\": .apiVersion, \"spec\": {\"minAvailable\": .spec.minAvailable, \"selector\": .spec.selector}}"
 expected_result: |
-  apiVersion: policy/v1
+  apiVersion: "policy/v1"
   spec:
     minAvailable: 1
     selector:
