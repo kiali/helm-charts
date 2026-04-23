@@ -13,9 +13,9 @@ metadata:
     {{- end }}
     {{- if and (not (empty .Values.server.web_fqdn)) (not (empty .Values.server.web_schema)) }}
     {{- if empty .Values.server.web_port }}
-    kiali.io/external-url: {{ .Values.server.web_schema }}://{{ .Values.server.web_fqdn }}{{ include "kiali-server.server.web_root" . }}
+    kiali.io/external-url: {{ printf "%s://%s%s" .Values.server.web_schema .Values.server.web_fqdn (include "kiali-server.server.web_root" .) | quote }}
     {{- else }}
-    kiali.io/external-url: {{ .Values.server.web_schema }}://{{ .Values.server.web_fqdn }}:{{ .Values.server.web_port }}{{ include "kiali-server.server.web_root" . }}
+    kiali.io/external-url: {{ printf "%s://%s:%s%s" .Values.server.web_schema .Values.server.web_fqdn (toString .Values.server.web_port) (include "kiali-server.server.web_root" .) | quote }}
     {{- end }}
     {{- end }}
     {{- if .Values.deployment.service_annotations }}
@@ -23,7 +23,7 @@ metadata:
     {{- end }}
 spec:
   {{- if .Values.deployment.service_type }}
-  type: {{ .Values.deployment.service_type }}
+  type: {{ .Values.deployment.service_type | quote }}
   {{- end }}
   ports:
   {{- if (include "kiali-server.identity.cert_file" .) }}

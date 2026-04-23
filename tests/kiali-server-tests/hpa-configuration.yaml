@@ -17,7 +17,7 @@ helm_args:
   - "deployment.hpa.spec.metrics[0].resource.target.averageUtilization=80"
 yq_query: "select(.kind == \"HorizontalPodAutoscaler\") | {\"apiVersion\": .apiVersion, \"spec\": {\"minReplicas\": .spec.minReplicas, \"maxReplicas\": .spec.maxReplicas, \"scaleTargetRef\": .spec.scaleTargetRef, \"metrics\": .spec.metrics}}"
 expected_result: |
-  apiVersion: autoscaling/v2
+  apiVersion: "autoscaling/v2"
   spec:
     minReplicas: 2
     maxReplicas: 10

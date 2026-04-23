@@ -1,0 +1,15 @@
+name: "deployment_main_container_security_context"
+description: "Verify main Kiali container has the expected default security context including seccompProfile"
+helm_args: []
+yq_query: "select(.kind == \"Deployment\") | (.spec.template.spec.containers[] | select(.name == \"kiali\") | .securityContext)"
+expected_result: |
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+      - ALL
+should_fail: false

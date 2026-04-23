@@ -45,7 +45,7 @@ spec:
       containers:
       - name: operator
         image: "{{ .Values.image.repo }}{{ if .Values.image.digest }}@{{ .Values.image.digest }}{{ end }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy | default "Always" }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | default "Always" | quote }}
         args:
         - "--zap-log-level=info"
         - "--leader-election-id={{ include "kiali-operator.fullname" . }}"
@@ -79,6 +79,8 @@ spec:
           privileged: false
           runAsNonRoot: true
           readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
           capabilities:
             drop:
             - ALL
@@ -88,7 +90,7 @@ spec:
           name: tmp
         env:
         - name: WATCH_NAMESPACE
-          value: {{ .Values.watchNamespace | default "\"\""  }}
+          value: {{ .Values.watchNamespace | default "" | quote }}
         - name: POD_NAME
           valueFrom:
             fieldRef:

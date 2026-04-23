@@ -30,7 +30,7 @@ FAILED_TESTS=()
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEMP_DIR="/tmp/kiali-helm-tests"
+TEMP_DIR="$(mktemp -d /tmp/kiali-helm-tests.XXXXXXXXXX)"
 
 # Change to script directory to ensure consistent working directory
 cd "${SCRIPT_DIR}"
@@ -45,15 +45,8 @@ SHOW_HELP=false
 DEBUG_MODE=false
 TEST_SUITE="server"  # Default to server tests
 
-# Function to initialize clean temp directory
 init_temp_dir() {
-    # Clean any existing temp directory to avoid old test results
-    if [[ -d "${TEMP_DIR}" ]]; then
-        log_info "Cleaning previous test output directory: ${TEMP_DIR}"
-        rm -rf "${TEMP_DIR}"
-    fi
-    # Create fresh temp directory
-    mkdir -p "${TEMP_DIR}"
+    log_info "Using test output directory: ${TEMP_DIR}"
 }
 
 # Placeholder - temp directory will be initialized when tests start

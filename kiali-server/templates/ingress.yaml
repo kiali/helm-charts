@@ -36,7 +36,7 @@ spec:
   {{- toYaml .Values.deployment.ingress.override_yaml.spec | nindent 2 }}
   {{- else }}
   {{- if .Values.deployment.ingress.class_name }}
-  ingressClassName: {{ .Values.deployment.ingress.class_name }}
+  ingressClassName: {{ .Values.deployment.ingress.class_name | quote }}
   {{- end }}
   rules:
   - http:
@@ -55,7 +55,7 @@ spec:
           servicePort: {{ .Values.server.port }}
         {{- end }}
     {{- if not (empty .Values.server.web_fqdn) }}
-    host: {{ .Values.server.web_fqdn }}
+    host: {{ .Values.server.web_fqdn | quote }}
     {{- end }}
   {{- end }}
 ...

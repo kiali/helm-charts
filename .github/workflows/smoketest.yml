@@ -19,5 +19,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run smoke test hack script
-      run: hack/smoke-test-release-branch.sh --release-branch ${{ github.head_ref }}
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+      run: hack/smoke-test-release-branch.sh --release-branch "$HEAD_REF"
 

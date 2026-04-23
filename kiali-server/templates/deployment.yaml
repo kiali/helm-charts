@@ -54,7 +54,7 @@ spec:
       {{- if .Values.deployment.image_pull_secrets }}
       imagePullSecrets:
       {{- range .Values.deployment.image_pull_secrets }}
-      - name: {{ . }}
+      - name: {{ . | quote }}
       {{- end }}
       {{- end }}
       {{- if .Values.deployment.host_aliases }}
@@ -79,7 +79,7 @@ spec:
       {{- include "kiali-server.secureContainers" . | nindent 6 }}
       {{- end }}
       - image: "{{ .Values.deployment.image_name }}{{ if .Values.deployment.image_digest }}@{{ .Values.deployment.image_digest }}{{ end }}:{{ .Values.deployment.image_version }}"
-        imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" }}
+        imagePullPolicy: {{ .Values.deployment.image_pull_policy | default "Always" | quote }}
         name: kiali
         command:
         - "/opt/kiali/kiali"
@@ -94,6 +94,8 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
           capabilities:
             drop:
             - ALL
@@ -166,8 +168,8 @@ spec:
         - name: {{ include "kiali-server.fullname" . }}-cabundle
           mountPath: "/kiali-cabundle"
         {{- range .Values.deployment.custom_secrets }}
-        - name: {{ .name }}
-          mountPath: "{{ .mount }}"
+        - name: {{ .name | quote }}
+          mountPath: {{ .mount | quote }}
         {{- end }}
         - name: "kiali-multi-cluster-secret"
           mountPath: "/kiali-remote-cluster-secrets/kiali-multi-cluster-secret"
@@ -210,7 +212,7 @@ spec:
           {{- end }}
       - name: {{ include "kiali-server.fullname" . }}-secret
         secret:
-          secretName: {{ .Values.deployment.secret_name }}
+          secretName: {{ .Values.deployment.secret_name | quote }}
           optional: true
       - name: {{ include "kiali-server.fullname" . }}-cabundle
       {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
@@ -230,12 +232,12 @@ spec:
           optional: true
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}
-      - name: {{ .name }}
+      - name: {{ .name | quote }}
       {{- if .csi}}
         csi: {{ toYaml .csi | nindent 10 }}
       {{- else }}
         secret:
-          secretName: {{ .name }}
+          secretName: {{ .name | quote }}
           optional: {{ .optional | default false }}
       {{- end }}
       {{- end }}

@@ -11,7 +11,7 @@ helm_args:
   - "deployment.ingress.additional_labels.team=platform"
 yq_query: "select(.kind == \"Ingress\") | {\"ingressClassName\": .spec.ingressClassName, \"additionalLabels\": (.metadata.labels | with_entries(select(.key == \"environment\" or .key == \"team\")))}"
 expected_result: |
-  ingressClassName: traefik
+  ingressClassName: "traefik"
   additionalLabels:
     environment: production
     team: platform
