@@ -1,0 +1,17 @@
+name: "pdb_configuration"
+description: "Verify PDB is created when spec is provided"
+helm_args:
+  - "--set"
+  - "deployment.pod_disruption_budget.api_version=policy/v1"
+  - "--set"
+  - "deployment.pod_disruption_budget.spec.minAvailable=1"
+yq_query: "select(.kind == \"PodDisruptionBudget\") | {\"apiVersion\": .apiVersion, \"spec\": {\"minAvailable\": .spec.minAvailable, \"selector\": .spec.selector}}"
+expected_result: |
+  apiVersion: "policy/v1"
+  spec:
+    minAvailable: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: kiali
+        app.kubernetes.io/instance: kiali
+should_fail: false

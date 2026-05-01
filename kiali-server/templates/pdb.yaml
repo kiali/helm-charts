@@ -1,0 +1,18 @@
+{{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- if .Values.deployment.pod_disruption_budget.spec }}
+---
+apiVersion: {{ .Values.deployment.pod_disruption_budget.api_version | quote }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kiali-server.selectorLabels" . | nindent 6 }}
+  {{- toYaml .Values.deployment.pod_disruption_budget.spec | nindent 2 }}
+...
+{{- end }}
+{{- end }}
