@@ -542,8 +542,8 @@ Example output:
 {{- $secrets := dict }}
 
 {{- if .Values.external_services }}
-  {{- /* Prometheus - always processed, no enabled check */ -}}
-  {{- if and .Values.external_services.prometheus .Values.external_services.prometheus.auth }}
+  {{- /* Prometheus - only if enabled (defaults to true when not set) */ -}}
+  {{- if and .Values.external_services.prometheus (not (eq (toString .Values.external_services.prometheus.enabled) "false")) .Values.external_services.prometheus.auth }}
     {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.prometheus.auth "prefix" "prometheus") | fromJson) }}
   {{- end }}
 

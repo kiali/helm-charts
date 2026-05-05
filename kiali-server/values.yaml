@@ -159,6 +159,8 @@ external_services:
     enabled: true
   istio:
     root_namespace: ""
+  prometheus:
+    enabled: true
 
 identity: {}
   #cert_file:
