@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "branch": "main",
+  "last_active_sha": "bf3d52eb75870fdca1cedc32630a0735669bd525",
+  "last_active_time": "2026-05-08T00:00:00Z",
+  "current_phase": "maintain",
+  "total_files_read": 3,
+  "topics": {
+    "kiali-operator-chart": { "phase_status": "current", "files_read": 1 },
+    "kiali-server-chart": { "phase_status": "current", "files_read": 1 },
+    "testing-and-build-pipeline": { "phase_status": "current", "files_read": 1 }
+  }
+}
