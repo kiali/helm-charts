@@ -1,7 +1,7 @@
 ---
 title: Kiali Operator Chart
 scribe:
-  scan: bf3d52eb75870fdca1cedc32630a0735669bd525
+  scan: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
   freshness: 100
   human_input: 1
   completeness: 78

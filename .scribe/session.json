@@ -1,13 +1,13 @@
 {
   "version": "1.0",
   "branch": "main",
-  "last_active_sha": "bf3d52eb75870fdca1cedc32630a0735669bd525",
-  "last_active_time": "2026-05-08T00:00:00Z",
+  "last_active_sha": "fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7",
+  "last_active_time": "2026-05-14T00:00:00Z",
   "current_phase": "maintain",
-  "total_files_read": 3,
+  "total_files_read": 5,
   "topics": {
-    "kiali-operator-chart": { "phase_status": "current", "files_read": 1 },
+    "kiali-operator-chart": { "phase_status": "complete", "files_read": 3 },
     "kiali-server-chart": { "phase_status": "current", "files_read": 1 },
-    "testing-and-build-pipeline": { "phase_status": "current", "files_read": 1 }
+    "testing-and-build-pipeline": { "phase_status": "complete", "files_read": 1 }
   }
 }

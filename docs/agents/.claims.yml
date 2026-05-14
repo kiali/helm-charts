@@ -1,0 +1,318 @@
+_meta:
+  kiali-operator-chart_extracted_at: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
+  testing-and-build-pipeline_extracted_at: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
+  kiali-server-chart_extracted_at: bf3d52eb75870fdca1cedc32630a0735669bd525
+
+_retired_ids:
+  - kiali-operator-chart-11
+  - kiali-operator-chart-12
+  - kiali-operator-chart-13
+  - kiali-operator-chart-14
+
+claims:
+  # kiali-operator-chart claims
+  - id: kiali-operator-chart-1
+    type: technology
+    topic: kiali-operator-chart
+    claim: "The Kiali Operator is built on the Ansible Operator SDK; each reconciliation executes Ansible playbooks."
+    source: "kiali-operator/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-2
+    type: constraint
+    topic: kiali-operator-chart
+    claim: "Helm does not update CRDs on helm upgrade; crds/crds.yaml is only applied on helm install."
+    source: "kiali-operator/crds/crds.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-3
+    type: pattern
+    topic: kiali-operator-chart
+    claim: "Image repo and tag in values.yaml use ${HELM_IMAGE_REPO} and ${HELM_IMAGE_TAG} placeholder tokens replaced by envsubst at build time."
+    source: "kiali-operator/values.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-4
+    type: constraint
+    topic: kiali-operator-chart
+    claim: "The operator sets ANSIBLE_LOCAL_TEMP and ANSIBLE_REMOTE_TEMP to /tmp/ansible/tmp to enable readOnlyRootFilesystem: true."
+    source: "kiali-operator/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-5
+    type: boundary
+    topic: kiali-operator-chart
+    claim: "ossmconsole-crd.yaml is in templates/ (not crds/) so it is only rendered on OpenShift and is deleted by helm uninstall."
+    source: "kiali-operator/templates/ossmconsole-crd.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-6
+    type: constraint
+    topic: kiali-operator-chart
+    claim: "ClusterRole rules for clusterroles/clusterrolebindings are only added when clusterRoleCreator: true OR when cr.create: true and cr.spec.deployment.cluster_wide_access: true."
+    source: "kiali-operator/templates/clusterrole.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-7
+    type: pattern
+    topic: kiali-operator-chart
+    claim: "watchesFile auto-selects watches-os.yaml on OpenShift and watches-k8s.yaml on Kubernetes; namespace-scoped variants require explicit override."
+    source: "kiali-operator/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-8
+    type: constraint
+    topic: kiali-operator-chart
+    claim: "Setting cr.create: true with default cr.spec silently forces ALLOW_ALL_ACCESSIBLE_NAMESPACES=true and expands the operator RBAC surface."
+    source: "kiali-operator/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-9
+    type: constraint
+    topic: kiali-operator-chart
+    claim: "onlyViewOnlyMode: true removes all write verbs from the Kiali runtime section of the ClusterRole, producing a strictly read-only Kiali."
+    source: "kiali-operator/templates/clusterrole.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-10
+    type: data_flow
+    topic: kiali-operator-chart
+    claim: "The CRD crds/crds.yaml is synced from kiali-operator upstream via make sync-crds; the golden URL is configurable via KIALI_OPERATOR_ORG_REPO_REF."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: kiali-operator-chart-15
+    type: boundary
+    topic: kiali-operator-chart
+    claim: "The operator chart does not install Kiali Server directly; that requires the kiali-server chart or a Kiali CR after operator installation."
+    source: "kiali-operator/templates/kiali-cr.yaml"
+    provenance:
+      origin: inferred
+
+  # testing-and-build-pipeline claims
+  - id: testing-and-build-pipeline-1
+    type: technology
+    topic: testing-and-build-pipeline
+    claim: "Tests use a bespoke runner (tests/run-helm-chart-tests.sh) rather than helm test; each test is a YAML file with helm_args, yq_query, and expected_result."
+    source: "tests/run-helm-chart-tests.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-2
+    type: pattern
+    topic: testing-and-build-pipeline
+    claim: "The runner uses a two-stage yq pipeline: yq eval <query> | yq eval 'select(. != null)' to strip null nodes before comparison."
+    source: "tests/run-helm-chart-tests.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-3
+    type: constraint
+    topic: testing-and-build-pipeline
+    claim: "The test runner always rebuilds charts (make clean-charts && make build-helm-charts) before running tests."
+    source: "tests/run-helm-chart-tests.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-4
+    type: constraint
+    topic: testing-and-build-pipeline
+    claim: "VERSION defaults to v2.27.0-SNAPSHOT in the Makefile; HELM_VERSION defaults to v3.10.1."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-5
+    type: pattern
+    topic: testing-and-build-pipeline
+    claim: "envsubst (not sed) substitutes ${HELM_IMAGE_REPO} and ${HELM_IMAGE_TAG} tokens in values.yaml before chart packaging."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-6
+    type: data_flow
+    topic: testing-and-build-pipeline
+    claim: "make update-helm-repos copies versioned tarballs to docs/ and regenerates docs/index.yaml as the Helm repo index."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-7
+    type: constraint
+    topic: testing-and-build-pipeline
+    claim: "CRD sync is intentionally manual (make sync-crds / make validate-crd-sync); it is not automatic."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-8
+    type: pattern
+    topic: testing-and-build-pipeline
+    claim: "hack/helm-tests-setup.sh creates labeled namespaces required for integration tests that exercise discovery_selectors behavior."
+    source: "hack/helm-tests-setup.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-9
+    type: constraint
+    topic: testing-and-build-pipeline
+    claim: "run-server-itests uses chart-testing (ct) v3.11.0 with --helm-extra-args '--timeout 2m'; may need adjusting on slow clusters."
+    source: "Makefile"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-10
+    type: boundary
+    topic: testing-and-build-pipeline
+    claim: "helm template --skip-tests does not render NOTES.txt; only helm install --dry-run (shown in debug mode) renders it."
+    source: "tests/run-helm-chart-tests.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-11
+    type: constraint
+    topic: testing-and-build-pipeline
+    claim: "For should_fail tests, expected_error_pattern matches against combined stdout+stderr output, not stderr alone."
+    source: "tests/run-helm-chart-tests.sh"
+    provenance:
+      origin: inferred
+
+  - id: testing-and-build-pipeline-12
+    type: pattern
+    topic: testing-and-build-pipeline
+    claim: "kiali-server/ci/ fixtures serve as both CI test inputs and reference examples for common configuration modes."
+    source: "kiali-server/ci/"
+    provenance:
+      origin: inferred
+
+  # kiali-server-chart claims (carried from prior session — scan SHA not yet updated for this topic)
+  - id: kiali-server-chart-1
+    type: constraint
+    topic: kiali-server-chart
+    claim: "login_token.signing_key uses randAlphaNum — a new random key is generated on every helm upgrade unless pinned, invalidating existing sessions."
+    source: "kiali-server/templates/configmap.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-2
+    type: constraint
+    topic: kiali-server-chart
+    claim: "The viewer role is active in all default installations because auth.strategy defaults to empty string, and empty != 'anonymous'."
+    source: "kiali-server/templates/role-viewer.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-3
+    type: constraint
+    topic: kiali-server-chart
+    claim: "Adding 'logs-tab' to kiali_feature_flags.disabled_features also removes pods/log from the RBAC grant in both role.yaml and role-viewer.yaml."
+    source: "kiali-server/templates/role.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-4
+    type: constraint
+    topic: kiali-server-chart
+    claim: "Skipping 'clusterrole' via skipResources suppresses both standard and viewer roles; always skip clusterrole and clusterrolebinding together to avoid dangling bindings."
+    source: "kiali-server/templates/rolebinding.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-5
+    type: constraint
+    topic: kiali-server-chart
+    claim: "clusterrole-openshift.yaml has no skipResources check and is always created when conditions are met (OpenShift + auth=openshift or TLS=auto)."
+    source: "kiali-server/templates/clusterrole-openshift.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-6
+    type: pattern
+    topic: kiali-server-chart
+    claim: "ConfigMap checksum/config annotation triggers rolling restarts on every ConfigMap change."
+    source: "kiali-server/templates/configmap.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-7
+    type: constraint
+    topic: kiali-server-chart
+    claim: "Only the .default key of deployment.discovery_selectors is processed; other keys are silently ignored."
+    source: "kiali-server/templates/_helpers.tpl"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-8
+    type: boundary
+    topic: kiali-server-chart
+    claim: "NetworkPolicy is Ingress-only; no Egress policy is created."
+    source: "kiali-server/templates/networkpolicy.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-9
+    type: constraint
+    topic: kiali-server-chart
+    claim: "When HPA is active, spec.replicas is omitted from the Deployment to avoid conflicting with the HPA controller."
+    source: "kiali-server/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-10
+    type: pattern
+    topic: kiali-server-chart
+    claim: "kiali-server.secureContainers enforces a mandatory security context over any user-provided context for additional containers."
+    source: "kiali-server/templates/_helpers.tpl"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-11
+    type: constraint
+    topic: kiali-server-chart
+    claim: "The default pod annotation proxy.istio.io/config holdApplicationUntilProxyStarts: true can cause pods to hang on clusters without sidecar injection."
+    source: "kiali-server/values.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-12
+    type: constraint
+    topic: kiali-server-chart
+    claim: "openshift auth strategy requires kiali_route_url OR auth.openshift.redirect_uris; omitting both causes a template render failure."
+    source: "kiali-server/templates/configmap.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-13
+    type: pattern
+    topic: kiali-server-chart
+    claim: "Credential secret pattern secret:<secretName>:<secretKey> works for external_services auth fields, login_token.signing_key, and chat_ai provider/model keys."
+    source: "kiali-server/templates/_helpers.tpl"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-14
+    type: constraint
+    topic: kiali-server-chart
+    claim: "On OpenShift, service.beta.openshift.io/serving-cert-secret-name annotation triggers automatic TLS certificate provisioning into <fullname>-cert-secret."
+    source: "kiali-server/templates/service.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-15
+    type: boundary
+    topic: kiali-server-chart
+    claim: "isOpenShift can be forced via values.yaml (isOpenShift: true) for local chart debugging without a live OpenShift cluster."
+    source: "kiali-server/values.yaml"
+    provenance:
+      origin: inferred

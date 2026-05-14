@@ -1,7 +1,7 @@
 ---
 title: Testing and Build Pipeline
 scribe:
-  scan: bf3d52eb75870fdca1cedc32630a0735669bd525
+  scan: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
   freshness: 100
   human_input: 1
   completeness: 75
@@ -149,7 +149,7 @@ These fixtures also serve as reference examples for common configurations. The `
 The Makefile root (`Makefile`) at repo root drives chart lifecycle:
 
 ```makefile
-VERSION ?= v2.26.0-SNAPSHOT    # Version token injected into charts
+VERSION ?= v2.27.0-SNAPSHOT    # Version token injected into charts
 HELM_VERSION ?= v3.10.1        # Helm binary version for chart build
 ```
 
