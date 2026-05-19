@@ -1,7 +1,7 @@
 _meta:
   kiali-operator-chart_extracted_at: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
   testing-and-build-pipeline_extracted_at: fcd8fcbc7c7e4b312a9401b873b1db9ffae544d7
-  kiali-server-chart_extracted_at: bf3d52eb75870fdca1cedc32630a0735669bd525
+  kiali-server-chart_extracted_at: a81dc02fda1d161b225419c75ff7171991f35d63
 
 _retired_ids:
   - kiali-operator-chart-11
@@ -296,7 +296,7 @@ claims:
   - id: kiali-server-chart-13
     type: pattern
     topic: kiali-server-chart
-    claim: "Credential secret pattern secret:<secretName>:<secretKey> works for external_services auth fields, login_token.signing_key, and chat_ai provider/model keys."
+    claim: "Credential secret pattern secret:<secretName>:<secretKey> works for external_services auth fields, login_token.signing_key, and chat_ai provider/model keys. The raw pattern passes through to config.yaml unchanged; the Kiali server resolves it at runtime from the mounted file."
     source: "kiali-server/templates/_helpers.tpl"
     provenance:
       origin: inferred
@@ -314,5 +314,21 @@ claims:
     topic: kiali-server-chart
     claim: "isOpenShift can be forced via values.yaml (isOpenShift: true) for local chart debugging without a live OpenShift cluster."
     source: "kiali-server/values.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-16
+    type: pattern
+    topic: kiali-server-chart
+    claim: "deployment.strategy defaults to RollingUpdate (maxSurge: 1, maxUnavailable: 1); setting it to a non-empty object fully overrides the default strategy block."
+    source: "kiali-server/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-17
+    type: boundary
+    topic: kiali-server-chart
+    claim: "auth.openshift.token_inactivity_timeout and auth.openshift.token_max_age map to accessTokenInactivityTimeoutSeconds and accessTokenMaxAgeSeconds on the OAuthClient resource; both are omitted when unset."
+    source: "kiali-server/templates/oauth.yaml"
     provenance:
       origin: inferred

@@ -1,7 +1,7 @@
 ---
 title: Kiali Server Chart
 scribe:
-  scan: bf3d52eb75870fdca1cedc32630a0735669bd525
+  scan: a81dc02fda1d161b225419c75ff7171991f35d63
   freshness: 100
   human_input: 1
   completeness: 80
@@ -49,6 +49,11 @@ scribe:
       tag: KSC-NEW-01
       confidence: 0.7
       date: "2026-05-08"
+    - finding: "deployment.strategy is undocumented in Key Values Reference; added 2026-05-19 maintain pass"
+      severity: minor
+      tag: KSC-MAINT-01
+      confidence: 1.0
+      date: "2026-05-19"
 ---
 
 # Kiali Server Chart
@@ -57,7 +62,7 @@ scribe:
 
 ## Overview
 
-The `kiali-server` chart is the counterpart to the operator-based installation path. It creates all resources the Kiali Server needs: a Deployment, ConfigMap, ServiceAccount, RBAC (Role or ClusterRole depending on access mode), Service, and optionally Ingress, Route, HPA, PDB, NetworkPolicy, and OAuth resources.
+The `kiali-server` chart is the counterpart to the operator-based installation path (see [Kiali Operator Chart](kiali-operator-chart.md)). It creates all resources the Kiali Server needs: a Deployment, ConfigMap, ServiceAccount, RBAC (Role or ClusterRole depending on access mode), Service, and optionally Ingress, Route, HPA, PDB, NetworkPolicy, and OAuth resources.
 
 The chart mirrors the shape of the Kiali CR spec — most values in `values.yaml` map 1:1 into the generated `config.yaml` ConfigMap that the server reads at startup. The Helm chart applies a few transformations (auth strategy detection, TLS source selection, signing key generation) before writing the ConfigMap.
 
@@ -83,6 +88,8 @@ Most non-RBAC resources are skipped when `deployment.remote_cluster_resources_on
 | `hpa.yaml` | `HorizontalPodAutoscaler` | When `deployment.hpa.spec` is non-empty; also skipped by `remote_cluster_resources_only` |
 | `pdb.yaml` | `PodDisruptionBudget` | When `deployment.pod_disruption_budget.spec` is non-empty; also skipped by flag |
 | `networkpolicy.yaml` | `NetworkPolicy` | When `deployment.network_policy.enabled: true` (default); also skipped by flag |
+
+`templates/tests/` contains Helm-native chart tests (run via `helm test`) for RBAC and namespace-access scenarios. These are distinct from the bespoke template unit tests in `tests/kiali-server-tests/` (covered by the [Testing and Build Pipeline](testing-and-build-pipeline.md) topic).
 
 ## ConfigMap Generation
 
@@ -175,9 +182,9 @@ External service credentials (Prometheus, Grafana, Tracing, Perses, custom dashb
 When the chart detects this pattern in `external_services.*.auth.{username,password,token,cert_file,key_file}` or `login_token.signing_key` or `chat_ai.providers[*].key` or `chat_ai.providers[*].models[*].key`, it:
 1. Creates a volume entry pointing to the named Secret
 2. Mounts it into the Kiali container at a predictable path (e.g., `/kiali-override-secrets/prometheus-password/value.txt`)
-3. Updates the ConfigMap to reference the mounted file path instead of the raw value
+3. Passes the raw `secret:<secretName>:<secretKey>` string through to `config.yaml` unchanged — the Kiali server binary resolves it at runtime by reading the mounted file
 
-This allows credentials to live in Kubernetes Secrets without being embedded in the Helm values. The `kiali-server.credential-secrets` helper in `_helpers.tpl` aggregates all detected secrets into a JSON map used by the deployment and service templates. Volume names follow the pattern `<service>-<field>` (e.g., `prometheus-password`) for external services, `chat-ai-provider-<name>` for provider-level keys, and `chat-ai-model-<provider>-<model>` for model-level keys.
+This allows credentials to live in Kubernetes Secrets without being embedded in the Helm values. The `kiali-server.credential-secrets` helper in `_helpers.tpl` aggregates all detected secrets into a JSON map used only by `deployment.yaml` (volumeMounts and volumes sections). Volume names follow the pattern `<service>-<field>` (e.g., `prometheus-password`) for external services, `chat-ai-provider-<name>` for provider-level keys, and `chat-ai-model-<provider>-<model>` for model-level keys.
 
 ## External-Facing Resources
 
@@ -208,7 +215,7 @@ When on OpenShift:
 - `web_root` defaults to `/`
 - `deployment.ingress.enabled` defaults to `true`; a Route is created (not a k8s Ingress)
 - `cabundle.yaml` creates a ConfigMap named `<fullname>-cabundle-openshift` that OpenShift automatically populates with `service-ca.crt`. The deployment projects three ConfigMaps into the cabundle volume: `<fullname>-cabundle-openshift` (required on OCP), `<fullname>-cabundle` (optional, for user-provided custom CAs — available on both platforms), and `<fullname>-oauth-cabundle` (optional; purpose not yet documented upstream)
-- An OAuthClient is created when `kiali_route_url` OR `auth.openshift.redirect_uris` is set
+- An OAuthClient is created when `kiali_route_url` OR `auth.openshift.redirect_uris` is set. Optional fields `auth.openshift.token_inactivity_timeout` and `auth.openshift.token_max_age` map directly to `accessTokenInactivityTimeoutSeconds` and `accessTokenMaxAgeSeconds` on the OAuthClient resource
 - A separate `clusterrole-openshift.yaml` grants OAuth and TLS discovery permissions
 - `isOpenShift` can be forced via `values.yaml` for local chart debugging without a live OpenShift cluster
 
@@ -231,6 +238,7 @@ When on OpenShift:
 | `deployment.tls_config.source` | `""` (auto) | TLS config source: `auto` or `config` |
 | `deployment.ingress.enabled` | `false` (k8s) | Enable Ingress on non-OpenShift |
 | `deployment.ingress.class_name` | `nginx` | Ingress class |
+| `deployment.strategy` | `{}` (→ RollingUpdate maxSurge:1/maxUnavailable:1) | Deployment strategy; pass a full Kubernetes strategy object to override (e.g., `{type: Recreate}`) |
 | `deployment.remote_cluster_resources_only` | `false` | Skip Deployment/Service (remote cluster install) |
 | `deployment.custom_secrets` | `[]` | Additional secrets to mount |
 | `deployment.additional_pod_containers_yaml` | `[]` | Sidecar containers (security-guardrailed) |
@@ -240,6 +248,8 @@ When on OpenShift:
 | `external_services.prometheus.enabled` | `true` | Include Prometheus integration |
 | `external_services.istio.root_namespace` | `""` (→ release namespace) | Istio control plane namespace |
 | `clustering.autodetect_secrets.enabled` | `true` | Auto-mount remote cluster secrets |
+| `auth.openshift.token_inactivity_timeout` | `""` (omitted) | OAuthClient `accessTokenInactivityTimeoutSeconds`; unset means no inactivity timeout |
+| `auth.openshift.token_max_age` | `""` (omitted) | OAuthClient `accessTokenMaxAgeSeconds`; unset means no max age override |
 | `login_token.signing_key` | `""` (random) | JWT signing key; random generated if empty |
 | `kiali_feature_flags.disabled_features` | `[]` | Features to disable in the UI; `"logs-tab"` also removes `pods/log` from RBAC |
 | `skipResources` | `[]` | RBAC resources to skip creating |
