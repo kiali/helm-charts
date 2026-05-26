@@ -44,8 +44,8 @@ scribe:
       tag: KSC-013
       confidence: 1.0
       date: "2026-05-08"
-    - finding: "<fullname>-oauth-cabundle ConfigMap purpose not documented upstream; its intended use case is unknown"
-      severity: unverifiable
+    - finding: "oauth-cabundle purpose clarified 2026-05-26: provides oauth-server-ca.crt for validating OpenShift OAuth server TLS cert"
+      severity: minor
       tag: KSC-NEW-01
       confidence: 0.7
       date: "2026-05-08"
@@ -214,7 +214,15 @@ When on OpenShift:
 - `identity.cert_file` and `private_key_file` default to `/kiali-cert/tls.crt` and `/kiali-cert/tls.key`
 - `web_root` defaults to `/`
 - `deployment.ingress.enabled` defaults to `true`; a Route is created (not a k8s Ingress)
-- `cabundle.yaml` creates a ConfigMap named `<fullname>-cabundle-openshift` that OpenShift automatically populates with `service-ca.crt`. The deployment projects three ConfigMaps into the cabundle volume: `<fullname>-cabundle-openshift` (required on OCP), `<fullname>-cabundle` (optional, for user-provided custom CAs — available on both platforms), and `<fullname>-oauth-cabundle` (optional; purpose not yet documented upstream)
+- `cabundle.yaml` creates a ConfigMap named `<fullname>-cabundle-openshift` annotated with `service.beta.openshift.io/inject-cabundle: "true"` so OpenShift's service-ca-operator injects `service-ca.crt` automatically. The deployment projects three ConfigMaps into `/kiali-cabundle` as a projected volume:
+
+  | ConfigMap | Optional | File injected | Purpose |
+  |---|---|---|---|
+  | `<fullname>-cabundle-openshift` | no | `service-ca.crt` | OpenShift cluster service CA; injected by service-ca-operator |
+  | `<fullname>-cabundle` | yes | `additional-ca-bundle.pem`, `openid-server-ca.crt` | User-managed custom CAs (also available on Kubernetes) |
+  | `<fullname>-oauth-cabundle` | yes | `oauth-server-ca.crt` | CA for validating the OpenShift OAuth server's TLS certificate — used by Kiali when `auth.strategy: openshift` to trust an OAuth server with a non-standard CA |
+
+  On plain Kubernetes, `/kiali-cabundle` is a single `configMap` volume pointing to `<fullname>-cabundle` (optional). The `cabundle-openshift` and `oauth-cabundle` sources are not mounted. Kiali's `CredentialManager` watches `/kiali-cabundle/` for file changes and rebuilds its cert pool automatically without a pod restart when any of these ConfigMaps are updated.
 - An OAuthClient is created when `kiali_route_url` OR `auth.openshift.redirect_uris` is set. Optional fields `auth.openshift.token_inactivity_timeout` and `auth.openshift.token_max_age` map directly to `accessTokenInactivityTimeoutSeconds` and `accessTokenMaxAgeSeconds` on the OAuthClient resource
 - A separate `clusterrole-openshift.yaml` grants OAuth and TLS discovery permissions
 - `isOpenShift` can be forced via `values.yaml` for local chart debugging without a live OpenShift cluster

@@ -1,13 +1,13 @@
 # Documentation Status
 
-Generated: 2026-05-19 (maintain pass — kiali-server-chart: fixed credential secret claim, added deployment.strategy + OAuth token timeout values)
+Generated: 2026-05-26 (focus-enrich — kiali-server-chart: documented oauth-cabundle purpose and full /kiali-cabundle projected volume structure)
 
 ## Topic Scores
 
 | Topic | Fresh | Human | Complete | Claims | File |
 |---|---|---|---|---|---|
 | [Kiali Operator Chart](kiali-operator-chart.md) | 100 | 1 | 78 | 15 | kiali-operator/ |
-| [Kiali Server Chart](kiali-server-chart.md) | 100 | 1 | 80 | 17 | kiali-server/ |
+| [Kiali Server Chart](kiali-server-chart.md) | 100 | 1 | 82 | 19 | kiali-server/ |
 | [Testing and Build Pipeline](testing-and-build-pipeline.md) | 100 | 1 | 75 | 12 | tests/, kiali-server/ci/, Makefile, hack/ |
 
 ## Stale Flags
@@ -25,7 +25,7 @@ None.
 ### Kiali Server Chart
 - (minor) `login_token.signing_key` regenerated on every `helm upgrade` unless pinned — invalidates existing user sessions
 - (minor) NetworkPolicy is Ingress-only (no Egress policy)
-- (unverifiable) `<fullname>-oauth-cabundle` ConfigMap is projected into the cabundle volume but its purpose is not documented upstream
+- (minor) `<fullname>-oauth-cabundle` purpose clarified 2026-05-26: provides `oauth-server-ca.crt` for validating OpenShift OAuth server TLS cert
 - (minor) `deployment.strategy` was undocumented in Key Values Reference — added 2026-05-19
 - (minor) `templates/tests/` Helm-native tests noted in Resources Produced; cross-reference to testing topic added
 

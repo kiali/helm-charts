@@ -1,13 +1,13 @@
 {
   "version": "1.0",
-  "branch": "main",
-  "last_active_sha": "a81dc02fda1d161b225419c75ff7171991f35d63",
-  "last_active_time": "2026-05-19T00:00:00Z",
-  "current_phase": "maintain",
-  "total_files_read": 22,
+  "branch": "claude-scribe-docs",
+  "last_active_sha": "22a9ff3d91dcd0527c3bf5df559bf050d26d55d4",
+  "last_active_time": "2026-05-26T00:00:00Z",
+  "current_phase": "focus-enrich",
+  "total_files_read": 26,
   "topics": {
     "kiali-operator-chart": { "phase_status": "complete", "files_read": 3 },
-    "kiali-server-chart": { "phase_status": "complete", "files_read": 18 },
+    "kiali-server-chart": { "phase_status": "complete", "files_read": 22 },
     "testing-and-build-pipeline": { "phase_status": "complete", "files_read": 1 }
   }
 }

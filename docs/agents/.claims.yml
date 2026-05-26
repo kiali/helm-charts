@@ -332,3 +332,19 @@ claims:
     source: "kiali-server/templates/oauth.yaml"
     provenance:
       origin: inferred
+
+  - id: kiali-server-chart-18
+    type: data_flow
+    topic: kiali-server-chart
+    claim: "On OpenShift, /kiali-cabundle is a projected volume merging three ConfigMaps: <fullname>-cabundle-openshift (required, service-ca.crt), <fullname>-cabundle (optional, user CAs), <fullname>-oauth-cabundle (optional, oauth-server-ca.crt); on Kubernetes only <fullname>-cabundle is mounted as a plain configMap volume"
+    source: "kiali-server/templates/deployment.yaml"
+    provenance:
+      origin: inferred
+
+  - id: kiali-server-chart-19
+    type: boundary
+    topic: kiali-server-chart
+    claim: "<fullname>-oauth-cabundle provides oauth-server-ca.crt for Kiali to validate the OpenShift OAuth server TLS certificate when auth.strategy is openshift"
+    source: "kiali-server/templates/deployment.yaml"
+    provenance:
+      origin: inferred
