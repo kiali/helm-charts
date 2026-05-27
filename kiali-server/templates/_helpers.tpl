@@ -509,6 +509,12 @@ Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead.
   {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.cert_file "volumeName" (printf "%s-cert" .prefix) "fileName" "useSecretKey") | fromJson) }}
   {{- /* Key file - uses secret key as filename */ -}}
   {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.key_file "volumeName" (printf "%s-key" .prefix) "fileName" "useSecretKey") | fromJson) }}
+  {{- /* OAuth2 client_id */ -}}
+  {{- if .auth.oauth2 }}
+    {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.oauth2.client_id "volumeName" (printf "%s-oauth2-client-id" .prefix) "fileName" "value.txt") | fromJson) }}
+    {{- /* OAuth2 client_secret */ -}}
+    {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.oauth2.client_secret "volumeName" (printf "%s-oauth2-client-secret" .prefix) "fileName" "value.txt") | fromJson) }}
+  {{- end }}
 {{- end }}
 {{- $result | toJson }}
 {{- end }}
@@ -593,4 +599,72 @@ Example output:
 {{- end }}
 
 {{- $secrets | toJson }}
+{{- end }}
+
+{{/*
+Validate OAuth2 auth configuration for external services.
+Ensures required fields are present and incompatible combinations are rejected.
+*/}}
+{{- define "kiali-server.validate-oauth2" -}}
+{{- if .Values.external_services }}
+
+  {{- /* Prometheus oauth2 validation */ -}}
+  {{- if and .Values.external_services.prometheus (not (eq (toString (.Values.external_services.prometheus).enabled | default "true") "false")) .Values.external_services.prometheus.auth }}
+    {{- if eq (toString .Values.external_services.prometheus.auth.type) "oauth2" }}
+      {{- if or (not .Values.external_services.prometheus.auth.oauth2) (not .Values.external_services.prometheus.auth.oauth2.client_id) (not .Values.external_services.prometheus.auth.oauth2.token_url) }}
+        {{- fail "external_services.prometheus.auth.oauth2 requires both client_id and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+      {{- if .Values.external_services.prometheus.auth.use_kiali_token }}
+        {{- fail "external_services.prometheus cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Tracing oauth2 validation */ -}}
+  {{- if and .Values.external_services.tracing .Values.external_services.tracing.enabled .Values.external_services.tracing.auth }}
+    {{- if eq (toString .Values.external_services.tracing.auth.type) "oauth2" }}
+      {{- if or (not .Values.external_services.tracing.auth.oauth2) (not .Values.external_services.tracing.auth.oauth2.client_id) (not .Values.external_services.tracing.auth.oauth2.token_url) }}
+        {{- fail "external_services.tracing.auth.oauth2 requires both client_id and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+      {{- $useGrpc := true }}{{- if hasKey .Values.external_services.tracing "use_grpc" }}{{- $useGrpc = .Values.external_services.tracing.use_grpc }}{{- end }}
+      {{- if $useGrpc }}
+        {{- fail "external_services.tracing cannot use oauth2 auth with use_grpc=true (gRPC does not support HTTP-based OAuth2 token injection)" }}
+      {{- end }}
+      {{- if .Values.external_services.tracing.auth.use_kiali_token }}
+        {{- fail "external_services.tracing cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Grafana oauth2 validation */ -}}
+  {{- if and .Values.external_services.grafana .Values.external_services.grafana.enabled .Values.external_services.grafana.auth }}
+    {{- if eq (toString .Values.external_services.grafana.auth.type) "oauth2" }}
+      {{- if or (not .Values.external_services.grafana.auth.oauth2) (not .Values.external_services.grafana.auth.oauth2.client_id) (not .Values.external_services.grafana.auth.oauth2.token_url) }}
+        {{- fail "external_services.grafana.auth.oauth2 requires both client_id and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+      {{- if .Values.external_services.grafana.auth.use_kiali_token }}
+        {{- fail "external_services.grafana cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Perses oauth2 validation */ -}}
+  {{- if and .Values.external_services.perses .Values.external_services.perses.enabled .Values.external_services.perses.auth }}
+    {{- if eq (toString .Values.external_services.perses.auth.type) "oauth2" }}
+      {{- if or (not .Values.external_services.perses.auth.oauth2) (not .Values.external_services.perses.auth.oauth2.client_id) (not .Values.external_services.perses.auth.oauth2.token_url) }}
+        {{- fail "external_services.perses.auth.oauth2 requires both client_id and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Custom Dashboards Prometheus oauth2 validation */ -}}
+  {{- if and .Values.external_services.custom_dashboards .Values.external_services.custom_dashboards.enabled .Values.external_services.custom_dashboards.prometheus .Values.external_services.custom_dashboards.prometheus.auth }}
+    {{- if eq (toString .Values.external_services.custom_dashboards.prometheus.auth.type) "oauth2" }}
+      {{- if or (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2) (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2.client_id) (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2.token_url) }}
+        {{- fail "external_services.custom_dashboards.prometheus.auth.oauth2 requires both client_id and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+{{- end }}
 {{- end }}

@@ -1,0 +1,15 @@
+name: "oauth2_validation_use_kiali_token"
+description: "Verify helm template fails when oauth2 is combined with use_kiali_token"
+helm_args:
+  - "--set"
+  - "external_services.prometheus.auth.type=oauth2"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.client_id=foo"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.token_url=http://x"
+  - "--set"
+  - "external_services.prometheus.auth.use_kiali_token=true"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "cannot use both oauth2 auth and use_kiali_token"
+should_fail: true
