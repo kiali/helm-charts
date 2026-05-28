@@ -1102,8 +1102,10 @@ spec:
                                     description: "The audience parameter sent with the token request. Some providers require this to scope the token."
                                     type: string
                                   auth_style:
-                                    description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or leave empty for auto-detection."
+                                    description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or `autodetect` to let the library determine the method."
                                     type: string
+                                    default: "autodetect"
+                                    enum: ["autodetect", "header", "params"]
                                   client_id:
                                     description: "The OAuth2 client ID. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`."
                                     type: string
@@ -1212,8 +1214,10 @@ spec:
                                 description: "The audience parameter sent with the token request. Some providers require this to scope the token."
                                 type: string
                               auth_style:
-                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or leave empty for auto-detection."
+                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or `autodetect` to let the library determine the method."
                                 type: string
+                                default: "autodetect"
+                                enum: ["autodetect", "header", "params"]
                               client_id:
                                 description: "The OAuth2 client ID. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`."
                                 type: string
@@ -1449,8 +1453,10 @@ spec:
                                 description: "The audience parameter sent with the token request. Some providers require this to scope the token."
                                 type: string
                               auth_style:
-                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or leave empty for auto-detection."
+                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or `autodetect` to let the library determine the method."
                                 type: string
+                                default: "autodetect"
+                                enum: ["autodetect", "header", "params"]
                               client_id:
                                 description: "The OAuth2 client ID. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`."
                                 type: string
@@ -1564,8 +1570,10 @@ spec:
                                 description: "The audience parameter sent with the token request. Some providers require this to scope the token."
                                 type: string
                               auth_style:
-                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or leave empty for auto-detection."
+                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or `autodetect` to let the library determine the method."
                                 type: string
+                                default: "autodetect"
+                                enum: ["autodetect", "header", "params"]
                               client_id:
                                 description: "The OAuth2 client ID. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`."
                                 type: string
@@ -1678,8 +1686,10 @@ spec:
                                 description: "The audience parameter sent with the token request. Some providers require this to scope the token."
                                 type: string
                               auth_style:
-                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or leave empty for auto-detection."
+                                description: "How to send client credentials to the token endpoint. Use `params` to send in the request body, `header` to send as HTTP Basic Auth, or `autodetect` to let the library determine the method."
                                 type: string
+                                default: "autodetect"
+                                enum: ["autodetect", "header", "params"]
                               client_id:
                                 description: "The OAuth2 client ID. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`."
                                 type: string
@@ -1701,7 +1711,7 @@ spec:
                             description: "Token / API key to access the Tracing server, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart."
                             type: string
                           type:
-                            description: "The type of authentication to use when contacting the server. Use `bearer` to send the token to the Tracing server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow. Use `none` to not use any authentication (this is the default)."
+                            description: "The type of authentication to use when contacting the server. Use `bearer` to send the token to the Tracing server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow (only supported when use_grpc is false). Use `none` to not use any authentication (this is the default)."
                             type: string
                             default: "none"
                           use_kiali_token:
@@ -2442,4 +2452,3 @@ spec:
                       See https://docs.openshift.com/container-platform/4.16/networking/routes/route-configuration.html#nw-configuring-route-timeouts_route-configuration for further details.
                     x-kubernetes-int-or-string: true
                     default: "60s"
-...
