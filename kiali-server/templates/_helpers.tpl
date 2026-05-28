@@ -652,6 +652,9 @@ Ensures required fields are present and incompatible combinations are rejected.
       {{- if or (not .Values.external_services.perses.auth.oauth2) (not .Values.external_services.perses.auth.oauth2.client_id) (not .Values.external_services.perses.auth.oauth2.client_secret) (not .Values.external_services.perses.auth.oauth2.token_url) }}
         {{- fail "external_services.perses.auth.oauth2 requires client_id, client_secret, and token_url when auth.type is 'oauth2'" }}
       {{- end }}
+      {{- if .Values.external_services.perses.auth.use_kiali_token }}
+        {{- fail "external_services.perses cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
+      {{- end }}
     {{- end }}
   {{- end }}
 
@@ -660,6 +663,9 @@ Ensures required fields are present and incompatible combinations are rejected.
     {{- if eq (toString .Values.external_services.custom_dashboards.prometheus.auth.type) "oauth2" }}
       {{- if or (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2) (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2.client_id) (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2.client_secret) (not .Values.external_services.custom_dashboards.prometheus.auth.oauth2.token_url) }}
         {{- fail "external_services.custom_dashboards.prometheus.auth.oauth2 requires client_id, client_secret, and token_url when auth.type is 'oauth2'" }}
+      {{- end }}
+      {{- if .Values.external_services.custom_dashboards.prometheus.auth.use_kiali_token }}
+        {{- fail "external_services.custom_dashboards.prometheus cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
       {{- end }}
     {{- end }}
   {{- end }}
