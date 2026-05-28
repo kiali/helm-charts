@@ -1,8 +1,10 @@
-name: "oauth2_validation_missing_fields"
-description: "Verify helm template fails when oauth2 type is set but client_id/token_url are missing"
+name: "auth_oauth2_missing_all_fields"
+description: "Validation fails when oauth2 block is completely empty"
 helm_args:
   - "--set"
   - "external_services.prometheus.auth.type=oauth2"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.audience=https://example.com"
 yq_query: ""
 expected_result: ""
 expected_error_pattern: "requires client_id, client_secret, and token_url"

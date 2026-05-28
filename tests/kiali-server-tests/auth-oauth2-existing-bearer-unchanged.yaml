@@ -1,0 +1,12 @@
+name: "auth_oauth2_existing_bearer_unchanged"
+description: "Bearer token auth still works correctly when oauth2 is not configured"
+helm_args:
+  - "--set"
+  - "external_services.prometheus.auth.type=bearer"
+  - "--set"
+  - "external_services.prometheus.auth.token=my-bearer-token"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.prometheus.auth"
+expected_result: |
+  token: my-bearer-token
+  type: bearer
+should_fail: false

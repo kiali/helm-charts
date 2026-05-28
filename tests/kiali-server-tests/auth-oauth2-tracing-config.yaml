@@ -1,0 +1,23 @@
+name: "auth_oauth2_tracing_config"
+description: "Verify tracing OAuth2 config is rendered correctly in the ConfigMap config.yaml (use_grpc=false)"
+helm_args:
+  - "--set"
+  - "external_services.tracing.enabled=true"
+  - "--set"
+  - "external_services.tracing.use_grpc=false"
+  - "--set"
+  - "external_services.tracing.auth.type=oauth2"
+  - "--set"
+  - "external_services.tracing.auth.oauth2.client_id=my-tracing-client"
+  - "--set"
+  - "external_services.tracing.auth.oauth2.client_secret=tracing-secret"
+  - "--set"
+  - "external_services.tracing.auth.oauth2.token_url=https://idp.example.com/token"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.tracing.auth"
+expected_result: |
+  oauth2:
+    client_id: my-tracing-client
+    client_secret: tracing-secret
+    token_url: https://idp.example.com/token
+  type: oauth2
+should_fail: false

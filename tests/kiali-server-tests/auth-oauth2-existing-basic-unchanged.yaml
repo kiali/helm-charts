@@ -1,0 +1,15 @@
+name: "auth_oauth2_existing_basic_unchanged"
+description: "Basic auth still works correctly when oauth2 is not configured"
+helm_args:
+  - "--set"
+  - "external_services.prometheus.auth.type=basic"
+  - "--set"
+  - "external_services.prometheus.auth.username=admin"
+  - "--set"
+  - "external_services.prometheus.auth.password=secret:prom-creds:password"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.prometheus.auth"
+expected_result: |
+  password: secret:prom-creds:password
+  type: basic
+  username: admin
+should_fail: false
