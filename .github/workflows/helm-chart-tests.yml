@@ -27,16 +27,18 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
 
     - name: Setup Helm
-      uses: azure/setup-helm@v3
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78  # v3
       with:
         version: ${{ env.HELM_VERSION }}
 
     - name: Install yq
       run: |
         sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/yq_linux_amd64
+        wget -qO /tmp/yq_checksums "https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/checksums"
+        echo "$(grep '^yq_linux_amd64 ' /tmp/yq_checksums | awk '{print $19}')  /usr/local/bin/yq" | sha256sum --check
         sudo chmod +x /usr/local/bin/yq
 
     - name: Verify prerequisites
@@ -50,7 +52,7 @@ jobs:
 
     - name: Upload server test artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
       with:
         name: server-test-artifacts
         path: /tmp/kiali-helm-tests/
@@ -62,16 +64,18 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
 
     - name: Setup Helm
-      uses: azure/setup-helm@v3
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78  # v3
       with:
         version: ${{ env.HELM_VERSION }}
 
     - name: Install yq
       run: |
         sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/yq_linux_amd64
+        wget -qO /tmp/yq_checksums "https://github.com/mikefarah/yq/releases/download/${{ env.YQ_VERSION }}/checksums"
+        echo "$(grep '^yq_linux_amd64 ' /tmp/yq_checksums | awk '{print $19}')  /usr/local/bin/yq" | sha256sum --check
         sudo chmod +x /usr/local/bin/yq
 
     - name: Verify prerequisites
@@ -85,7 +89,7 @@ jobs:
 
     - name: Upload operator test artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
       with:
         name: operator-test-artifacts
         path: /tmp/kiali-helm-tests/
@@ -97,15 +101,15 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
 
     - name: Setup Helm
-      uses: azure/setup-helm@v3
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78  # v3
       with:
         version: ${{ env.HELM_VERSION }}
 
     - name: Create kind cluster
-      uses: helm/kind-action@v1
+      uses: helm/kind-action@0b5c88445f37b7e12a2ce1ecca7805b9046a74db  # v1
 
     - name: Verify cluster
       run: |
