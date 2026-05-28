@@ -2452,3 +2452,4 @@ spec:
                       See https://docs.openshift.com/container-platform/4.16/networking/routes/route-configuration.html#nw-configuring-route-timeouts_route-configuration for further details.
                     x-kubernetes-int-or-string: true
                     default: "60s"
+...
