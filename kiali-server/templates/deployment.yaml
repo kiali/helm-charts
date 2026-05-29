@@ -1,5 +1,5 @@
-{{- include "kiali-server.validate-oauth2" . }}
 {{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- include "kiali-server.validate-oauth2" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment

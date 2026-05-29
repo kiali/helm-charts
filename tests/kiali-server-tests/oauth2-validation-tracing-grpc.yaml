@@ -8,7 +8,7 @@ helm_args:
   - "--set"
   - "external_services.tracing.auth.oauth2.client_id=foo"
   - "--set"
-  - "external_services.tracing.auth.oauth2.client_secret=secret::my-secret:key"
+  - "external_services.tracing.auth.oauth2.client_secret=secret:my-secret:key"
   - "--set"
   - "external_services.tracing.auth.oauth2.token_url=https://token.example.com/token"
 yq_query: ""

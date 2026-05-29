@@ -510,7 +510,7 @@ Note: ca_file is deprecated in Kiali - use kiali-cabundle ConfigMap instead.
   {{- /* Key file - uses secret key as filename */ -}}
   {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.key_file "volumeName" (printf "%s-key" .prefix) "fileName" "useSecretKey") | fromJson) }}
   {{- /* OAuth2 client_secret (client_id is a public identifier and does not need secret mounting) */ -}}
-  {{- if .auth.oauth2 }}
+  {{- if and .auth.oauth2 (eq (toString .auth.type) "oauth2") }}
     {{- $result = merge $result (include "kiali-server.extract-secret" (dict "value" .auth.oauth2.client_secret "volumeName" (printf "%s-oauth2-client-secret" .prefix) "fileName" "value.txt") | fromJson) }}
   {{- end }}
 {{- end }}
