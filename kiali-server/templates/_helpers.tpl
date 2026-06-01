@@ -547,7 +547,7 @@ Example output:
 
 {{- if .Values.external_services }}
   {{- /* Prometheus - only if enabled (defaults to true when not set) */ -}}
-  {{- if and .Values.external_services.prometheus (not (eq (toString .Values.external_services.prometheus.enabled) "false")) .Values.external_services.prometheus.auth }}
+  {{- if and .Values.external_services.prometheus (not (eq (toString .Values.external_services.prometheus.enabled | default "true") "false")) .Values.external_services.prometheus.auth }}
     {{- $secrets = merge $secrets (include "kiali-server.process-auth-secrets" (dict "auth" .Values.external_services.prometheus.auth "prefix" "prometheus") | fromJson) }}
   {{- end }}
 
@@ -626,7 +626,7 @@ Ensures required fields are present and incompatible combinations are rejected.
       {{- end }}
       {{- $useGrpc := true }}{{- if hasKey .Values.external_services.tracing "use_grpc" }}{{- $useGrpc = .Values.external_services.tracing.use_grpc }}{{- end }}
       {{- if $useGrpc }}
-        {{- fail "external_services.tracing cannot use oauth2 auth with use_grpc=true (gRPC does not support HTTP-based OAuth2 token injection)" }}
+        {{- fail "external_services.tracing cannot use oauth2 auth with use_grpc=true (oauth2 token injection is not implemented for gRPC transport)" }}
       {{- end }}
       {{- if .Values.external_services.tracing.auth.use_kiali_token }}
         {{- fail "external_services.tracing cannot use both oauth2 auth and use_kiali_token (conflicting authentication methods)" }}
