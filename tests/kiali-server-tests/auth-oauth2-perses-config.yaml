@@ -1,0 +1,26 @@
+name: "auth_oauth2_perses_config"
+description: "Verify perses OAuth2 config is rendered correctly in the ConfigMap config.yaml"
+helm_args:
+  - "--set"
+  - "external_services.perses.enabled=true"
+  - "--set"
+  - "external_services.perses.url=https://perses.example.com"
+  - "--set"
+  - "external_services.perses.auth.type=oauth2"
+  - "--set"
+  - "external_services.perses.auth.oauth2.client_id=my-perses-client"
+  - "--set"
+  - "external_services.perses.auth.oauth2.client_secret=secret:perses-creds:client-secret"
+  - "--set"
+  - "external_services.perses.auth.oauth2.token_url=https://idp.example.com/token"
+  - "--set"
+  - "external_services.perses.auth.oauth2.audience=https://perses.example.com"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.perses.auth"
+expected_result: |
+  oauth2:
+    audience: https://perses.example.com
+    client_id: my-perses-client
+    client_secret: secret:perses-creds:client-secret
+    token_url: https://idp.example.com/token
+  type: oauth2
+should_fail: false

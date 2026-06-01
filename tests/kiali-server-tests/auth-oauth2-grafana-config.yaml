@@ -1,0 +1,21 @@
+name: "auth_oauth2_grafana_config"
+description: "Verify grafana OAuth2 config is rendered correctly in the ConfigMap config.yaml"
+helm_args:
+  - "--set"
+  - "external_services.grafana.enabled=true"
+  - "--set"
+  - "external_services.grafana.auth.type=oauth2"
+  - "--set"
+  - "external_services.grafana.auth.oauth2.client_id=my-grafana-client"
+  - "--set"
+  - "external_services.grafana.auth.oauth2.client_secret=grafana-secret-value"
+  - "--set"
+  - "external_services.grafana.auth.oauth2.token_url=https://idp.example.com/token"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.grafana.auth"
+expected_result: |
+  oauth2:
+    client_id: my-grafana-client
+    client_secret: grafana-secret-value
+    token_url: https://idp.example.com/token
+  type: oauth2
+should_fail: false

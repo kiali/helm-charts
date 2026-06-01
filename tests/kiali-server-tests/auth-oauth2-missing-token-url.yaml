@@ -1,0 +1,13 @@
+name: "auth_oauth2_missing_token_url"
+description: "Validation fails when oauth2 token_url is missing"
+helm_args:
+  - "--set"
+  - "external_services.prometheus.auth.type=oauth2"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.client_id=my-client"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.client_secret=my-secret"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "requires client_id, client_secret, and token_url"
+should_fail: true

@@ -1,0 +1,22 @@
+name: "auth_oauth2_prometheus_config"
+description: "Verify prometheus OAuth2 config is rendered correctly in the ConfigMap config.yaml"
+helm_args:
+  - "--set"
+  - "external_services.prometheus.auth.type=oauth2"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.client_id=my-prom-client"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.client_secret=secret:prom-creds:client-secret"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.token_url=https://idp.example.com/token"
+  - "--set"
+  - "external_services.prometheus.auth.oauth2.audience=https://prometheus.example.com"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.prometheus.auth"
+expected_result: |
+  oauth2:
+    audience: https://prometheus.example.com
+    client_id: my-prom-client
+    client_secret: secret:prom-creds:client-secret
+    token_url: https://idp.example.com/token
+  type: oauth2
+should_fail: false

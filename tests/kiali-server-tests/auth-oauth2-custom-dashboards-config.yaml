@@ -1,0 +1,24 @@
+name: "auth_oauth2_custom_dashboards_config"
+description: "Verify custom_dashboards.prometheus OAuth2 config is rendered correctly in the ConfigMap config.yaml"
+helm_args:
+  - "--set"
+  - "external_services.custom_dashboards.enabled=true"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.auth.type=oauth2"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.auth.oauth2.client_id=my-cd-client"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.auth.oauth2.client_secret=secret:cd-creds:client-secret"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.auth.oauth2.token_url=https://idp.example.com/token"
+  - "--set"
+  - "external_services.custom_dashboards.prometheus.auth.oauth2.audience=https://cd-prometheus.example.com"
+yq_query: "select(.kind == \"ConfigMap\") | .data.\"config.yaml\" | from_yaml | .external_services.custom_dashboards.prometheus.auth"
+expected_result: |
+  oauth2:
+    audience: https://cd-prometheus.example.com
+    client_id: my-cd-client
+    client_secret: secret:cd-creds:client-secret
+    token_url: https://idp.example.com/token
+  type: oauth2
+should_fail: false
