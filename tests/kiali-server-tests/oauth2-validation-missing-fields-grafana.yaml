@@ -1,0 +1,11 @@
+name: "oauth2_validation_missing_fields_grafana"
+description: "Verify helm template fails when grafana oauth2 type is set but required fields are missing"
+helm_args:
+  - "--set"
+  - "external_services.grafana.enabled=true"
+  - "--set"
+  - "external_services.grafana.auth.type=oauth2"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "requires client_id, client_secret, and token_url"
+should_fail: true

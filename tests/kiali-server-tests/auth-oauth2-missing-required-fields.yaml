@@ -1,5 +1,5 @@
-name: "auth_oauth2_missing_all_fields"
-description: "Validation fails when oauth2 block is completely empty"
+name: "auth_oauth2_missing_required_fields"
+description: "Validation fails when oauth2 type is set but all required fields (client_id, client_secret, token_url) are missing, even when optional fields like audience are present"
 helm_args:
   - "--set"
   - "external_services.prometheus.auth.type=oauth2"
