@@ -11,5 +11,4 @@ expected_result: |
   hasPodLogPermission: false
   firstRuleResources:
     - configmaps
-    - endpoints
 should_fail: false
