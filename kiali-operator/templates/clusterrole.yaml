@@ -263,7 +263,6 @@ rules:
   - security.istio.io
   - extensions.istio.io
   - telemetry.istio.io
-  - gateway.networking.k8s.io
   - inference.networking.k8s.io
   resources: ["*"]
   verbs:
@@ -275,6 +274,40 @@ rules:
   - delete
   - patch
   {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gateways
+  - grpcroutes
+  - httproutes
+  - referencegrants
+  verbs:
+  - get
+  - list
+  - watch
+  {{- if eq .Values.onlyViewOnlyMode false }}
+  - create
+  - delete
+  - patch
+  {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - tcproutes
+  - tlsroutes
+  verbs:
+  - get
+  - list
+  - watch
+  {{- if eq .Values.onlyViewOnlyMode false }}
+  - delete
+  - patch
+  {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gatewayclasses
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups: ["authentication.k8s.io"]
   resources:
   - tokenreviews
