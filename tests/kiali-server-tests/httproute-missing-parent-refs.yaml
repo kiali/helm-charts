@@ -1,0 +1,7 @@
+name: "httproute_missing_parent_refs"
+description: "Verify HTTPRoute rendering fails fast when enabled but parent_refs is empty"
+helm_args:
+  - "--set"
+  - "deployment.httproute.enabled=true"
+should_fail: true
+expected_error_pattern: "deployment.httproute.parent_refs is empty"
