@@ -1,0 +1,22 @@
+name: "httproute_configuration"
+description: "Verify HTTPRoute parentRefs, hostnames, default backend port/path, and additional labels configuration"
+helm_args:
+  - "--set"
+  - "deployment.httproute.enabled=true"
+  - "--set"
+  - "deployment.httproute.parent_refs[0].name=my-gateway"
+  - "--set"
+  - "deployment.httproute.parent_refs[0].namespace=gateway-system"
+  - "--set"
+  - "deployment.httproute.hostnames[0]=kiali.example.com"
+  - "--set"
+  - "deployment.httproute.additional_labels.environment=production"
+yq_query: "select(.kind == \"HTTPRoute\") | {\"parentRef\": .spec.parentRefs[0].name, \"hostname\": .spec.hostnames[0], \"backendPort\": .spec.rules[0].backendRefs[0].port, \"pathType\": .spec.rules[0].matches[0].path.type, \"pathValue\": .spec.rules[0].matches[0].path.value, \"environmentLabel\": .metadata.labels.environment}"
+expected_result: |
+  parentRef: my-gateway
+  hostname: kiali.example.com
+  backendPort: 20001
+  pathType: PathPrefix
+  pathValue: /kiali
+  environmentLabel: production
+should_fail: false

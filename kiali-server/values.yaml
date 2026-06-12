@@ -97,6 +97,32 @@ deployment:
   image_pull_policy: "Always"
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
+  httproute:
+    # Create an HTTPRoute (Gateway API) to expose the Kiali server UI on server.port.
+    # Requires the Gateway API CRDs to be installed in the cluster.
+    # Unlike "ingress" below, this is never created automatically on OpenShift; enable it explicitly.
+    enabled: false
+    # HTTPRoute apiVersion (defaults to "gateway.networking.k8s.io/v1" when empty).
+    api_version: ""
+    additional_labels: {}
+    annotations: {}
+    # parent_refs reference the Gateway(s) this HTTPRoute attaches to. Required when enabled.
+    # parent_refs:
+    #   - name: my-gateway
+    #     namespace: gateway-system
+    #     sectionName: http
+    parent_refs: []
+    # hostnames matched against the HTTP Host header to select this route (templated).
+    # hostnames:
+    #   - kiali.example.com
+    hostnames: []
+    # matches for the default rule. When empty, defaults to a PathPrefix match on the
+    # Kiali web root (mirrors the Ingress behavior below).
+    matches: []
+    # filters applied to the default rule.
+    filters: []
+    # additional_rules (templated) prepended before the default rule.
+    additional_rules: []
   ingress:
     additional_labels: {}
     class_name: "nginx"
