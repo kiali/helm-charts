@@ -24,7 +24,6 @@ rules:
 - apiGroups: [""]
   resources:
   - configmaps
-  - endpoints
 {{- if not (has "logs-tab" $.Values.kiali_feature_flags.disabled_features) }}
   - pods/log
 {{- end }}
@@ -47,8 +46,7 @@ rules:
   - pods/portforward
   verbs:
   - create
-  - post
-- apiGroups: ["extensions", "apps"]
+- apiGroups: ["apps"]
   resources:
   - daemonsets
   - deployments
@@ -71,9 +69,21 @@ rules:
   - security.istio.io
   - extensions.istio.io
   - telemetry.istio.io
-  - gateway.networking.k8s.io
   - inference.networking.k8s.io
   resources: ["*"]
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gatewayclasses
+  - gateways
+  - grpcroutes
+  - httproutes
+  - referencegrants
+  - tcproutes
+  - tlsroutes
   verbs:
   - get
   - list
@@ -106,9 +116,7 @@ rules:
   resources:
   - mutatingwebhookconfigurations
   verbs:
-  - get
   - list
-  - watch
 ...
 {{- end -}} {{/* range $namespace */}}
 {{- end -}} {{/* if view_only_mode or auth.strategy is not anonymous */}}

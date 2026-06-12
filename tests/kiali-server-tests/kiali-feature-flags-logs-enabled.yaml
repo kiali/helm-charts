@@ -9,6 +9,5 @@ expected_result: |
   hasPodLogPermission: true
   firstRuleResources:
     - configmaps
-    - endpoints
     - pods/log
 should_fail: false

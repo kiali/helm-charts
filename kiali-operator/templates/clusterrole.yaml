@@ -10,11 +10,8 @@ rules:
 - apiGroups: [""]
   resources:
   - configmaps
-  - endpoints
-  - pods
   - serviceaccounts
   - services
-  - services/finalizers
   verbs:
   - create
   - delete
@@ -23,6 +20,11 @@ rules:
   - patch
   - update
   - watch
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs:
+  - get
 - apiGroups: [""]
   resources:
   - namespaces
@@ -61,7 +63,6 @@ rules:
 - apiGroups: ["apps"]
   resources:
   - deployments
-  - replicasets
   verbs:
   - create
   - delete
@@ -92,19 +93,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups: ["monitoring.coreos.com"]
-  resources:
-  - servicemonitors
-  verbs:
-  - create
-  - get
-- apiGroups: ["apps"]
-  resourceNames:
-  - kiali-operator
-  resources:
-  - deployments/finalizers
-  verbs:
-  - update
 - apiGroups: ["kiali.io"]
   resources:
   - '*'
@@ -120,7 +108,7 @@ rules:
   resources:
   - selfsubjectaccessreviews
   verbs:
-  - list
+  - create
 - apiGroups: ["rbac.authorization.k8s.io"]
   resources:
   {{- if or (and (.Values.cr.create) (.Values.cr.spec.deployment.cluster_wide_access)) (.Values.clusterRoleCreator) }}
@@ -137,14 +125,7 @@ rules:
   - patch
   - update
   - watch
-- apiGroups: ["apiextensions.k8s.io"]
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups: ["extensions", "networking.k8s.io"]
+- apiGroups: ["networking.k8s.io"]
   resources:
   - ingresses
   - networkpolicies
@@ -156,6 +137,7 @@ rules:
   - patch
   - update
   - watch
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
 - apiGroups: ["route.openshift.io"]
   resources:
   - routes
@@ -203,7 +185,6 @@ rules:
   - patch
   - update
   - watch
-{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
 # The permissions below are for OSSMC operator capabilities
 - apiGroups: ["console.openshift.io"]
   resources:
@@ -230,7 +211,6 @@ rules:
 - apiGroups: [""]
   resources:
   - configmaps
-  - endpoints
   - pods/log
   verbs:
   - get
@@ -254,8 +234,7 @@ rules:
   - pods/portforward
   verbs:
   - create
-  - post
-- apiGroups: ["extensions", "apps"]
+- apiGroups: ["apps"]
   resources:
   - daemonsets
   - deployments
@@ -280,14 +259,10 @@ rules:
   - patch
   {{- end }}
 - apiGroups:
-  - config.istio.io
   - networking.istio.io
-  - authentication.istio.io
-  - rbac.istio.io
   - security.istio.io
   - extensions.istio.io
   - telemetry.istio.io
-  - gateway.networking.k8s.io
   - inference.networking.k8s.io
   resources: ["*"]
   verbs:
@@ -299,6 +274,51 @@ rules:
   - delete
   - patch
   {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gateways
+  - grpcroutes
+  - httproutes
+  - referencegrants
+  verbs:
+  - get
+  - list
+  - watch
+  {{- if eq .Values.onlyViewOnlyMode false }}
+  - create
+  - delete
+  - patch
+  {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - tcproutes
+  - tlsroutes
+  verbs:
+  - get
+  - list
+  - watch
+  {{- if eq .Values.onlyViewOnlyMode false }}
+  - delete
+  - patch
+  {{- end }}
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gatewayclasses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["authentication.k8s.io"]
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - list
+{{- if .Capabilities.APIVersions.Has "route.openshift.io/v1" }}
 - apiGroups: ["apps.openshift.io"]
   resources:
   - deploymentconfigs
@@ -319,17 +339,6 @@ rules:
   - routes
   verbs:
   - get
-- apiGroups: ["authentication.k8s.io"]
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups: ["admissionregistration.k8s.io"]
-  resources:
-  - mutatingwebhookconfigurations
-  verbs:
-  - get
-  - list
-  - watch
+{{- end }}
 ...
 {{- end -}}
