@@ -137,6 +137,7 @@ deployment:
   secret_name: "kiali"
   security_context: {}
   service_annotations: {}
+  service_labels: {}
   service_type: ""
   strategy: {}
   tls_config:
