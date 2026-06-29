@@ -179,12 +179,14 @@ The `kiali-server.secret-volume-names` helper centralizes the list of protected 
 
 External service credentials (Prometheus, Grafana, Tracing, Perses, custom dashboards, ChatAI providers) and the login token signing key support a `secret:<secretName>:<secretKey>` reference pattern in their value fields.
 
-When the chart detects this pattern in `external_services.*.auth.{username,password,token,cert_file,key_file}` or `login_token.signing_key` or `chat_ai.providers[*].key` or `chat_ai.providers[*].models[*].key`, it:
+When the chart detects this pattern in `external_services.*.auth.{username,password,token,cert_file,key_file}` or `login_token.signing_key` or `ai.chat.providers[*].key` or `ai.chat.providers[*].models[*].key` (deprecated `chat_ai` keys still work), it:
 1. Creates a volume entry pointing to the named Secret
 2. Mounts it into the Kiali container at a predictable path (e.g., `/kiali-override-secrets/prometheus-password/value.txt`)
 3. Passes the raw `secret:<secretName>:<secretKey>` string through to `config.yaml` unchanged — the Kiali server binary resolves it at runtime by reading the mounted file
 
 This allows credentials to live in Kubernetes Secrets without being embedded in the Helm values. The `kiali-server.credential-secrets` helper in `_helpers.tpl` aggregates all detected secrets into a JSON map used only by `deployment.yaml` (volumeMounts and volumes sections). Volume names follow the pattern `<service>-<field>` (e.g., `prometheus-password`) for external services, `chat-ai-provider-<name>` for provider-level keys, and `chat-ai-model-<provider>-<model>` for model-level keys.
+
+When `ai.consumption.prices_config_map` is a non-empty ConfigMap name, the chart mounts that user-managed ConfigMap at `/kiali-ai-pricing` (`optional: true`). The ConfigMap must contain a `prices.yaml` key. If the value is empty, no volume is mounted and the Kiali server uses its built-in price catalog.
 
 ## External-Facing Resources
 
@@ -261,4 +263,7 @@ When on OpenShift:
 | `login_token.signing_key` | `""` (random) | JWT signing key; random generated if empty |
 | `kiali_feature_flags.disabled_features` | `[]` | Features to disable in the UI; `"logs-tab"` also removes `pods/log` from RBAC |
 | `skipResources` | `[]` | RBAC resources to skip creating |
-| `chat_ai.enabled` | `false` | Enable ChatAI integration |
+| `ai.enabled` | `false` | Master switch for the AI subsystem |
+| `ai.chat.enabled` | `false` | Enable ChatAI integration (`chat_ai` is deprecated) |
+| `ai.metrics` | `false` | Enable ChatAI usage metrics (required for consumption) |
+| `ai.consumption.prices_config_map` | `""` | Optional ConfigMap name mounted at `/kiali-ai-pricing`; empty uses the built-in price catalog |

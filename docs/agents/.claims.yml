@@ -296,7 +296,7 @@ claims:
   - id: kiali-server-chart-13
     type: pattern
     topic: kiali-server-chart
-    claim: "Credential secret pattern secret:<secretName>:<secretKey> works for external_services auth fields, login_token.signing_key, and chat_ai provider/model keys. The raw pattern passes through to config.yaml unchanged; the Kiali server resolves it at runtime from the mounted file."
+    claim: "Credential secret pattern secret:<secretName>:<secretKey> works for external_services auth fields, login_token.signing_key, and ai.chat (or deprecated chat_ai) provider/model keys. The raw pattern passes through to config.yaml unchanged; the Kiali server resolves it at runtime from the mounted file."
     source: "kiali-server/templates/_helpers.tpl"
     provenance:
       origin: inferred

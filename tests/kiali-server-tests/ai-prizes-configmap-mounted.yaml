@@ -1,0 +1,17 @@
+name: "ai_prizes_configmap_mounted"
+description: "When the user sets ai.consumption.prices_config_map, mount that ConfigMap at /kiali-ai-pricing (optional)"
+helm_args:
+  - "--set"
+  - "ai.consumption.prices_config_map=kiali-ai-prices"
+yq_query: "select(.kind == \"Deployment\") | {\"volume\": (.spec.template.spec.volumes | map(select(.name == \"kiali-ai-pricing\")) | .[0]), \"volumeMount\": (.spec.template.spec.containers[] | select(.name == \"kiali\") | .volumeMounts | map(select(.name == \"kiali-ai-pricing\")) | .[0])}"
+expected_result: |
+  volume:
+    name: kiali-ai-pricing
+    configMap:
+      name: "kiali-ai-prices"
+      optional: true
+  volumeMount:
+    name: kiali-ai-pricing
+    mountPath: "/kiali-ai-pricing"
+    readOnly: true
+should_fail: false
