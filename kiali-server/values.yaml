@@ -33,7 +33,9 @@ additional_display_details:
 
 auth:
   openid: {}
-  openshift: {}
+  openshift:
+    impersonation:
+      enabled: false
   strategy: ""
 
 chat_ai:
