@@ -1,0 +1,16 @@
+name: "impersonation_cr_triggers_creation"
+description: "ClusterRole (OpenShift) is rendered when impersonation is enabled even without openshift auth or tls auto"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "deployment.tls_config.source=config"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) | .kind
+expected_result: |
+  ClusterRole
+should_fail: false

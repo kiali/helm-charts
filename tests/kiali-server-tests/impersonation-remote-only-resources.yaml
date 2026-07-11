@@ -1,0 +1,27 @@
+name: "impersonation_remote_only_resources"
+description: "With remote_cluster_resources_only and impersonation enabled, only SA/ConfigMap/ClusterRole/ClusterRoleBinding are created (no Deployment, Service, OAuthClient)"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "deployment.remote_cluster_resources_only=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: ".kind"
+expected_result: |
+  ServiceAccount
+  ---
+  ConfigMap
+  ---
+  ClusterRole
+  ---
+  ClusterRole
+  ---
+  ClusterRoleBinding
+  ---
+  ClusterRoleBinding
+should_fail: false

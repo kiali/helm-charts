@@ -1,0 +1,23 @@
+name: "impersonation_clusterrole_present"
+description: "ClusterRole (OpenShift) includes impersonate rules for users and groups when impersonation is enabled"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.verbs[] == "impersonate") |
+  {"apiGroups": .apiGroups[0], "resources": .resources, "verbs": .verbs}
+expected_result: |
+  apiGroups: ""
+  resources:
+    - groups
+    - users
+  verbs:
+    - impersonate
+should_fail: false

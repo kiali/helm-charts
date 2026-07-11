@@ -1,0 +1,15 @@
+name: "operator_impersonate_clusterrole"
+description: "Operator ClusterRole unconditionally includes impersonate on users and groups for RBAC escalation"
+helm_args: []
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.verbs[] == "impersonate") |
+  {"apiGroups": .apiGroups[0], "resources": .resources, "verbs": .verbs}
+expected_result: |
+  apiGroups: ""
+  resources:
+    - groups
+    - users
+  verbs:
+    - impersonate
+should_fail: false
