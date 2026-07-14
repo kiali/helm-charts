@@ -1,0 +1,12 @@
+name: "service_labels"
+description: "Verify service labels are applied to Service metadata"
+helm_args:
+  - "--set"
+  - "deployment.service_labels.environment=staging"
+  - "--set"
+  - "deployment.service_labels.team=platform"
+yq_query: "select(.kind == \"Service\") | .metadata.labels | {\"environment\": .environment, \"team\": .team}"
+expected_result: |
+  environment: staging
+  team: platform
+should_fail: false
