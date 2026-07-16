@@ -98,6 +98,7 @@ rules:
   resources:
   - tcproutes
   - tlsroutes
+  - udproutes
   verbs:
   - get
   - list
