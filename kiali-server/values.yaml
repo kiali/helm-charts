@@ -88,7 +88,7 @@ deployment:
   dns:
     config: {}
     policy: ""
-  extra_labels: {}
+  extra_labels: {} # Labels added here are silently ignored on collision with standard Kiali labels (standard labels win).
   host_aliases: []
   hpa:
     api_version: "autoscaling/v2"
@@ -99,7 +99,7 @@ deployment:
   image_pull_secrets: []
   image_version: ${HELM_IMAGE_TAG} # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
   ingress:
-    additional_labels: {}
+    additional_labels: {} # Labels added here are silently ignored on collision with standard Kiali labels (standard labels win).
     class_name: "nginx"
     #enabled:
     override_yaml:
@@ -118,7 +118,7 @@ deployment:
   pod_disruption_budget:
     api_version: "policy/v1"
     spec: {}
-  pod_labels: {}
+  pod_labels: {} # Labels added here will override standard Kiali labels on collision (user labels win).
   priority_class_name: ""
   probes:
     liveness:
@@ -143,6 +143,7 @@ deployment:
   secret_name: "kiali"
   security_context: {}
   service_annotations: {}
+  service_labels: {} # Labels added here will override standard Kiali labels on collision (user labels win).
   service_type: ""
   strategy: {}
   tls_config:
