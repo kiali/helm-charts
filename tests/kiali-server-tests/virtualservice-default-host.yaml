@@ -1,0 +1,13 @@
+name: "virtualservice_default_host"
+description: "Verify VirtualService uses '*' as default host when hosts not specified"
+helm_args:
+  - "--set"
+  - "istioGateway.enabled=true"
+  - "--set"
+  - "istioGateway.gateway=istio-system/istio-ingressgateway"
+yq_query: "select(.kind == \"VirtualService\") | {\"hosts\": .spec.hosts}"
+expected_result: |
+  hosts:
+    - "*"
+should_fail: false
+
