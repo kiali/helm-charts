@@ -23,6 +23,7 @@ affinity: {}
 replicaCount: 1
 priorityClassName: ""
 securityContext: {}
+podSecurityContext: {}
 
 # This helm chart will create Kubernetes resources such as cluster roles, cluster role bindings, and service accounts.
 # For very rare use-cases, users may want to manage some of these resources manually, outside
