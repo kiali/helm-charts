@@ -35,6 +35,8 @@ auth:
   openid: {}
   openshift:
     impersonation:
+      allowed_groups: []
+      allowed_users: []
       enabled: false
   strategy: ""
 
