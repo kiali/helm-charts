@@ -1,0 +1,9 @@
+name: "impersonation_configmap_default_false"
+description: "ConfigMap config.yaml contains impersonation.enabled: false by default"
+helm_args: []
+yq_query: >
+  select(.kind == "ConfigMap" and .metadata.name == "kiali") |
+  .data["config.yaml"] | @yamld | .auth.openshift.impersonation.enabled
+expected_result: |
+  false
+should_fail: false

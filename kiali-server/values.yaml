@@ -33,7 +33,11 @@ additional_display_details:
 
 auth:
   openid: {}
-  openshift: {}
+  openshift:
+    impersonation:
+      allowed_groups: []
+      allowed_users: []
+      enabled: false
   strategy: ""
 
 chat_ai:

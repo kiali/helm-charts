@@ -1,0 +1,18 @@
+name: "impersonation_disabled_remote_has_oauthclient"
+description: "With remote_cluster_resources_only and impersonation disabled (default), OAuthClient is still created for legacy per-cluster OAuth flow"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "deployment.remote_cluster_resources_only=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "deployment.ingress.enabled=true"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "OAuthClient") | .kind
+expected_result: |
+  OAuthClient
+should_fail: false

@@ -314,6 +314,12 @@ rules:
   - tokenreviews
   verbs:
   - create
+- apiGroups: [""]
+  resources:
+  - groups
+  - users
+  verbs:
+  - impersonate
 - apiGroups: ["admissionregistration.k8s.io"]
   resources:
   - mutatingwebhookconfigurations
