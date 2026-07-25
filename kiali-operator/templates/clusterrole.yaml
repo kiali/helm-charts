@@ -314,12 +314,14 @@ rules:
   - tokenreviews
   verbs:
   - create
+{{- if and .Values.clusterRoleCreator .Values.supportImpersonation }}
 - apiGroups: [""]
   resources:
   - groups
   - users
   verbs:
   - impersonate
+{{- end }}
 - apiGroups: ["admissionregistration.k8s.io"]
   resources:
   - mutatingwebhookconfigurations

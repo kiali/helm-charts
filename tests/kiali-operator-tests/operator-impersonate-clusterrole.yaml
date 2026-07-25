@@ -1,6 +1,8 @@
 name: "operator_impersonate_clusterrole"
-description: "Operator ClusterRole unconditionally includes impersonate on users and groups for RBAC escalation"
-helm_args: []
+description: "Operator ClusterRole includes impersonate on users and groups when supportImpersonation is true"
+helm_args:
+  - "--set"
+  - "supportImpersonation=true"
 yq_query: >
   select(.kind == "ClusterRole") |
   .rules[] | select(.verbs[] == "impersonate") |

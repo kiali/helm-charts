@@ -1,8 +1,10 @@
 name: "operator_impersonate_clusterrole_openshift"
-description: "Operator ClusterRole includes impersonate on users and groups on OpenShift (unconditional rule)"
+description: "Operator ClusterRole includes impersonate on users and groups on OpenShift when supportImpersonation is true"
 helm_args:
   - "--set"
   - "isOpenShift=true"
+  - "--set"
+  - "supportImpersonation=true"
 yq_query: >
   select(.kind == "ClusterRole") |
   .rules[] | select(.verbs[] == "impersonate") |

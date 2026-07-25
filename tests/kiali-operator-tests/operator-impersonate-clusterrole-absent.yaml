@@ -1,0 +1,8 @@
+name: "operator_impersonate_clusterrole_absent"
+description: "Operator ClusterRole does not include impersonate when supportImpersonation is false (default)"
+helm_args: []
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.verbs[] == "impersonate")
+expected_result: |
+should_fail: false
