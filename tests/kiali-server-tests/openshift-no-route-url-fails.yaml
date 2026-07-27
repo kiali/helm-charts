@@ -1,0 +1,11 @@
+name: "openshift_no_route_url_fails"
+description: "Helm template fails with openshift strategy and no kiali_route_url when impersonation is not enabled"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+yq_query: ".kind"
+expected_result: |
+should_fail: true
+expected_error_pattern: "You did not define what the Kiali Route URL will be"

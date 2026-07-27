@@ -1,0 +1,16 @@
+name: "impersonation_remote_no_route_url"
+description: "Helm template succeeds with impersonation + remote_cluster_resources_only and no kiali_route_url"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "deployment.remote_cluster_resources_only=true"
+yq_query: >
+  select(.kind == "ServiceAccount") | .kind
+expected_result: |
+  ServiceAccount
+should_fail: false
