@@ -1,0 +1,25 @@
+name: "deployment_probes_custom"
+description: "Verify custom probe timings for the operator pod"
+helm_args:
+  - "--set"
+  - "probes.readiness.periodSeconds=15"
+  - "--set"
+  - "probes.liveness.periodSeconds=60"
+  - "--set"
+  - "probes.startup.initialDelaySeconds=5"
+  - "--set"
+  - "probes.startup.periodSeconds=2"
+  - "--set"
+  - "probes.startup.failureThreshold=30"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0] | {\"readinessPeriod\": .readinessProbe.periodSeconds, \"livenessPeriod\": .livenessProbe.periodSeconds, \"startupProbe\": .startupProbe}"
+expected_result: |
+  readinessPeriod: 15
+  livenessPeriod: 60
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 6789
+    initialDelaySeconds: 5
+    periodSeconds: 2
+    failureThreshold: 30
+should_fail: false

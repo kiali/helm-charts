@@ -1,0 +1,23 @@
+name: "deployment_probes_defaults"
+description: "Verify the default probe configuration is unchanged when no probe values are set"
+helm_args: []
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0] | {\"readinessProbe\": .readinessProbe, \"livenessProbe\": .livenessProbe, \"startupProbe\": .startupProbe}"
+expected_result: |
+  readinessProbe:
+    httpGet:
+      path: /readyz
+      port: 6789
+    periodSeconds: 30
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 6789
+    periodSeconds: 30
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 6789
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 6
+should_fail: false

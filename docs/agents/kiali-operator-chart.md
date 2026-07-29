@@ -126,7 +126,7 @@ The namespace-watching variants (`watches-os-ns.yaml`, `watches-k8s-ns.yaml`) ar
 
 **Security context** — default is restrictive: `allowPrivilegeEscalation: false`, `privileged: false`, `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, `seccompProfile: RuntimeDefault`, `capabilities.drop: [ALL]`. Overridable via `securityContext`. The pod mounts a `/tmp` emptyDir volume to give Ansible a writable scratch space under the read-only root.
 
-**Probes** — readiness checks `/readyz` on port 6789 (period 30s); liveness checks `/healthz` on port 6789 (period 30s); startup probe checks `/healthz` with `initialDelaySeconds: 30`, `periodSeconds: 10`, `failureThreshold: 6`.
+**Probes** — readiness checks `/readyz` on port 6789; liveness and startup check `/healthz` on the same port. All timings are configurable via `probes.*`. Defaults preserve the historical values: readiness and liveness both `periodSeconds: 30`; startup `initialDelaySeconds: 30`, `periodSeconds: 10`, `failureThreshold: 6`. The startup probe dominates how long the operator reports unready — it holds the pod back for at least `probes.startup.initialDelaySeconds` regardless of how fast the operator actually starts, so lower it on fast clusters where install time matters.
 
 **Metrics** — exposed on `:8080/metrics`. The pod annotation `prometheus.io/scrape` is set to `metrics.enabled` (default `true`).
 
@@ -156,6 +156,11 @@ The namespace-watching variants (`watches-os-ns.yaml`, `watches-k8s-ns.yaml`) ar
 | `allowAllAccessibleNamespaces` | `true` | Allow `cluster_wide_access: true` in Kiali CRs |
 | `skipResources` | `[]` | RBAC resources to skip (for external management) |
 | `metrics.enabled` | `true` | Expose Prometheus metrics on `:8080` |
+| `probes.readiness.periodSeconds` | `30` | Operator readiness probe period |
+| `probes.liveness.periodSeconds` | `30` | Operator liveness probe period |
+| `probes.startup.initialDelaySeconds` | `30` | Delay before the first operator startup probe |
+| `probes.startup.periodSeconds` | `10` | Operator startup probe period |
+| `probes.startup.failureThreshold` | `6` | Operator startup probe failures tolerated before restart |
 | `debug.enabled` | `true` | Dump full Ansible logs after each reconciliation (verbose by default) |
 | `debug.verbosity` | `"1"` | Ansible verbosity level (higher = more output) |
 | `debug.enableProfiler` | `false` | Log timing for expensive tasks |

@@ -24,6 +24,21 @@ replicaCount: 1
 priorityClassName: ""
 securityContext: {}
 
+# Configures the liveness, readiness, and startup probes of the operator pod.
+# The defaults are conservative so the operator comes up reliably on slow clusters.
+# Note that the startup probe keeps the operator unready for at least
+# probes.startup.initialDelaySeconds regardless of how fast it actually starts,
+# so lower that value if you need the operator to report ready sooner.
+probes:
+  liveness:
+    periodSeconds: 30
+  readiness:
+    periodSeconds: 30
+  startup:
+    failureThreshold: 6
+    initialDelaySeconds: 30
+    periodSeconds: 10
+
 # This helm chart will create Kubernetes resources such as cluster roles, cluster role bindings, and service accounts.
 # For very rare use-cases, users may want to manage some of these resources manually, outside
 # of this helm chart. In cases like this, you can inform this helm chart to skip the creation of
