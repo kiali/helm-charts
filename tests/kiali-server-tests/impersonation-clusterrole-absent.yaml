@@ -1,0 +1,14 @@
+name: "impersonation_clusterrole_absent"
+description: "ClusterRole (OpenShift) does not include impersonate rules when impersonation is disabled (default)"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.verbs[] == "impersonate")
+expected_result: |
+should_fail: false

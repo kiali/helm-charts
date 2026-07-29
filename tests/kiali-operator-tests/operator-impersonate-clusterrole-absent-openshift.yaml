@@ -1,0 +1,12 @@
+name: "operator_no_impersonate_openshift"
+description: "Operator ClusterRole does not include impersonate on OpenShift when supportImpersonation is false"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "supportImpersonation=false"
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.verbs[] == "impersonate")
+expected_result: |
+should_fail: false

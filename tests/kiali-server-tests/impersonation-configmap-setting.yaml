@@ -1,0 +1,15 @@
+name: "impersonation_configmap_setting"
+description: "ConfigMap config.yaml contains impersonation.enabled: true when set"
+helm_args:
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "ConfigMap" and .metadata.name == "kiali") |
+  .data["config.yaml"] | @yamld | .auth.openshift.impersonation.enabled
+expected_result: |
+  true
+should_fail: false

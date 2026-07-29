@@ -1,0 +1,17 @@
+name: "impersonation_clusterrole_resourcenames_absent"
+description: "ClusterRole (OpenShift) does not include resourceNames when allowed_users and allowed_groups are empty"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.verbs[0] == "impersonate") | .resourceNames
+expected_result: |
+  null null
+should_fail: false

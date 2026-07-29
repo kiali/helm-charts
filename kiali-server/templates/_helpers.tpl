@@ -134,13 +134,17 @@ Determine the auth strategy to use - default is "token" on Kubernetes and "opens
 {{- define "kiali-server.auth.strategy" -}}
 {{- if .Values.auth.strategy }}
   {{- if (and ((and (eq .Values.auth.strategy "openshift") (not .Values.kiali_route_url))) (not .Values.auth.openshift.redirect_uris)) }}
+    {{- if not (and .Values.deployment.remote_cluster_resources_only .Values.auth.openshift.impersonation.enabled) }}
     {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either (a) set that, (b) explicitly define redirect URIs via --set auth.openshift.redirect_uris, or (c) use a different auth strategy via the --set auth.strategy=... option." }}
+    {{- end }}
   {{- end }}
   {{- .Values.auth.strategy }}
 {{- else }}
   {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     {{- if (and (not .Values.kiali_route_url) (not .Values.auth.openshift.redirect_uris)) }}
+      {{- if not (and .Values.deployment.remote_cluster_resources_only .Values.auth.openshift.impersonation.enabled) }}
       {{- fail "You did not define what the Kiali Route URL will be (--set kiali_route_url=...). Without this set, the openshift auth strategy will not work. Either (a) set that, (b) explicitly define redirect URIs via --set auth.openshift.redirect_uris, or (c) use a different auth strategy via the --set auth.strategy=... option." }}
+      {{- end }}
     {{- end }}
     {{- "openshift" }}
   {{- else }}

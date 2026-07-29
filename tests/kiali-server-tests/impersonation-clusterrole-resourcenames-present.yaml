@@ -1,0 +1,31 @@
+name: "impersonation_clusterrole_resourcenames_present"
+description: "ClusterRole (OpenShift) includes resourceNames when allowed_users and allowed_groups are set"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=openshift"
+  - "--set"
+  - "auth.openshift.impersonation.enabled=true"
+  - "--set"
+  - "auth.openshift.impersonation.allowed_users={alice@example.com,bob@example.com}"
+  - "--set"
+  - "auth.openshift.impersonation.allowed_groups={developers,sre-team}"
+  - "--set"
+  - "kiali_route_url=https://kiali.example.com"
+yq_query: >
+  select(.kind == "ClusterRole" and (.metadata.name | test("-openshift$"))) |
+  .rules[] | select(.verbs[] == "impersonate") |
+  {"resources": .resources[0], "resourceNames": .resourceNames}
+expected_result: |
+  resources: users
+  resourceNames:
+    - "alice@example.com"
+    - "bob@example.com"
+  resources: groups
+  resourceNames:
+    - "system:authenticated"
+    - "system:authenticated:oauth"
+    - "developers"
+    - "sre-team"
+should_fail: false
