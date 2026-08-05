@@ -1,0 +1,15 @@
+name: "deployment_probes_zero_initial_delay"
+description: "Verify an explicit startup probe initialDelaySeconds of 0 is honored and not replaced by the default"
+helm_args:
+  - "--set"
+  - "probes.startup.initialDelaySeconds=0"
+yq_query: "select(.kind == \"Deployment\") | .spec.template.spec.containers[0] | {\"startupProbe\": .startupProbe}"
+expected_result: |
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 6789
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    failureThreshold: 6
+should_fail: false

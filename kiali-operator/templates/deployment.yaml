@@ -58,19 +58,19 @@ spec:
           httpGet:
             path: /readyz
             port: 6789
-          periodSeconds: 30
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds | int }}
         livenessProbe:
           httpGet:
             path: /healthz
             port: 6789
-          periodSeconds: 30
+          periodSeconds: {{ .Values.probes.liveness.periodSeconds | int }}
         startupProbe:
           httpGet:
             path: /healthz
             port: 6789
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 6
+          initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | int }}
+          periodSeconds: {{ .Values.probes.startup.periodSeconds | int }}
+          failureThreshold: {{ .Values.probes.startup.failureThreshold | int }}
         securityContext:
         {{- if .Values.securityContext }}
         {{- toYaml .Values.securityContext | nindent 10 }}
