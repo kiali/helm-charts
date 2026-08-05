@@ -26,11 +26,6 @@ scribe:
       heading: Managed Kiali CR
   stale_flags: []
   review_notes:
-    - finding: "Startup probe parameters (initialDelaySeconds: 30, periodSeconds: 10, failureThreshold: 6) not documented — relevant for slow cluster deployments"
-      severity: minor
-      tag: TAG-011
-      confidence: 1.0
-      date: "2026-05-08"
     - finding: "debug.enabled defaults to true — full Ansible logs are dumped after each reconciliation by default, with log-volume implications"
       severity: minor
       tag: TAG-015
