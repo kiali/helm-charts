@@ -1,1 +1,5 @@
 _output
+
+# OpenAI / Codex / ChatGPT Desktop
+.codex/
+.agents/
