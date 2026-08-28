@@ -1,0 +1,57 @@
+{{- /* Assisted-by: Claude Code */ -}}
+{{- if not .Values.deployment.remote_cluster_resources_only }}
+{{- if .Values.istioGateway.enabled }}
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+    {{- with .Values.istioGateway.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  hosts:
+  {{- if .Values.istioGateway.hosts }}
+    {{- toYaml .Values.istioGateway.hosts | nindent 4 }}
+  {{- else }}
+    - "*"
+  {{- end }}
+  gateways:
+  {{- if kindIs "string" .Values.istioGateway.gateway }}
+    - {{ .Values.istioGateway.gateway }}
+  {{- else }}
+    {{- toYaml .Values.istioGateway.gateway | nindent 4 }}
+  {{- end }}
+  http:
+    {{- if .Values.istioGateway.extraRoutes }}
+    {{- toYaml .Values.istioGateway.extraRoutes | nindent 4 }}
+    {{- end }}
+    - name: "kiali-default-route"
+      {{- with .Values.istioGateway.match }}
+      match:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.istioGateway.rewrite }}
+      rewrite:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      timeout: {{ .Values.istioGateway.timeout | default "0s" }}
+      {{- with .Values.istioGateway.retries }}
+      retries:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.istioGateway.headers }}
+      headers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      route:
+        - destination:
+            host: {{ include "kiali-server.fullname" . }}
+            port:
+              number: {{ .Values.istioGateway.port | default .Values.server.port }}
+          weight: 100
+{{- end }}
+{{- end }}
+
