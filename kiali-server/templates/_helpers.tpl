@@ -171,17 +171,6 @@ Determine the default deployment.tls_config.source.
 {{- end }}
 
 {{/*
-Determine the root namespace - default is where Kiali is installed.
-*/}}
-{{- define "kiali-server.external_services.istio.root_namespace" -}}
-{{- if .Values.external_services.istio.root_namespace }}
-  {{- .Values.external_services.istio.root_namespace }}
-{{- else }}
-  {{- .Release.Namespace }}
-{{- end }}
-{{- end }}
-
-{{/*
 Autodetect remote cluster secrets if enabled - looks for secrets in the same namespace where Kiali is installed.
 Note that this will ignore any secret named "kiali-multi-cluster-secret" because that will optionally be mounted always.
 Returns a JSON dict whose keys are the cluster names and values are the cluster secret data.
@@ -576,8 +565,8 @@ Example output:
   {{- end }}
 {{- end }}
 
-{{- if and .Values.chat_ai .Values.chat_ai.enabled }}
-  {{- range $provider := .Values.chat_ai.providers }}
+{{- if and .Values.ai .Values.ai.enabled .Values.ai.chat .Values.ai.chat.enabled .Values.ai.chat.providers }}
+  {{- range $provider := .Values.ai.chat.providers }}
     {{- $providerName := include "kiali-server.sanitize-credential-name" $provider.name }}
     {{- if $provider.enabled }}
       {{- if and $provider.key (regexMatch "^secret:.+:.+" $provider.key) }}
