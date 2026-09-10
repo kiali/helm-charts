@@ -22,17 +22,11 @@ skipResources: []
 kiali_route_url: ""
 
 #
-# Settings that mimic the Kiali CR which are placed in the ConfigMap.
-# Note that only those values used by the Helm Chart will be here.
+# Values referenced by the Helm chart templates. Additional Kiali server settings
+# can be supplied at install time via --set or -f; they are included in config.yaml.
 #
 
-additional_display_details:
-- annotation: kiali.io/api-spec
-  icon_annotation: kiali.io/api-type
-  title: API Documentation
-
 auth:
-  openid: {}
   openshift:
     impersonation:
       allowed_groups: []
@@ -40,16 +34,11 @@ auth:
       enabled: false
   strategy: ""
 
-chat_ai:
-  default_provider: ""
+ai:
+  chat:
+    enabled: false
+    providers: []
   enabled: false
-  max_tool_iterations: 5
-  providers: []
-  store_config:
-    enabled: true
-    max_cache_memory_mb: 1024      
-    reduce_threshold: 15
-    reduce_with_ai: false
 
 clustering:
   autodetect_secrets:
@@ -150,10 +139,6 @@ deployment:
   service_type: ""
   strategy: {}
   tls_config:
-    cipher_suites: []
-    groups: []
-    max_version: ""
-    min_version: ""
     source: ""
   tolerations: []
   topology_spread_constraints: []
@@ -163,8 +148,6 @@ deployment:
 external_services:
   custom_dashboards:
     enabled: true
-  istio:
-    root_namespace: ""
   prometheus:
     enabled: true
 
@@ -173,10 +156,7 @@ identity: {}
   #private_key_file:
 
 kiali_feature_flags:
-  custom_workload_types: []
   disabled_features: []
-  validations:
-    ignore: ["KIA1301"]
 
 login_token:
   signing_key: ""
@@ -187,8 +167,5 @@ server:
   observability:
     metrics:
       enabled: true
-      health_status:
-        enabled: false
-        max_consecutive_na: 3
       port: 9090
   web_root: ""
