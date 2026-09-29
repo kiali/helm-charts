@@ -1,0 +1,9 @@
+name: "service_labels_overrides_standard_labels"
+description: "Verify service_labels override standard Kiali labels without duplicate keys"
+helm_args:
+  - "--set-string"
+  - "deployment.service_labels.app\\.kubernetes\\.io/name=custom-kiali-service"
+yq_query: "select(.kind == \"Service\") | .metadata.labels.\"app.kubernetes.io/name\""
+expected_result: |
+  custom-kiali-service
+should_fail: false
