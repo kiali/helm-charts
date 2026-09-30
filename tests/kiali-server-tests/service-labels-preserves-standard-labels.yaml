@@ -1,0 +1,9 @@
+name: "service_labels_preserves_standard_labels"
+description: "Verify standard Kiali labels are still present on Service when service_labels is set"
+helm_args:
+  - "--set"
+  - "deployment.service_labels.custom=value"
+yq_query: "select(.kind == \"Service\") | .metadata.labels.\"app.kubernetes.io/name\""
+expected_result: |
+  kiali
+should_fail: false

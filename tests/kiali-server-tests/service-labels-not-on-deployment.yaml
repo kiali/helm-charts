@@ -1,0 +1,8 @@
+name: "service_labels_not_on_deployment"
+description: "Verify service_labels do not appear on Deployment metadata"
+helm_args:
+  - "--set"
+  - "deployment.service_labels.service-only=true"
+yq_query: "select(.kind == \"Deployment\") | .metadata.labels.\"service-only\""
+expected_result: ""
+should_fail: false

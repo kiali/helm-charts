@@ -6,7 +6,8 @@ metadata:
   name: {{ include "kiali-server.fullname" . }}
   namespace: "{{ .Release.Namespace }}"
   labels:
-    {{- include "kiali-server.labels" . | nindent 4 }}
+    {{- $serviceLabels := mergeOverwrite (dict) (include "kiali-server.labels" . | fromYaml) (.Values.deployment.service_labels | default dict) }}
+    {{- toYaml $serviceLabels | nindent 4 }}
   annotations:
     {{- if eq "true" (include "kiali-server.isOpenShift" .) }}
     service.beta.openshift.io/serving-cert-secret-name: {{ include "kiali-server.fullname" . }}-cert-secret
