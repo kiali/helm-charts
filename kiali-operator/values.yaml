@@ -50,6 +50,10 @@ probes:
 # creating these resources yourself manually; if you do not then the installation
 # will be broken. Therefore, only use this feature if you know what you are doing.
 # Valid list item values are: "clusterrole", "clusterrolebinding", "sa"
+# On OpenShift, if you skip "clusterrole", the operator ClusterRole you create yourself must still allow the operator to
+# create/delete/get/patch/update ClusterRoles, ClusterRoleBindings and ServiceAccounts and to get
+# config.openshift.io apiservers if you want the operator to install the OpenShift Service Mesh Console (OSSMC).
+# See clusterRoleCreator below.
 skipResources: []
 
 # metrics.enabled: set to true if you want Prometheus to collect metrics from the operator
@@ -72,6 +76,12 @@ watchNamespace: ""
 # Setting this to "true" requires allowAllAccessibleNamespaces to be "true" also.
 # Note that this will be overriden to "true" if cr.create is true and cr.spec.deployment.cluster_wide_access=true.
 # This must be true to support impersonation on OpenShift.
+# On OpenShift, the operator must also be able to create ClusterRoles and ClusterRoleBindings in order to install the
+# OpenShift Service Mesh Console (OSSMC), even when OSSMC is installed without a Kiali Server. The operator creates
+# the "ossmconsole-tls" ClusterRole/ClusterRoleBinding that grant the OSSMC ServiceAccount read access (get) to the
+# cluster TLS profile (config.openshift.io apiservers/cluster); the operator itself is granted get on apiservers on
+# OpenShift so it is allowed to grant it. If this is false (and not overridden by cr.create/cluster_wide_access),
+# Kiali-only installs still work, but OSSMConsole CR reconciliation fails with a message asking for clusterRoleCreator=true.
 clusterRoleCreator: true
 
 # Set to true if you want the operator to be able to grant impersonation permissions to the

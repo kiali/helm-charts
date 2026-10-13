@@ -176,6 +176,16 @@ The operator chart has conditional OpenShift behavior driven by `.Capabilities.A
 - When on OpenShift: `ALLOW_AD_HOC_OSSMCONSOLE_IMAGE` env var is injected; `ANSIBLE_VERBOSITY_OSSMCONSOLE_KIALI_IO` is set; the `ossmconsole-crd.yaml` CRD is rendered; additional ClusterRole rules for `consoleplugins` and `operator.openshift.io/consoles` are added.
 - When not on OpenShift: none of the above are emitted.
 
+### OSSMC installation prerequisite (cluster TLS profile RBAC)
+
+The OpenShift Service Mesh Console (OSSMC) image reads the cluster TLS profile (`config.openshift.io` `APIServer/cluster`) itself. To let it, the operator creates — for every OSSMC install, including OSSMC without a Kiali Server — a ServiceAccount `ossmconsole-service-account`, a ClusterRole `ossmconsole-tls` (exactly `get` on `apiservers`, `resourceNames: [cluster]`) and a ClusterRoleBinding `ossmconsole-tls`. This chart does **not** render those OSSMC operand resources and has no TLS/profile values; it only has to give the operator enough permission to create them:
+
+- ServiceAccount management — always granted (core `serviceaccounts` CRUD).
+- ClusterRole/ClusterRoleBinding management — only when `clusterRoleCreator: true` (the default) or when `cr.create: true` and `cr.spec.deployment.cluster_wide_access: true` (the same condition as above).
+- `get` on `config.openshift.io/apiservers` — granted only on OpenShift (the operator must hold what it grants).
+
+With an effective `clusterRoleCreator=false` on OpenShift, Kiali-only installs remain valid, but OSSMConsole reconciliation fails with "OSSMC requires the operator to be able to create ClusterRoles and ClusterRoleBindings ... set clusterRoleCreator=true". `templates/NOTES.txt` prints a matching note in that case. If `skipResources` includes `clusterrole`, the externally managed ClusterRole must provide the same permissions. Regression fixtures: `tests/kiali-operator-tests/ossmconsole-tls-*.yaml`.
+
 ## Managed Kiali CR
 
 Setting `cr.create: true` (default: `false`) causes the chart to create a `Kiali` CR. The namespace precedence is: `watchNamespace` if set → `cr.namespace` if set → the release namespace (implicit). The CR is templated from `cr.spec`.

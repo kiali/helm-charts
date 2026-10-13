@@ -1,0 +1,28 @@
+name: "ossmc_tls_cluster_role_creator_disabled"
+description: "A restricted (OpenShift) install with cr.create=false, clusterRoleCreator=false and allowAllAccessibleNamespaces=false still renders, but the operator ClusterRole cannot manage ClusterRoles/ClusterRoleBindings; such an operator cannot install OSSMC (OSSMC reconciliation fails asking for clusterRoleCreator=true)"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+  - "--set"
+  - "cr.create=false"
+  - "--set"
+  - "clusterRoleCreator=false"
+  - "--set"
+  - "allowAllAccessibleNamespaces=false"
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.apiGroups | contains(["rbac.authorization.k8s.io"]))
+expected_result: |
+  apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+    - rolebindings
+    - roles
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+should_fail: false

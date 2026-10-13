@@ -1,0 +1,37 @@
+name: "ossmc_tls_operator_resource_management"
+description: "By default (OpenShift) the operator ClusterRole can manage ServiceAccounts, ClusterRoles and ClusterRoleBindings, which the operator needs to create the OSSMC ServiceAccount and its ossmconsole-tls ClusterRole/ClusterRoleBinding"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select((.resources | contains(["serviceaccounts"])) or (.resources | contains(["clusterroles"])))
+expected_result: |
+  apiGroups: [""]
+  resources:
+    - configmaps
+    - serviceaccounts
+    - services
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+    - clusterrolebindings
+    - clusterroles
+    - rolebindings
+    - roles
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+should_fail: false

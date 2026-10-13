@@ -1,0 +1,9 @@
+name: "ossmc_tls_apiserver_read_absent_kubernetes"
+description: "Without the OpenShift route.openshift.io/v1 capability the chart renders the operator ClusterRole with no apiservers rule"
+helm_args: []
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules | map(select(.resources | contains(["apiservers"]))) | length
+expected_result: |
+  0
+should_fail: false

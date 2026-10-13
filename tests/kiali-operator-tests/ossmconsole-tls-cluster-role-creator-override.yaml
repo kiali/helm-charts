@@ -1,0 +1,30 @@
+name: "ossmc_tls_cluster_role_creator_override"
+description: "On OpenShift, cr.create=true with cr.spec.deployment.cluster_wide_access=true grants ClusterRole/ClusterRoleBinding management even when clusterRoleCreator=false, so the operator can still create the OSSMC ossmconsole-tls ClusterRole/ClusterRoleBinding"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+  - "--set"
+  - "cr.create=true"
+  - "--set"
+  - "cr.spec.deployment.cluster_wide_access=true"
+  - "--set"
+  - "clusterRoleCreator=false"
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.apiGroups | contains(["rbac.authorization.k8s.io"]))
+expected_result: |
+  apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+    - clusterrolebindings
+    - clusterroles
+    - rolebindings
+    - roles
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+should_fail: false
