@@ -186,7 +186,7 @@ When the chart detects this pattern in `external_services.*.auth.{username,passw
 
 This allows credentials to live in Kubernetes Secrets without being embedded in the Helm values. The `kiali-server.credential-secrets` helper in `_helpers.tpl` aggregates all detected secrets into a JSON map used only by `deployment.yaml` (volumeMounts and volumes sections). Volume names follow the pattern `<service>-<field>` (e.g., `prometheus-password`) for external services, `chat-ai-provider-<name>` for provider-level keys, and `chat-ai-model-<provider>-<model>` for model-level keys.
 
-When `ai.consumption.prices_config_map` is a non-empty ConfigMap name, the chart mounts that user-managed ConfigMap at `/kiali-ai-pricing` (`optional: true`). The ConfigMap must contain a `prices.yaml` key. If the value is empty, no volume is mounted and the Kiali server uses its built-in price catalog.
+When `ai.consumption.prices_config_map` is a non-empty ConfigMap name, the chart mounts that user-managed ConfigMap at `/kiali-ai-pricing` (`optional: true`). The ConfigMap must contain a `prices.yaml` key. If the value is empty, no volume is mounted and the Kiali server uses its built-in price catalog. For the ConfigMap format and how to install it, see https://kiali.io/docs/ai/chatbot/kiali-chatbot-prices/
 
 ## External-Facing Resources
 
