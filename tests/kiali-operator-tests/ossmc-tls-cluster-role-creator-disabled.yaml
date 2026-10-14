@@ -1,0 +1,26 @@
+name: "ossmc_tls_cluster_role_creator_disabled"
+description: "Verify restricted modes (cr.create=false, clusterRoleCreator=false, allowAllAccessibleNamespaces=false) omit ClusterRole/ClusterRoleBinding management from the rbac rule, while the config.openshift.io apiservers read the OSSMC TLS feature needs (it follows the cluster TLS security profile) is governed only by the OpenShift capability and remains present"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+  - "--set"
+  - "cr.create=false"
+  - "--set"
+  - "clusterRoleCreator=false"
+  - "--set"
+  - "allowAllAccessibleNamespaces=false"
+yq_query: >-
+  select(.kind == "ClusterRole") | .rules as $rules |
+  {"rbacResources": ($rules | map(select((.apiGroups // [""]) | join(",") | contains("rbac.authorization.k8s.io"))) | map(.resources) | flatten | unique),
+  "apiserversRule": ($rules | map(select((.resources // [""]) | join(",") | contains("apiservers"))) | map({"apiGroups": .apiGroups[0], "verbs": .verbs}))}
+expected_result: |
+  rbacResources:
+    - rolebindings
+    - roles
+  apiserversRule:
+    - apiGroups: "config.openshift.io"
+      verbs:
+        - get
+        - list
+        - watch
+should_fail: false

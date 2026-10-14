@@ -1,0 +1,9 @@
+name: "ossmc_tls_operator_apiserver_read_absent"
+description: "Verify the config.openshift.io apiservers rule is absent without the OpenShift capability and the chart still renders (empty query result)"
+helm_args: []
+yq_query: >-
+  select(.kind == "ClusterRole") |
+  .rules[] | select((.resources // [""]) | join(",") | contains("apiservers")) |
+  {"apiGroups": .apiGroups[0], "resources": .resources, "verbs": .verbs}
+expected_result: ""
+should_fail: false
