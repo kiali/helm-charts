@@ -1,0 +1,18 @@
+name: "ossmc_tls_operator_apiserver_read_openshift"
+description: "Verify the operator ClusterRole grants get/list/watch on config.openshift.io apiservers when the OpenShift capability is present (get for the reconcile read, list/watch for the APIServer watch that follows the cluster TLS security profile)"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+yq_query: >-
+  select(.kind == "ClusterRole") |
+  .rules[] | select((.resources // [""]) | join(",") | contains("apiservers")) |
+  {"apiGroups": .apiGroups[0], "resources": .resources, "verbs": .verbs}
+expected_result: |
+  apiGroups: "config.openshift.io"
+  resources:
+    - apiservers
+  verbs:
+    - get
+    - list
+    - watch
+should_fail: false
