@@ -1,0 +1,7 @@
+name: "ai_prizes_configmap_absent"
+description: "When the user does not set prices_config_map, do not mount a pricing volume (server uses the built-in catalog)"
+helm_args: []
+yq_query: "select(.kind == \"Deployment\") | (.spec.template.spec.volumes | map(select(.name == \"kiali-ai-pricing\")) | length)"
+expected_result: |
+  0
+should_fail: false

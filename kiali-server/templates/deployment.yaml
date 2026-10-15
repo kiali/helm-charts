@@ -168,6 +168,11 @@ spec:
           mountPath: "/kiali-secret"
         - name: {{ include "kiali-server.fullname" . }}-cabundle
           mountPath: "/kiali-cabundle"
+        {{- if and .Values.ai .Values.ai.consumption .Values.ai.consumption.prices_config_map }}
+        - name: kiali-ai-pricing
+          mountPath: "/kiali-ai-pricing"
+          readOnly: true
+        {{- end }}
         {{- range .Values.deployment.custom_secrets }}
         - name: {{ .name | quote }}
           mountPath: {{ .mount | quote }}
@@ -230,6 +235,12 @@ spec:
       {{- else }}
         configMap:
           name: {{ include "kiali-server.fullname" . }}-cabundle
+          optional: true
+      {{- end }}
+      {{- if and .Values.ai .Values.ai.consumption .Values.ai.consumption.prices_config_map }}
+      - name: kiali-ai-pricing
+        configMap:
+          name: {{ .Values.ai.consumption.prices_config_map | quote }}
           optional: true
       {{- end }}
       {{- range .Values.deployment.custom_secrets }}
