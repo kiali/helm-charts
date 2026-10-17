@@ -124,6 +124,9 @@ Debug mode also prints the exact `helm template` command for manual reproduction
 | Watches file | `deployment-watches-file-custom.yaml`, `deployment-watch-namespace.yaml` |
 | Permissions flags | `deployment-permission-flags.yaml` |
 | Skip resources | `skip-resources-cluster-rbac.yaml`, `skip-resources-serviceaccount.yaml` |
+| OSSMC TLS profile RBAC prerequisites | `ossmconsole-tls-operator-apiserver-read-openshift.yaml`, `ossmconsole-tls-operator-apiserver-read-absent-kubernetes.yaml`, `ossmconsole-tls-operator-resource-management.yaml`, `ossmconsole-tls-cluster-role-creator-disabled.yaml`, `ossmconsole-tls-cluster-role-creator-override.yaml` |
+
+OpenShift-only chart behavior is gated on `.Capabilities.APIVersions.Has "route.openshift.io/v1"`, so OpenShift fixtures must pass `--api-versions route.openshift.io/v1` in `helm_args` (`isOpenShift` is not a chart value; setting it has no effect). Keep each fixture's `name` short: the runner uses `test-<name>` (underscores turned into hyphens) as the Helm release name, which must be at most 53 characters. Note that with `yq eval` a query like `[select(...) | ...] | length` still emits a result for every non-matching document; filter documents first and aggregate within the document instead (e.g. `select(.kind == "ClusterRole") | .rules | map(select(...)) | length`).
 
 ## CI Value Fixtures
 

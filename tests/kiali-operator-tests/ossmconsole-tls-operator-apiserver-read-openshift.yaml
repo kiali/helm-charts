@@ -1,0 +1,15 @@
+name: "ossmc_tls_apiserver_read_openshift"
+description: "On OpenShift the operator ClusterRole grants exactly get on config.openshift.io apiservers, which the operator needs so it can grant the OSSMC ServiceAccount read access to the cluster TLS profile (apiservers/cluster)"
+helm_args:
+  - "--api-versions"
+  - "route.openshift.io/v1"
+yq_query: >
+  select(.kind == "ClusterRole") |
+  .rules[] | select(.resources | contains(["apiservers"]))
+expected_result: |
+  apiGroups: ["config.openshift.io"]
+  resources:
+    - apiservers
+  verbs:
+    - get
+should_fail: false
