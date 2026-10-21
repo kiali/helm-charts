@@ -1,0 +1,13 @@
+name: "tls_adherence_unknown_value_rejects_config"
+description: "An unknown tlsAdherence value must fail closed (treated as strict) - the API's own forward-compatibility rule"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "deployment.tls_config.source=config"
+  - "--set"
+  - "simulateTlsAdherence=SomeFutureMode"
+should_fail: true
+expected_error_pattern: "The cluster TLS adherence is \\[SomeFutureMode\\]"

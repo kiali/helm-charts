@@ -1,0 +1,13 @@
+name: "tls_adherence_strict_rejects_config"
+description: "An explicit TLS config (source=config) must fail to render when the cluster TLS adherence is strict"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "deployment.tls_config.source=config"
+  - "--set"
+  - "simulateTlsAdherence=StrictAllComponents"
+should_fail: true
+expected_error_pattern: "deployment.tls_config.source may not be 'config'"

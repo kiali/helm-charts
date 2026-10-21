@@ -28,6 +28,8 @@ data:
     {{- /* Default TLS source is auto on OpenShift, config elsewhere, unless user overrides */}}
     {{- if not $cm.deployment.tls_config }}{{- $_ := set $cm.deployment "tls_config" (dict) }}{{- end }}
     {{- $_ := set $cm.deployment.tls_config "source" (include "kiali-server.deployment.tls_config.source" .) }}
+    {{- /* Reject an explicit TLS config when the cluster TLS adherence is strict (OpenShift only) */}}
+    {{- include "kiali-server.deployment.tls_config.validate" . }}
     {{- $_ := set $cm.identity "cert_file" (include "kiali-server.identity.cert_file" .) }}
     {{- $_ := set $cm.identity "private_key_file" (include "kiali-server.identity.private_key_file" .) }}
     {{- $_ := set $cm.login_token "signing_key" (include "kiali-server.login_token.signing_key" .) }}

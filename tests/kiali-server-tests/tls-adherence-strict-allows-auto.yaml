@@ -1,0 +1,16 @@
+name: "tls_adherence_strict_allows_auto"
+description: "The adherence gate must not apply when the TLS source is auto, even under a strict adherence"
+helm_args:
+  - "--set"
+  - "isOpenShift=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "deployment.tls_config.source=auto"
+  - "--set"
+  - "simulateTlsAdherence=StrictAllComponents"
+yq_query: >
+  .data."config.yaml" | from_yaml | .deployment.tls_config.source
+expected_result: |
+  auto
+should_fail: false

@@ -1,0 +1,13 @@
+name: "tls_adherence_live_unreadable_rejects_config"
+description: "On a render that is live against OpenShift (api discovery present) an explicit TLS config (source=config) must fail when APIServer/cluster cannot be read - the adherence cannot be determined, so nothing installs. Simulates the live state with --api-versions: the lookup still returns nothing offline, which is exactly the unreadable case"
+helm_args:
+  - "--api-versions"
+  - "v1"
+  - "--api-versions"
+  - "operator.openshift.io/v1"
+  - "--set"
+  - "auth.strategy=anonymous"
+  - "--set"
+  - "deployment.tls_config.source=config"
+should_fail: true
+expected_error_pattern: "APIServer/cluster could not be read"
