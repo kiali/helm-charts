@@ -24,6 +24,21 @@ Determine if on OpenShift (when debugging the chart for OpenShift use-cases, set
 {{- end }}
 
 {{/*
+Determine if this render is connected to a live OpenShift cluster, meaning a helm
+lookup that returns no object can only mean the object could not be read (RBAC,
+connectivity) - never that it does not exist. API discovery
+(.Capabilities.APIVersions) only contains the OpenShift api groups on connected
+renders (helm install/upgrade, helm install --dry-run=server); offline renders
+(helm template, or --dry-run which makes no cluster connections) only know the
+built-in "v1" group. Tests can simulate the live state with
+"--api-versions operator.openshift.io/v1" (the lookup still returns nothing
+there, which is exactly the unreadable case being tested).
+*/}}
+{{- define "kiali-server.isOpenShiftLive" -}}
+{{- .Capabilities.APIVersions.Has "operator.openshift.io/v1" -}}
+{{- end }}
+
+{{/*
 Identifies the log_level.
 */}}
 {{- define "kiali-server.logLevel" -}}
@@ -174,8 +189,16 @@ Determine the default deployment.tls_config.source.
 Determine the effective cluster TLS adherence (APIServer/cluster spec.tlsAdherence,
 config.openshift.io/v1). Valid values are "LegacyAdheringComponentsOnly" (the
 documented default when the field is absent) and "StrictAllComponents".
-- The live value is read via lookup, which only works with helm install/upgrade;
-  under helm template / --dry-run it returns empty, which means legacy.
+- The live value is read via lookup, which only works on connected renders
+  (helm install/upgrade, --dry-run=server); offline renders (helm template,
+  --dry-run with no cluster connections) return empty, which means legacy.
+- Fails closed on live OpenShift renders: APIServer/cluster is a singleton that
+  always exists, so a lookup that returns no object there means the adherence
+  could not be obtained (RBAC, connectivity) - the render fails rather than
+  guess legacy, the same rule the kiali-operator enforces when it cannot read
+  the object. This helper is only invoked when the chart asks for an explicit
+  TLS config (see kiali-server.deployment.tls_config.validate), so auto-source
+  installs are unaffected.
 - The simulateTlsAdherence value (--set only, for tests/debugging - the same pattern
   as the isOpenShift value) can only simulate a NON-LEGACY adherence: setting it to
   "LegacyAdheringComponentsOnly" is a no-op that cannot relax a non-legacy live
@@ -191,6 +214,8 @@ Returns the adherence string; empty means the field is not set (legacy default).
   {{- $apiserver := lookup "config.openshift.io/v1" "APIServer" "" "cluster" }}
   {{- if $apiserver }}
     {{- $live = dig "spec" "tlsAdherence" "" $apiserver }}
+  {{- else if eq "true" (include "kiali-server.isOpenShiftLive" .) }}
+    {{- fail "APIServer/cluster could not be read, so the cluster TLS adherence cannot be determined while deployment.tls_config.source is 'config'. Retry the install, or set deployment.tls_config.source to 'auto' so Kiali follows the cluster TLS security profile. Nothing was installed." }}
   {{- end }}
 {{- end }}
 {{- $sim := .Values.simulateTlsAdherence | default "" }}
@@ -209,14 +234,20 @@ config (source "config") is not allowed - the same rule the kiali-operator
 enforces. Any value other than exactly "LegacyAdheringComponentsOnly" (including
 "StrictAllComponents" and unknown future enum values) fails closed, which is the
 forward-compatibility rule the API itself prescribes.
+The adherence is only looked up (and only able to fail the render) when the chart
+asks for an explicit TLS config on OpenShift - auto-source installs never read
+APIServer/cluster here, the same conditionality the kiali-operator uses.
 Note: helm has no reconcile loop - this gate only fires at install/upgrade render
-time. Under helm template / --dry-run the adherence lookup returns empty (legacy),
-so the gate is inert in offline renders.
+time. Offline renders (helm template, --dry-run with no cluster connections)
+cannot read the adherence, so the gate is inert there; connected renders that
+cannot obtain it fail closed (see kiali-server.cluster.tlsAdherence).
 */}}
 {{- define "kiali-server.deployment.tls_config.validate" -}}
-{{- $adherence := include "kiali-server.cluster.tlsAdherence" . }}
-{{- if and (eq "true" (include "kiali-server.isOpenShift" .)) (eq "config" (include "kiali-server.deployment.tls_config.source" .)) (ne $adherence "") (ne $adherence "LegacyAdheringComponentsOnly") }}
-  {{- fail (printf "The cluster TLS adherence is [%s] (APIServer/cluster spec.tlsAdherence); deployment.tls_config.source may not be 'config'. Remove the setting (or set it to 'auto') so Kiali follows the cluster TLS security profile, or ask your cluster admin to set the adherence to LegacyAdheringComponentsOnly." $adherence) }}
+{{- if and (eq "true" (include "kiali-server.isOpenShift" .)) (eq "config" (include "kiali-server.deployment.tls_config.source" .)) }}
+  {{- $adherence := include "kiali-server.cluster.tlsAdherence" . }}
+  {{- if and (ne $adherence "") (ne $adherence "LegacyAdheringComponentsOnly") }}
+    {{- fail (printf "The cluster TLS adherence is [%s] (APIServer/cluster spec.tlsAdherence); deployment.tls_config.source may not be 'config'. Remove the setting (or set it to 'auto') so Kiali follows the cluster TLS security profile, or ask your cluster admin to set the adherence to LegacyAdheringComponentsOnly." $adherence) }}
+  {{- end }}
 {{- end }}
 {{- end }}
 
