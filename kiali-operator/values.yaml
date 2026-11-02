@@ -20,6 +20,8 @@ resources:
     cpu: "10m"
     memory: "64Mi"
 affinity: {}
+# replicaCount: set to more than 1 for an HA operator. When greater than 1, leader election
+# is enabled (--leader-elect) and a Role/RoleBinding granting access to leases is created.
 replicaCount: 1
 priorityClassName: ""
 securityContext: {}

@@ -1,0 +1,13 @@
+name: "deployment_leader_election_enabled"
+description: "Verify leader election is enabled and lease RBAC is created when replicaCount > 1"
+helm_args:
+  - "--set"
+  - "replicaCount=2"
+yq_query: "(select(.kind == \"Deployment\") | .spec.template.spec.containers[0].args[] | select(. == \"--leader-elect\")), (select(.kind == \"Role\") | .rules[0].resources[0]), (select(.kind == \"RoleBinding\") | .kind)"
+expected_result: |
+  leases
+  ---
+  RoleBinding
+  ---
+  --leader-elect
+should_fail: false

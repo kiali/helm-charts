@@ -1,0 +1,6 @@
+name: "deployment_leader_election_disabled"
+description: "Verify leader election is not enabled and no Role is created by default (single replica)"
+helm_args: []
+yq_query: "(select(.kind == \"Deployment\") | .spec.template.spec.containers[0].args[] | select(. == \"--leader-elect\")), (select(.kind == \"Role\") | .kind)"
+expected_result: ""
+should_fail: false

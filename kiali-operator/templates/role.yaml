@@ -1,0 +1,44 @@
+{{- if gt (.Values.replicaCount | int) 1 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "kiali-operator.fullname" . }}-leader-election
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+  {{- include "kiali-operator.labels" . | nindent 4 }}
+rules:
+- apiGroups: ["coordination.k8s.io"]
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups: [""]
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "kiali-operator.fullname" . }}-leader-election
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+  {{- include "kiali-operator.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kiali-operator.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+roleRef:
+  kind: Role
+  name: {{ include "kiali-operator.fullname" . }}-leader-election
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
