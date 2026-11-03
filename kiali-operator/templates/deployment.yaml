@@ -42,6 +42,10 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
+      {{- if .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
       - name: operator
         image: "{{ .Values.image.repo }}{{ if .Values.image.digest }}@{{ .Values.image.digest }}{{ end }}:{{ .Values.image.tag }}"
