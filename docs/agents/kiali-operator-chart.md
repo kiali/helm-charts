@@ -103,6 +103,8 @@ The ClusterRole (`kiali-operator/templates/clusterrole.yaml`) covers two distinc
 
 The operator runs as a single pod (controlled by `replicaCount`). Key implementation details:
 
+**Leader election (HA)** — the operator is always started with `--leader-elect` (and `--leader-election-id` set to the fullname), regardless of `replicaCount`, so that overlapping pods during a rolling update and additional replicas are coordinated. `templates/role.yaml` creates a namespaced Role/RoleBinding granting `leases` (and `events`) access in the release namespace only; no cluster-wide lease access is granted.
+
 **Image selection** — configured via `image.repo`, `image.tag`, and `image.digest`. Tag and repo are placeholder tokens (`${HELM_IMAGE_REPO}` / `${HELM_IMAGE_TAG}`) replaced at build time via `envsubst`.
 
 **Watches file** — determines which CRDs the operator reconciles. When `watchesFile` is empty (the default), the template selects automatically:

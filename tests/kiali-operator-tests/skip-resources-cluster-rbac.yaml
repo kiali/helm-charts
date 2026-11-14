@@ -7,5 +7,9 @@ yq_query: ".kind"
 expected_result: |
   ServiceAccount
   ---
+  Role
+  ---
+  RoleBinding
+  ---
   Deployment
 should_fail: false
