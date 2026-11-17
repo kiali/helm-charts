@@ -23,6 +23,7 @@ affinity: {}
 replicaCount: 1
 priorityClassName: ""
 securityContext: {}
+podSecurityContext: {}
 
 # Configures the liveness, readiness, and startup probes of the operator pod.
 # The defaults are conservative so the operator comes up reliably on slow clusters.
