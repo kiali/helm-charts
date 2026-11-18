@@ -80,6 +80,9 @@ deployment:
   # If not specified and cluster_wide_access is false, only the Kiali deployment namespace will be accessible.
   # Note: The Kiali deployment namespace is always included automatically.
   # Note: Include Istio control plane namespaces in discovery selectors for access to them.
+  # Note: When cluster_wide_access is false, a per-cluster entry under "overrides" must resolve to
+  #       explicit namespace names (a matchLabels or a single In-matchExpression on
+  #       kubernetes.io/metadata.name). The "default" selectors have no such restriction.
   discovery_selectors: {}
   custom_envs: []
   custom_secrets: []

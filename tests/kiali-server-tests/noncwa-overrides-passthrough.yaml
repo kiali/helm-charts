@@ -1,0 +1,13 @@
+name: "noncwa_overrides_passthrough"
+description: "In non-CWA installs, discovery selector overrides pass through to the ConfigMap verbatim"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "deployment.discovery_selectors.overrides.west[0].matchExpressions[0].key=kubernetes.io/metadata.name"
+  - "--set"
+  - "deployment.discovery_selectors.overrides.west[0].matchExpressions[0].operator=In"
+  - "--set"
+  - "deployment.discovery_selectors.overrides.west[0].matchExpressions[0].values[0]=west-ns"
+yq_query: '.data."config.yaml" | from_yaml | .deployment.discovery_selectors.overrides.west[0].matchExpressions[0].values[0]'
+expected_result: "west-ns"

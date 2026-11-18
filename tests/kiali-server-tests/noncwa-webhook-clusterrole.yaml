@@ -1,0 +1,13 @@
+name: "noncwa_webhook_clusterrole"
+description: "Non-CWA installs get the narrow webhook-viewer ClusterRole and the ClusterRoleBinding wiring it to the Kiali service account"
+helm_args:
+  # Pin the release namespace: the object names embed it, and helm otherwise
+  # takes it from the current kube context, which makes the expected names vary by machine.
+  - "--namespace"
+  - "default"
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+yq_query: '[select(.metadata.name == "kiali-default-webhook-viewer")] | sort_by(.kind) | map(.kind + " " + (.rules[0].apiGroups[0] // .roleRef.kind) + " " + (.rules[0].resources[0] // .roleRef.name) + " " + (.rules[0].verbs[0] // (.subjects[0].kind + "/" + .subjects[0].name + "/" + .subjects[0].namespace))) | select(length > 0)'
+expected_result: |
+  - ClusterRole admissionregistration.k8s.io mutatingwebhookconfigurations list
+  - ClusterRoleBinding ClusterRole kiali-default-webhook-viewer ServiceAccount/kiali/default

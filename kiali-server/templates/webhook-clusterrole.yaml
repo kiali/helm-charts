@@ -1,0 +1,27 @@
+{{- if not .Values.deployment.cluster_wide_access }}
+{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrole")) }}
+{{- /*
+In non-cluster-wide-access installs the Kiali service account only holds per-namespace
+Roles, so it cannot read the cluster-scoped mutatingwebhookconfigurations that feed the
+Istio revision tags - and those tags drive the revision-to-namespace mapping and the
+managed-namespace associations, not just the displayed version. This narrow, read-only
+ClusterRole restores them for both the write and the viewer roles. The Kiali server
+degrades gracefully without it (the tags are skipped), so an install that skips this
+resource keeps today's behavior. Its ClusterRoleBinding is in
+webhook-clusterrolebinding.yaml; each object carries its own skip guard.
+*/ -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-webhook-viewer
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - list
+{{- end }}
+{{- end }}
