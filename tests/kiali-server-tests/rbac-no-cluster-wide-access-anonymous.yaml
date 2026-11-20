@@ -1,23 +1,30 @@
 name: "rbac_no_cluster_wide_access_anonymous"
-description: "Verify Role and RoleBinding (not ClusterRole/ClusterRoleBinding) are generated when cluster_wide_access is false with auth.strategy=anonymous"
+description: "Verify the expected objects are generated when cluster_wide_access is false with auth.strategy=anonymous, and the only cluster-scoped RBAC is the webhook-viewer ClusterRole and its ClusterRoleBinding"
 helm_args:
+  # Pin the release namespace: the webhook-viewer object names embed it, and helm
+  # otherwise takes it from the current kube context, making the expected names vary by machine.
+  - "--namespace"
+  - "default"
   - "--set"
   - "deployment.cluster_wide_access=false"
   - "--set"
   - "auth.strategy=anonymous"
-yq_query: ".kind"
+yq_query: '.kind + ":" + .metadata.name'
 expected_result: |
-  NetworkPolicy
+  NetworkPolicy:kiali
   ---
-  ServiceAccount
+  ServiceAccount:kiali
   ---
-  ConfigMap
+  ConfigMap:kiali
   ---
-  Role
+  ClusterRole:kiali-default-webhook-viewer
   ---
-  RoleBinding
+  ClusterRoleBinding:kiali-default-webhook-viewer
   ---
-  Service
+  Role:kiali
   ---
-  Deployment
-should_fail: false
+  RoleBinding:kiali
+  ---
+  Service:kiali
+  ---
+  Deployment:kiali

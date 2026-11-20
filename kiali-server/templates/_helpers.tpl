@@ -428,7 +428,7 @@ Returns a comma-separated string of namespace names.
 {{- else }}
   {{- /* Always include Kiali's own namespace */ -}}
   {{- $namespaces = append $namespaces $kialiNamespace }}
-  {{- /* Process discovery selectors if they are defined (only works with helm install/upgrade, not helm template) */ -}}
+  {{- /* Process discovery selectors if they are defined */ -}}
   {{- if and .Values.deployment.discovery_selectors .Values.deployment.discovery_selectors.default }}
     {{- /* Note: lookup only works with helm install/upgrade, not helm template */ -}}
     {{- /* During helm template, lookup returns nil/empty, so this section is safely skipped */ -}}
@@ -497,6 +497,32 @@ Returns a comma-separated string of namespace names.
           {{- end }}
         {{- end }}
       {{- end }}
+    {{- else }}
+      {{- /* No live namespace list (helm template / GitOps): resolve name-form selectors */ -}}
+      {{- /* literally so a name-form default renders its named namespaces rather than */ -}}
+      {{- /* only the release namespace. Non-name-form selectors cannot be resolved */ -}}
+      {{- /* offline and contribute nothing here. */ -}}
+      {{- range $selector := .Values.deployment.discovery_selectors.default }}
+        {{- if and $selector.matchLabels (not $selector.matchExpressions) (eq (len $selector.matchLabels) 1) (hasKey $selector.matchLabels "kubernetes.io/metadata.name") }}
+          {{- $name := index $selector.matchLabels "kubernetes.io/metadata.name" }}
+          {{- if not (kindIs "string" $name) }}
+            {{- fail (printf "deployment.discovery_selectors: the kubernetes.io/metadata.name value must be a string, got %v" (kindOf $name)) }}
+          {{- end }}
+          {{- if and (not (empty $name)) (not (has $name $namespaces)) }}
+            {{- $namespaces = append $namespaces $name }}
+          {{- end }}
+        {{- end }}
+        {{- if and $selector.matchExpressions (not $selector.matchLabels) (eq (len $selector.matchExpressions) 1) }}
+          {{- $expr := index $selector.matchExpressions 0 }}
+          {{- if and (eq $expr.key "kubernetes.io/metadata.name") (eq $expr.operator "In") }}
+            {{- range $value := $expr.values }}
+              {{- if and (not (empty $value)) (not (has $value $namespaces)) }}
+                {{- $namespaces = append $namespaces $value }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
@@ -508,20 +534,70 @@ Convert accessible namespaces to discovery selectors format for the ConfigMap.
 When cluster_wide_access is false, this converts the discovered namespace list into
 a discovery selector that uses matchExpressions on kubernetes.io/metadata.name.
 This ensures the Kiali server knows the exact namespaces it has RBAC access to.
+User-provided discovery_selectors.overrides are passed through verbatim: they must
+already be in the name-form to function (the remote informer caches are scoped by a
+name list at startup), and anything else fails the install with an actionable message
+rather than falling back to the runtime warn-once behavior.
 Returns a dict structure (not YAML string).
 */}}
 {{- define "kiali-server.discovery-selectors-for-config" -}}
 {{- if not .Values.deployment.cluster_wide_access }}
   {{- $accessibleNamespacesStr := include "kiali-server.accessible-namespaces" . -}}
   {{- $accessibleNamespaces := splitList "," $accessibleNamespacesStr -}}
+  {{- $result := dict }}
   {{- if $accessibleNamespaces }}
     {{- $matchExpression := dict "key" "kubernetes.io/metadata.name" "operator" "In" "values" $accessibleNamespaces }}
     {{- $selector := dict "matchExpressions" (list $matchExpression) }}
-    {{- $result := dict "default" (list $selector) }}
-    {{- $result | toYaml }}
-  {{- else }}
-    {{- dict | toYaml }}
+    {{- $result = dict "default" (list $selector) }}
   {{- end }}
+  {{- if and .Values.deployment.discovery_selectors .Values.deployment.discovery_selectors.overrides }}
+    {{- range $cluster, $selectors := .Values.deployment.discovery_selectors.overrides }}
+      {{- if not (kindIs "slice" $selectors) }}
+        {{- fail (printf "deployment.discovery_selectors.overrides[%s] must be a list of selectors; in non-cluster-wide-access installs every override must resolve to explicit namespace names via matchLabels or an In-matchExpression on kubernetes.io/metadata.name (see the namespace management docs at kiali.io)" $cluster) }}
+      {{- end }}
+      {{- if eq (len $selectors) 0 }}
+        {{- fail (printf "deployment.discovery_selectors.overrides[%s] must contain at least one selector" $cluster) }}
+      {{- end }}
+      {{- range $selector := $selectors }}
+        {{- $valid := false }}
+        {{- if and $selector.matchLabels (not $selector.matchExpressions) }}
+          {{- if and (eq (len $selector.matchLabels) 1) (hasKey $selector.matchLabels "kubernetes.io/metadata.name") }}
+            {{- $name := index $selector.matchLabels "kubernetes.io/metadata.name" }}
+            {{- if not (kindIs "string" $name) }}
+              {{- fail (printf "deployment.discovery_selectors.overrides[%s]: the kubernetes.io/metadata.name value must be a string, got %v" $cluster (kindOf $name)) }}
+            {{- end }}
+            {{- if not (empty $name) }}
+              {{- $valid = true }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- if and $selector.matchExpressions (not $selector.matchLabels) }}
+          {{- if eq (len $selector.matchExpressions) 1 }}
+            {{- $expr := index $selector.matchExpressions 0 }}
+            {{- if and (eq $expr.key "kubernetes.io/metadata.name") (eq $expr.operator "In") (gt (len $expr.values) 0) }}
+              {{- $allNonEmpty := true }}
+              {{- range $value := $expr.values }}
+                {{- if not (kindIs "string" $value) }}
+                  {{- fail (printf "deployment.discovery_selectors.overrides[%s]: In-matchExpression values must be strings, got %v" $cluster (kindOf $value)) }}
+                {{- end }}
+                {{- if empty $value }}
+                  {{- $allNonEmpty = false }}
+                {{- end }}
+              {{- end }}
+              {{- if $allNonEmpty }}
+                {{- $valid = true }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- if not $valid }}
+          {{- fail (printf "deployment.discovery_selectors.overrides[%s]: in non-cluster-wide-access installs every override selector must resolve to explicit, non-empty namespace names - a matchLabels on kubernetes.io/metadata.name or a single In-matchExpression on that label with non-empty values. See the namespace management docs at kiali.io" $cluster) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+    {{- $_ := set $result "overrides" .Values.deployment.discovery_selectors.overrides }}
+  {{- end }}
+  {{- $result | toYaml }}
 {{- else }}
   {{- if .Values.deployment.discovery_selectors }}
     {{- .Values.deployment.discovery_selectors | toYaml }}

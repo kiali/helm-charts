@@ -1,0 +1,11 @@
+name: "noncwa_overrides_empty_fails"
+description: "An empty override list fails the install in non-CWA mode"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "-f"
+  - "testdata/noncwa-overrides-empty-fails.yaml"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "must contain at least one selector"
+should_fail: true

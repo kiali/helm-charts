@@ -1,0 +1,11 @@
+name: "noncwa_overrides_nonstring_fails"
+description: "A non-string kubernetes.io/metadata.name value fails the install - Kiali cannot decode it"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "-f"
+  - "testdata/noncwa-overrides-nonstring-fails.yaml"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "must be a string"
+should_fail: true
