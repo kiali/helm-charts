@@ -20,8 +20,12 @@ on:
         default: master
         type: string
 
+permissions: read-all
+
 jobs:
   initialize:
+    permissions:
+      contents: read
     name: Initialize
     runs-on: ubuntu-latest
     outputs:
@@ -157,8 +161,7 @@ jobs:
 
   release:
     permissions:
-      contents: write
-      pull-requests: write
+      pull-requests: write # gh pr create (git push uses KIALI_BOT_TOKEN)
     name: Release
     if: ${{ needs.initialize.outputs.release_type != 'skip' && ((github.event_name == 'schedule' && github.repository == 'kiali/helm-charts') || github.event_name != 'schedule') }}
     runs-on: ubuntu-latest
