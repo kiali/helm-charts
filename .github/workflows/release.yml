@@ -161,7 +161,7 @@ jobs:
 
   release:
     permissions:
-      pull-requests: write # gh pr create (git push uses KIALI_BOT_TOKEN)
+      pull-requests: write
     name: Release
     if: ${{ needs.initialize.outputs.release_type != 'skip' && ((github.event_name == 'schedule' && github.repository == 'kiali/helm-charts') || github.event_name != 'schedule') }}
     runs-on: ubuntu-latest
