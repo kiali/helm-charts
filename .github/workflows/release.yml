@@ -156,6 +156,9 @@ jobs:
         echo "Branch version: ${{ steps.branch_version.outputs.branch_version }}"
 
   release:
+    permissions:
+      contents: write
+      pull-requests: write
     name: Release
     if: ${{ needs.initialize.outputs.release_type != 'skip' && ((github.event_name == 'schedule' && github.repository == 'kiali/helm-charts') || github.event_name != 'schedule') }}
     runs-on: ubuntu-latest
@@ -174,11 +177,10 @@ jobs:
         token: ${{ secrets.KIALI_BOT_TOKEN }}
         fetch-depth: 0
 
-    - name: Configure git
-      run: |
-        git config user.email 'kiali-dev@googlegroups.com'
-
-        git config user.name 'kiali-bot'
+    - name: Configure kiali-bot git
+      uses: ./.github/actions/configure-kiali-bot-git
+      with:
+        signing-key: ${{ secrets.KIALI_BOT_SIGNING_KEY }}
 
     - name: Build Helm charts
       run: |
