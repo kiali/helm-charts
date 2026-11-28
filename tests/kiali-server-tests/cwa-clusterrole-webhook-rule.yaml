@@ -1,0 +1,12 @@
+name: "cwa_clusterrole_webhook_rule"
+description: "The cluster-wide-access ClusterRole keeps its mutatingwebhookconfigurations rule - it is the only grant of webhook read in CWA mode"
+helm_args:
+  - "--namespace"
+  - "default"
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: 'select(.kind == "ClusterRole" and .metadata.name == "kiali") | .metadata.name + ":" + ([.rules[] | .apiGroups[]? | select(. == "admissionregistration.k8s.io")] | join(","))'
+expected_result: |
+  kiali:admissionregistration.k8s.io

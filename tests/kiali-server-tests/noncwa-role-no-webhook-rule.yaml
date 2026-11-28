@@ -1,0 +1,12 @@
+name: "noncwa_role_no_webhook_rule"
+description: "The non-CWA per-namespace Role carries no mutatingwebhookconfigurations rule - a namespaced Role cannot grant a cluster-scoped resource; the webhook-viewer ClusterRole provides it"
+helm_args:
+  - "--namespace"
+  - "default"
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "auth.strategy=anonymous"
+yq_query: 'select(.kind == "Role" and .metadata.name == "kiali") | .metadata.name + ":" + ([.rules[] | .apiGroups[]? | select(. == "admissionregistration.k8s.io")] | join(","))'
+expected_result: |
+  kiali:

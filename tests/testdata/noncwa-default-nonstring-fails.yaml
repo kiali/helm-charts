@@ -1,0 +1,8 @@
+deployment:
+  cluster_wide_access: false
+  discovery_selectors:
+    default:
+    - matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: In
+        values: [123]

@@ -137,11 +137,14 @@ rules:
   - {{ include "kiali-server.fullname" $ }}-{{ $.Release.Namespace }}
   verbs:
   - get
+{{- /* MutatingWebhookConfigurations are cluster-scoped: only the ClusterRole rendered in cluster-wide-access mode can grant this read. In non-CWA mode the webhook-viewer ClusterRole provides it - a rule for a cluster-scoped resource in a namespaced Role would grant nothing. */ -}}
+{{- if $.Values.deployment.cluster_wide_access }}
 - apiGroups: ["admissionregistration.k8s.io"]
   resources:
   - mutatingwebhookconfigurations
   verbs:
   - list
+{{- end }}
 ...
 {{- end -}} {{/* range $namespace */}}
 {{- end -}} {{/* if not view_only_mode and auth.strategy is anonymous */}}

@@ -413,8 +413,61 @@ ensures secret-backed volumes are mounted read-only, and validates volume mount 
 {{- end }}
 
 {{/*
+Determine whether a discovery selector is in the "name form" used for access
+scoping in non-cluster-wide-access installs, and extract the namespace names it
+selects. A selector is in name form when it carries either a single matchLabels
+entry on kubernetes.io/metadata.name, or a single In-matchExpression on that
+key; any other shape (including a selector carrying both, any other label, or
+any other operator) is not. Pass in a dict with key "selector"; returns a JSON
+object with:
+  - names:  the selected namespace names (non-empty values only, deduplicated)
+  - valid:  true when the selector is in name form and names at least one namespace
+  - error:  a message for a value of the wrong type (a non-string), which callers
+            fail on; other invalid shapes set valid=false with no error, leaving
+            the caller free to fail (override validation) or skip (offline
+            default selectors, which cannot fail without breaking previews of
+            online installs)
+*/}}
+{{- define "kiali-server.name-form-selector" -}}
+{{- $names := list }}
+{{- $valid := false }}
+{{- $error := "" }}
+{{- if and .selector.matchLabels (not .selector.matchExpressions) (eq (len .selector.matchLabels) 1) (hasKey .selector.matchLabels "kubernetes.io/metadata.name") }}
+  {{- $name := index .selector.matchLabels "kubernetes.io/metadata.name" }}
+  {{- if not (kindIs "string" $name) }}
+    {{- $error = printf "the kubernetes.io/metadata.name value must be a string, got %v" (kindOf $name) }}
+  {{- else if not (empty $name) }}
+    {{- $valid = true }}
+    {{- $names = append $names $name }}
+  {{- end }}
+{{- else if and .selector.matchExpressions (not .selector.matchLabels) (eq (len .selector.matchExpressions) 1) }}
+  {{- $expr := index .selector.matchExpressions 0 }}
+  {{- if and (eq $expr.key "kubernetes.io/metadata.name") (eq $expr.operator "In") }}
+    {{- $allValid := true }}
+    {{- range $value := $expr.values }}
+      {{- if not (kindIs "string" $value) }}
+        {{- $error = printf "In-matchExpression values must be strings, got %v" (kindOf $value) }}
+        {{- $allValid = false }}
+      {{- else if empty $value }}
+        {{- $allValid = false }}
+      {{- else if not (has $value $names) }}
+        {{- $names = append $names $value }}
+      {{- end }}
+    {{- end }}
+    {{- if and $allValid (gt (len $names) 0) }}
+      {{- $valid = true }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- dict "valid" $valid "names" $names "error" $error | toJson }}
+{{- end }}
+
+{{/*
 Get the list of accessible namespaces when cluster_wide_access is false.
-This function uses discovery_selectors to find namespaces that match the label selectors (only works with helm install/upgrade, not template).
+With a live cluster (helm install/upgrade) the discovery selectors are matched
+against the cluster's namespaces. Without one (helm template, e.g. GitOps) only
+name-form selectors - those naming explicit namespaces - can be resolved, and
+other selector forms contribute nothing (see the namespace management docs).
 It always includes the Kiali deployment namespace.
 Note: The Istio control plane namespace should be included by the user in the defined discovery_selectors
 Returns a comma-separated string of namespace names.
@@ -430,8 +483,8 @@ Returns a comma-separated string of namespace names.
   {{- $namespaces = append $namespaces $kialiNamespace }}
   {{- /* Process discovery selectors if they are defined */ -}}
   {{- if and .Values.deployment.discovery_selectors .Values.deployment.discovery_selectors.default }}
-    {{- /* Note: lookup only works with helm install/upgrade, not helm template */ -}}
-    {{- /* During helm template, lookup returns nil/empty, so this section is safely skipped */ -}}
+    {{- /* Note: lookup only works with helm install/upgrade, not helm template. When */ -}}
+    {{- /* it returns nothing, the else branch below resolves name-form selectors. */ -}}
     {{- $allNamespaces := lookup "v1" "Namespace" "" "" }}
     {{- if $allNamespaces }}
       {{- if kindIs "map" $allNamespaces }}
@@ -503,23 +556,13 @@ Returns a comma-separated string of namespace names.
       {{- /* only the release namespace. Non-name-form selectors cannot be resolved */ -}}
       {{- /* offline and contribute nothing here. */ -}}
       {{- range $selector := .Values.deployment.discovery_selectors.default }}
-        {{- if and $selector.matchLabels (not $selector.matchExpressions) (eq (len $selector.matchLabels) 1) (hasKey $selector.matchLabels "kubernetes.io/metadata.name") }}
-          {{- $name := index $selector.matchLabels "kubernetes.io/metadata.name" }}
-          {{- if not (kindIs "string" $name) }}
-            {{- fail (printf "deployment.discovery_selectors: the kubernetes.io/metadata.name value must be a string, got %v" (kindOf $name)) }}
-          {{- end }}
-          {{- if and (not (empty $name)) (not (has $name $namespaces)) }}
-            {{- $namespaces = append $namespaces $name }}
-          {{- end }}
+        {{- $result := include "kiali-server.name-form-selector" (dict "selector" $selector) | fromJson }}
+        {{- if $result.error }}
+          {{- fail (printf "deployment.discovery_selectors.default: %s" $result.error) }}
         {{- end }}
-        {{- if and $selector.matchExpressions (not $selector.matchLabels) (eq (len $selector.matchExpressions) 1) }}
-          {{- $expr := index $selector.matchExpressions 0 }}
-          {{- if and (eq $expr.key "kubernetes.io/metadata.name") (eq $expr.operator "In") }}
-            {{- range $value := $expr.values }}
-              {{- if and (not (empty $value)) (not (has $value $namespaces)) }}
-                {{- $namespaces = append $namespaces $value }}
-              {{- end }}
-            {{- end }}
+        {{- range $name := $result.names }}
+          {{- if not (has $name $namespaces) }}
+            {{- $namespaces = append $namespaces $name }}
           {{- end }}
         {{- end }}
       {{- end }}
@@ -559,38 +602,10 @@ Returns a dict structure (not YAML string).
         {{- fail (printf "deployment.discovery_selectors.overrides[%s] must contain at least one selector" $cluster) }}
       {{- end }}
       {{- range $selector := $selectors }}
-        {{- $valid := false }}
-        {{- if and $selector.matchLabels (not $selector.matchExpressions) }}
-          {{- if and (eq (len $selector.matchLabels) 1) (hasKey $selector.matchLabels "kubernetes.io/metadata.name") }}
-            {{- $name := index $selector.matchLabels "kubernetes.io/metadata.name" }}
-            {{- if not (kindIs "string" $name) }}
-              {{- fail (printf "deployment.discovery_selectors.overrides[%s]: the kubernetes.io/metadata.name value must be a string, got %v" $cluster (kindOf $name)) }}
-            {{- end }}
-            {{- if not (empty $name) }}
-              {{- $valid = true }}
-            {{- end }}
-          {{- end }}
-        {{- end }}
-        {{- if and $selector.matchExpressions (not $selector.matchLabels) }}
-          {{- if eq (len $selector.matchExpressions) 1 }}
-            {{- $expr := index $selector.matchExpressions 0 }}
-            {{- if and (eq $expr.key "kubernetes.io/metadata.name") (eq $expr.operator "In") (gt (len $expr.values) 0) }}
-              {{- $allNonEmpty := true }}
-              {{- range $value := $expr.values }}
-                {{- if not (kindIs "string" $value) }}
-                  {{- fail (printf "deployment.discovery_selectors.overrides[%s]: In-matchExpression values must be strings, got %v" $cluster (kindOf $value)) }}
-                {{- end }}
-                {{- if empty $value }}
-                  {{- $allNonEmpty = false }}
-                {{- end }}
-              {{- end }}
-              {{- if $allNonEmpty }}
-                {{- $valid = true }}
-              {{- end }}
-            {{- end }}
-          {{- end }}
-        {{- end }}
-        {{- if not $valid }}
+        {{- $result := include "kiali-server.name-form-selector" (dict "selector" $selector) | fromJson }}
+        {{- if $result.error }}
+          {{- fail (printf "deployment.discovery_selectors.overrides[%s]: %s" $cluster $result.error) }}
+        {{- else if not $result.valid }}
           {{- fail (printf "deployment.discovery_selectors.overrides[%s]: in non-cluster-wide-access installs every override selector must resolve to explicit, non-empty namespace names - a matchLabels on kubernetes.io/metadata.name or a single In-matchExpression on that label with non-empty values. See the namespace management docs at kiali.io" $cluster) }}
         {{- end }}
       {{- end }}
