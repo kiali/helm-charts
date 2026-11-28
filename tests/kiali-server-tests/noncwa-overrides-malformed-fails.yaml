@@ -1,0 +1,11 @@
+name: "noncwa_overrides_malformed_fails"
+description: "A non-name-form override fails the install in non-CWA mode with an actionable message"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "--set"
+  - "deployment.discovery_selectors.overrides.west[0].matchLabels.app=my-app"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "override selector must resolve to explicit, non-empty namespace names"
+should_fail: true

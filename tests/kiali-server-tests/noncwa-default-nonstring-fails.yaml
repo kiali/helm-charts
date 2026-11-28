@@ -1,0 +1,11 @@
+name: "noncwa_default_nonstring_fails"
+description: "A non-string In-matchExpression value in the default selectors fails an offline render - Kiali cannot decode it"
+helm_args:
+  - "--set"
+  - "deployment.cluster_wide_access=false"
+  - "-f"
+  - "testdata/noncwa-default-nonstring-fails.yaml"
+yq_query: ""
+expected_result: ""
+expected_error_pattern: "In-matchExpression values must be strings"
+should_fail: true

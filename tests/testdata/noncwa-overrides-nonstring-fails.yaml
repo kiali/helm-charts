@@ -1,0 +1,7 @@
+deployment:
+  cluster_wide_access: false
+  discovery_selectors:
+    overrides:
+      west:
+      - matchLabels:
+          kubernetes.io/metadata.name: ["bookinfo"]

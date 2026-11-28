@@ -1,0 +1,24 @@
+{{- if not .Values.deployment.cluster_wide_access }}
+{{- if eq "false" (include "kiali-server.isSkippedResource" (dict "ctx" . "name" "clusterrolebinding")) }}
+{{- /*
+Binds the Kiali service account to the webhook-viewer ClusterRole defined in
+webhook-clusterrole.yaml. Each object carries its own skip guard: skipping or
+pre-creating only one of the two must not suppress the other.
+*/ -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-webhook-viewer
+  labels:
+    {{- include "kiali-server.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kiali-server.fullname" . }}-{{ .Release.Namespace }}-webhook-viewer
+subjects:
+- kind: ServiceAccount
+  name: {{ include "kiali-server.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+{{- end }}
+{{- end }}

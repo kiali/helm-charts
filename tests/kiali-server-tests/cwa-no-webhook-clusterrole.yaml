@@ -1,0 +1,11 @@
+name: "cwa_no_webhook_clusterrole"
+description: "CWA installs render neither the webhook-viewer ClusterRole nor its ClusterRoleBinding"
+helm_args:
+  # Pin the release namespace so the expected absence cannot be satisfied merely by the
+  # objects rendering under a different name (helm otherwise takes it from the kube context).
+  - "--namespace"
+  - "default"
+  - "--set"
+  - "deployment.cluster_wide_access=true"
+yq_query: '[select((.kind == "ClusterRole" or .kind == "ClusterRoleBinding") and (.metadata.name | test("webhook-viewer")))] | map(.kind + ":" + .metadata.name) | select(length > 0)'
+expected_result: ""
